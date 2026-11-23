@@ -124,7 +124,7 @@ window.SECTIONS.push({
   no: '10.3',
   nav: '一阶线性方程',
   title: '一阶线性：套公式之前先化成标准形',
-  tagline: 'y′+P(x)y=Q(x)，乘积分因子 e^{∫P}，左边就变成 (ye^{∫P})′。',
+  tagline: 'y′+P(x)y=Q(x)，乘积分因子 e^(∫P)，左边就变成 (ye^(∫P))′。',
   mins: 15,
   goals: ['化成标准形', '用积分因子公式求解', '处理 y′ 前有系数的情况'],
   body: String.raw`
@@ -264,7 +264,7 @@ window.SECTIONS.push({
   no: '10.5',
   nav: '差分方程初步',
   title: '差分方程：时间是离散的',
-  tagline: 'y_{t+1} 与 y_t 的关系。平衡点 + 齐次解，和微分方程一个套路。',
+  tagline: 'yₜ₊₁ 与 yₜ 的关系。平衡点 + 齐次解，和微分方程一个套路。',
   mins: 14,
   goals: ['求平衡点', '写一阶差分方程通解', '判断稳定性'],
   body: String.raw`
