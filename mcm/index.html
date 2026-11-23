@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#faf9f6">
-<title>美赛 MCM/ICM 2027 备赛</title>
-<meta name="description" content="2027 年美国大学生数学建模竞赛备赛页：赛程硬指标、六道赛题、奖项比例、时间线，以及对五份流传资料的逐条核查。">
+<title>67 天上手 · 美赛执行计划</title>
+<meta name="description" content="2027 美赛从零到提交的八阶段执行计划：规则、目标、工具、技能、真题、迭代、封板、复盘。每阶段带技能分级、优先级与可验证的验收标准。">
 <link rel="canonical" href="https://gahaga.eu.cc/mcm/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f6e66'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='38' font-weight='700' fill='%23ffffff' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E">
 <style>
@@ -16,6 +16,7 @@
   --warn:#A8541C;--warn-soft:#F8EADF;
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){
   :root{--bg:#141416;--surface:#1C1D20;--surface-2:#232428;--ink:#EDEBE6;--ink-2:#B4B2AC;
@@ -31,51 +32,87 @@ a:hover{border-color:var(--accent);}
 .back:hover{color:var(--accent);}
 .kicker{margin:0 0 16px;font-size:11px;letter-spacing:.24em;color:var(--accent);font-weight:600;}
 h1{font-family:var(--serif);font-size:clamp(30px,5vw,42px);line-height:1.2;margin:0 0 14px;font-weight:600;}
-.lede{margin:0 0 22px;font-size:16px;color:var(--ink-2);max-width:52ch;}
+.lede{margin:0 0 22px;font-size:16px;color:var(--ink-2);max-width:54ch;}
 
-/* 倒计时 */
-.countdown{display:flex;align-items:baseline;gap:10px;margin:0 0 44px;padding:16px 20px;
+.countdown{display:flex;align-items:baseline;gap:10px;margin:0 0 12px;padding:16px 20px;
   background:var(--surface);border:1px solid var(--line);border-radius:12px;}
 .countdown b{font-family:var(--serif);font-size:30px;color:var(--accent);font-weight:600;line-height:1;}
 .countdown span{font-size:13px;color:var(--ink-2);}
 
+.progressbar{margin:0 0 44px;padding:14px 20px;background:var(--surface);border:1px solid var(--line);border-radius:12px;}
+.pb-top{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);margin-bottom:8px;}
+.pb-track{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;}
+.pb-fill{height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .3s;}
+
 h2{font-family:var(--serif);font-size:24px;margin:52px 0 14px;font-weight:600;line-height:1.35;}
 h2 .num{font-size:13px;color:var(--accent);letter-spacing:.12em;display:block;margin-bottom:6px;font-family:var(--sans);font-weight:600;}
-h3{font-size:15px;margin:26px 0 8px;font-weight:600;}
+h3{font-size:13px;margin:22px 0 8px;font-weight:600;color:var(--ink-3);letter-spacing:.08em;}
 p{margin:0 0 14px;}
-ul{margin:0 0 14px;padding-left:20px;}
+ul,ol{margin:0 0 14px;padding-left:20px;}
 li{margin-bottom:7px;}
 strong{font-weight:600;}
 
-/* 硬指标表 */
-.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:18px 0 8px;}
-.fact{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:14px 16px;}
-.fact dt{font-size:11.5px;color:var(--ink-3);letter-spacing:.06em;margin-bottom:4px;}
-.fact dd{margin:0;font-size:14.5px;font-weight:500;line-height:1.5;}
-.fact dd em{font-style:normal;color:var(--accent);}
+.note{background:var(--surface-2);border-radius:12px;padding:18px 20px;margin:20px 0;font-size:14px;color:var(--ink-2);}
+.note b{color:var(--ink);}
 
-/* 奖项条 */
-.awards{margin:18px 0 6px;}
-.aw{display:flex;align-items:center;gap:12px;margin-bottom:8px;font-size:13px;}
-.aw .lb{width:26px;font-weight:600;color:var(--ink-2);flex:none;}
-.aw .bar{height:9px;border-radius:99px;background:var(--accent);opacity:.85;flex:none;min-width:3px;}
-.aw .bar.gray{background:var(--ink-3);opacity:.35;}
-.aw .pc{color:var(--ink-3);font-size:12px;}
+/* 阶段总览 */
+.map{margin:20px 0 8px;}
+.map-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:12.5px;}
+.map-row .tag{width:26px;flex:none;color:var(--ink-3);font-family:var(--mono);}
+.map-row .bar{height:15px;border-radius:4px;background:var(--accent);opacity:.28;flex:none;}
+.map-row .bar.hot{opacity:.75;}
+.map-row .nm{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
-/* 警告卡 */
+/* 阶段卡 */
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 24px 8px;margin:22px 0;}
+.stage-head{border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:6px;}
+.stage-num{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--accent);font-weight:600;}
+.stage-head h2{margin:4px 0 6px;font-size:21px;}
+.stage-meta{font-size:12.5px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:6px 14px;}
+.stage-meta .d{color:var(--accent);}
+.goal{background:var(--accent-soft);border-radius:9px;padding:12px 15px;margin:14px 0 4px;font-size:14px;color:var(--ink);}
+.goal b{color:var(--accent);font-weight:600;}
+
+/* 技能行 */
+.skills{list-style:none;padding:0;margin:0 0 14px;}
+.skills li{display:flex;flex-wrap:wrap;align-items:baseline;gap:7px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px;margin:0;}
+.skills li:last-child{border-bottom:0;}
+.tag{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:4px;letter-spacing:.03em;font-weight:600;line-height:1.7;flex:none;}
+.t-must{background:var(--accent);color:#fff;}
+.t-adv{background:var(--surface-2);color:var(--ink-3);border:1px solid var(--line);}
+.t-p0{background:var(--warn);color:#fff;}
+.t-p1{background:var(--warn-soft);color:var(--warn);}
+.t-p2{background:var(--surface-2);color:var(--ink-3);}
+.skills .txt{flex:1;min-width:180px;}
+.skills .lib{font-family:var(--mono);font-size:12px;color:var(--ink-3);}
+
+/* 验收清单 */
+.check{list-style:none;padding:0;margin:0 0 16px;}
+.check li{margin:0;border-bottom:1px dashed var(--line);}
+.check li:last-child{border-bottom:0;}
+.check label{display:flex;gap:10px;align-items:flex-start;padding:9px 0;cursor:pointer;font-size:14px;color:var(--ink-2);line-height:1.65;}
+.check input{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--ink-3);border-radius:4px;margin:3px 0 0;flex:none;cursor:pointer;position:relative;background:transparent;}
+.check input:checked{background:var(--accent);border-color:var(--accent);}
+.check input:checked::after{content:"";position:absolute;left:4.5px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg);}
+.check input:checked + span{color:var(--ink-3);text-decoration:line-through;}
+
+/* 告警 */
 .alert{background:var(--warn-soft);border:1px solid var(--warn);border-radius:12px;padding:18px 20px;margin:18px 0;}
 .alert h4{margin:0 0 8px;font-size:14px;color:var(--warn);font-weight:600;}
 .alert p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.75;}
 
-/* 时间线 */
-.tl{position:relative;margin:20px 0 8px;padding-left:22px;}
-.tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--line);}
-.tl-item{position:relative;margin-bottom:18px;}
-.tl-item::before{content:"";position:absolute;left:-21px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);}
-.tl-item b{display:block;font-size:13px;color:var(--accent);letter-spacing:.04em;font-weight:600;}
-.tl-item span{font-size:14px;color:var(--ink-2);}
+.rule{display:flex;gap:14px;margin-bottom:16px;font-size:14.5px;}
+.rule .n{font-family:var(--serif);font-size:20px;color:var(--accent);line-height:1.2;flex:none;width:24px;}
+.rule .t{color:var(--ink-2);}
+.rule .t b{color:var(--ink);}
 
-footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);}
+footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.small{font-size:13px;color:var(--ink-3);}
+@media (max-width:520px){
+  .wrap{padding:36px 18px 72px;}
+  .stage{padding:20px 18px 6px;}
+  .stage-head h2{font-size:19px;}
+}
 </style>
 </head>
 <body>
@@ -83,100 +120,398 @@ footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);font-si
 
 <a class="back" href="../">← 返回首页</a>
 
-<p class="kicker">MCM / ICM · 2027 SEASON</p>
-<h1>美赛备赛</h1>
-<p class="lede">2027 年美国大学生数学建模竞赛。这个页面放三样东西：不掺水的赛程硬指标、六道赛题的取舍、以及对网上流传资料的核查结论。</p>
+<p class="kicker">MCM / ICM · 2027 · EXECUTION PLAN</p>
+<h1>67 天，从零到能交稿</h1>
+<p class="lede">这不是一份“备赛指南”，是一张倒排工期表。八个阶段，每段只回答四个问题：练什么、怎么算过关、哪些是必须、哪些可以放。按日期执行，勾掉验收项。</p>
 
 <div class="countdown">
   <b id="days">—</b><span>天后开赛 · 北京时间 2027-01-29 06:00（美东 1/28 17:00）</span>
 </div>
 
-<h2><span class="num">PART 01</span>硬指标，一条都不要记错</h2>
-<div class="facts">
-  <dl class="fact"><dt>交稿截止</dt><dd>2027-02-02 10:00<br><em>过点即 DQ</em></dd></dl>
-  <dl class="fact"><dt>注册截止</dt><dd>2027-01-29 04:00<br><em>逾期无补报</em></dd></dl>
-  <dl class="fact"><dt>参赛费</dt><dd>$100 / 队<br>不退</dd></dl>
-  <dl class="fact"><dt>队伍</dt><dd>1–3 人，必须同校<br>每人只能进一队</dd></dl>
-  <dl class="fact"><dt>论文上限</dt><dd>25 页封顶<br><em>摘要、目录、参考文献、附录、代码全算</em></dd></dl>
-  <dl class="fact"><dt>正文</dt><dd>英文 PDF<br>字体不小于 12 磅</dd></dl>
-  <dl class="fact"><dt>提交</dt><dd>新在线表单<br>文件名＝队伍控制号，≤20 MB</dd></dl>
-  <dl class="fact"><dt>AI 使用</dt><dd>允许，但须在附录披露模型、用途、校验方式；<em>禁止代写整篇</em></dd></dl>
+<div class="progressbar">
+  <div class="pb-top"><span>验收项完成度</span><span id="pbtxt">0 / 0</span></div>
+  <div class="pb-track"><div class="pb-fill" id="pbfill"></div></div>
 </div>
 
-<h2><span class="num">PART 02</span>六道题，其实是三种能力</h2>
-<p>MCM 的 A（连续型）、B（离散型）、C（数据洞察），ICM 的 D（运筹与网络）、E（可持续）、F（公共政策）。开赛时才公布具体题面，但每道题要的能力是稳定的。</p>
+<div class="note">
+  <b>这份计划按谁的起点写的：</b>大一、编程手、队里已有大三建模手、每周可投入 12–15 小时。建模手与写作手可沿用同一骨架，把技能清单替换成对应角色。<br>
+  <b>优先级定义：</b>P0 不做就直接出局；P1 决定能不能上 M；P2 加分项，时间不够可以砍。
+</div>
+
+<h2><span class="num">OVERVIEW</span>八段工期</h2>
+<div class="map">
+  <div class="map-row"><span class="tag">S1</span><span class="bar" style="width:7%"></span><span class="nm">规则与评分 · 11/23–11/29</span></div>
+  <div class="map-row"><span class="tag">S2</span><span class="bar" style="width:7%"></span><span class="nm">目标与分工 · 11/30–12/06</span></div>
+  <div class="map-row"><span class="tag">S3</span><span class="bar" style="width:7%"></span><span class="nm">工具与资料 · 12/07–12/13</span></div>
+  <div class="map-row"><span class="tag">S4</span><span class="bar hot" style="width:15%"></span><span class="nm">核心技能 · 12/14–12/27</span></div>
+  <div class="map-row"><span class="tag">S5</span><span class="bar hot" style="width:15%"></span><span class="nm">真题训练 · 12/28–01/10</span></div>
+  <div class="map-row"><span class="tag">S6</span><span class="bar" style="width:11%"></span><span class="nm">方案迭代 · 01/11–01/20</span></div>
+  <div class="map-row"><span class="tag">S7</span><span class="bar" style="width:8%"></span><span class="nm">封板演练 · 01/21–01/28</span></div>
+  <div class="map-row"><span class="tag">S8</span><span class="bar" style="width:5%"></span><span class="nm">比赛与复盘 · 01/29–02/02</span></div>
+</div>
+<p class="small">深色两段（S4、S5）占了总时长的一半，这是唯一不能压缩的部分。S1–S3 如果落后，从 P2 里砍，别从 S4 里砍。</p>
+
+<article class="stage">
+  <div class="stage-head">
+    <div class="stage-num">STAGE 01 · P0</div>
+    <h2>读懂规则与评分：谁在读你的论文</h2>
+    <div class="stage-meta"><span class="d">11/23 – 11/29</span><span>7 天</span><span>约 10 小时</span></div>
+  </div>
+  <div class="goal"><b>学习目标：</b>把“奖是怎么评出来的”翻译成具体的写作约束。规则不是用来背的，是用来决定你把时间花在哪的。</div>
+
+  <h3>关键任务</h3>
+  <ol>
+    <li>读 COMAP 当年的 Contest Rules 与 AI 使用政策<b>英文原文</b>，不要读中文二手转述。把与提交有关的硬约束抄成一页纸。</li>
+    <li>确认评审流程：评委拿到论文先看摘要，摘要过不了关的，正文再漂亮也进不了高奖讨论。这意味着摘要值得占用你最后 3 小时。</li>
+    <li>25 页怎么分：正文 15–17 页，图表 4–6 页，参考文献与附录 3–4 页。<b>先定预算再写</b>，不是写完再删。</li>
+    <li>下载 3 篇 O 奖、2 篇 M 奖论文，只读摘要和每节首句，对比结构差异。</li>
+  </ol>
+
+  <h3>要掌握的技能</h3>
+  <ul class="skills">
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">读懂英文原版规则，能指出中文教程与官方的冲突处</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">知道 25 页预算的分配比例与超页后果</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p1">P1</span><span class="txt">能说出 O 奖摘要与 M 奖摘要在“数字证据”上的差别</span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p2">P2</span><span class="txt">了解评委的评分维度权重，反推每节该写多长</span></li>
+  </ul>
+
+  <h3>练习</h3>
+  <p>把 2025 A 题 4 篇 O 奖摘要横向排开，每篇标出三样东西：问题一句话、方法名、最关键的那个数字。你会发现 O 奖摘要里一定有数字，M 奖常常只有形容词。</p>
+
+  <h3>验收标准</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-k="s1a"><span>不看资料能默写 8 条提交硬指标（截止时间、页数、字体、字号、命名、大小、队伍人数、AI 披露位置）</span></label></li>
+    <li><label><input type="checkbox" data-k="s1b"><span>能拿出 3 篇 O 奖摘要，逐一指出其中的数字证据在第几句</span></label></li>
+    <li><label><input type="checkbox" data-k="s1c"><span>写出一份 25 页预算表，每节标好页码上限</span></label></li>
+  </ul>
+</article>
+
+<article class="stage">
+  <div class="stage-head">
+    <div class="stage-num">STAGE 02 · P0</div>
+    <h2>定目标与分工：先说到哪，再说谁干什么</h2>
+    <div class="stage-meta"><span class="d">11/30 – 12/06</span><span>7 天</span><span>约 8 小时</span></div>
+  </div>
+  <div class="goal"><b>学习目标：</b>和学长把三件事钉死：打哪个方向、目标哪个奖、各自交付什么。模糊的分工在第二晚就会变成互相等。</div>
+
+  <h3>关键任务</h3>
+  <ol>
+    <li>开一次 60 分钟会，只谈三件事：题型方向、目标奖项、角色边界。谈完写成一页纸发群里。</li>
+    <li>把角色写成<b>交付物</b>而不是职责。差的分工：“编程手负责写代码”。好的分工：“编程手在第三晚前交付全部图表、参数表和一份能跑通的脚本”。</li>
+    <li>定死文件规范：目录结构、命名规则、谁负责最终合并、每天几点存一次版本。</li>
+    <li>定好“砍功能”的决策人。四天里一定会遇到做不完，需要有一个人能拍板砍哪块。</li>
+  </ol>
+
+  <h3>要掌握的技能</h3>
+  <ul class="skills">
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">用交付物描述自己的活，能给出截止时点</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">估算自己的产出速度（一晚上能做完几个模型）</span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p1">P1</span><span class="txt">能验收队友的产出，指出“这个结果为什么不可信”</span></li>
+  </ul>
+
+  <h3>练习</h3>
+  <p>写一份一页纸分工表，三列：输入、输出、卡点。写完自检——如果第三晚 11 点模型跑不出来，这张表能不能回答“谁来决定砍掉哪部分”。</p>
+
+  <h3>验收标准</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-k="s2a"><span>分工表已发到群里，且三个人都回复确认</span></label></li>
+    <li><label><input type="checkbox" data-k="s2b"><span>能一句话说清“我的输出物是什么、什么时候交、交给谁”</span></label></li>
+    <li><label><input type="checkbox" data-k="s2c"><span>题型方向已定，且知道为什么排除另外两个方向</span></label></li>
+  </ul>
+</article>
+
+<article class="stage">
+  <div class="stage-head">
+    <div class="stage-num">STAGE 03 · P0</div>
+    <h2>工具与资料：一次配好，比赛时不再折腾</h2>
+    <div class="stage-meta"><span class="d">12/07 – 12/13</span><span>7 天</span><span>约 12 小时</span></div>
+  </div>
+  <div class="goal"><b>学习目标：</b>做到断网也能出图出 PDF。比赛那四天，任何一次装库失败都是在烧命。</div>
+
+  <h3>关键任务</h3>
+  <ol>
+    <li>固定 Python 环境（conda 或 venv），<b>锁定版本号并写进 requirements.txt</b>。别在赛前升级。</li>
+    <li>LaTeX 模板跑通：摘要页、目录、假设、符号表、公式、图表、参考文献。编译一次不出错才算数。<span class="small">（Word 模板也行，但公式多时 LaTeX 更省事。）</span></li>
+    <li>建一套 matplotlib 统一样式：字号、字体、配色、dpi、图注位置。写成 rcParams 模板，之后每次出图直接调用。</li>
+    <li>资料只留三份：官方规则、O 奖论文库、方法速查表。<b>其余全部删掉或移出视野。</b></li>
+  </ol>
+
+  <h3>要掌握的技能</h3>
+  <ul class="skills">
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">从零建环境到跑出第一张图，30 分钟内完成</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">LaTeX 编译出带公式、带图、带交叉引用的 PDF</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p1">P1</span><span class="txt">Git 基础：提交、回滚、分支。<span class="lib">git</span></span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p1">P1</span><span class="txt">统一图表样式，全篇字号配色一致<span class="lib">matplotlib rcParams</span></span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p2">P2</span><span class="txt">一键脚本：跑完模型自动生成全部图<span class="lib">make / shell</span></span></li>
+  </ul>
+
+  <h3>练习</h3>
+  <p>把环境删掉重装一遍，掐表。第二次必须比第一次快一半。<b>这一步练的是恢复能力，不是安装速度。</b></p>
+
+  <h3>验收标准</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-k="s3a"><span>断网状态下，能编译出一份 3 页、带公式、带图、带参考文献的 PDF</span></label></li>
+    <li><label><input type="checkbox" data-k="s3b"><span>有一份 rcParams 模板，新图套上后字号配色与旧图完全一致</span></label></li>
+    <li><label><input type="checkbox" data-k="s3c"><span>requirements.txt 已锁定版本，别人拿去能装出同样的环境</span></label></li>
+    <li><label><input type="checkbox" data-k="s3d"><span>文档目录结构定好，三个人都知道文件该放哪</span></label></li>
+  </ul>
+</article>
+
+<article class="stage">
+  <div class="stage-head">
+    <div class="stage-num">STAGE 04 · P0</div>
+    <h2>核心技能：只学用得上的</h2>
+    <div class="stage-meta"><span class="d">12/14 – 12/27</span><span>14 天</span><span>约 30 小时</span></div>
+  </div>
+  <div class="goal"><b>学习目标：</b>不是学完数学课，是建立“看到问题→想到方法→立刻能写出来”的反射。每个方法配不超过 50 行代码，跑通即过。</div>
+
+  <h3>关键任务</h3>
+  <ol>
+    <li>按<b>题目类型</b>挑方法，不按教材章节顺序学。先定方向（A/B/C/D/E/F），只学那个方向高频的。</li>
+    <li>每个方法走一遍：看懂公式 → 手推一遍关键步骤 → 用库实现 → 换一组数据还能跑通。</li>
+    <li>重点练<b>数据清洗</b>。真实赛题的数据永远有缺失值、量纲不一致、异常点，这部分会吃掉你第一晚的全部时间。</li>
+    <li>顺手练<b>灵敏度分析</b>——这是 M 奖和 H 奖最明显的分界线之一，下面单独列。</li>
+  </ol>
+
+  <h3>必备技能（P0，不练就无法交稿）</h3>
+  <ul class="skills">
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">数据清洗：缺失值、异常值、量纲统一、合并<span class="lib">pandas / numpy</span></span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">线性规划 / 整数规划：建目标函数与约束，求解并读解<span class="lib">scipy.optimize / PuLP</span></span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">常微分方程数值解：初值问题、参数扫描<span class="lib">scipy.integrate.solve_ivp</span></span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">回归与拟合：最小二乘、拟合优度、残差诊断<span class="lib">numpy.polyfit / statsmodels</span></span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">出图：折线、散点、热图、误差棒、双坐标轴<span class="lib">matplotlib</span></span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p1">P1</span><span class="txt">灵敏度分析：单参数扰动、多参数组合、判断结论是否翻转</span></li>
+  </ul>
+
+  <h3>进阶技能（P1–P2，按题型选）</h3>
+  <ul class="skills">
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p1">P1</span><span class="txt">图论：最短路、最小生成树、网络流<span class="lib">networkx</span></span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p1">P1</span><span class="txt">蒙特卡洛 / 元胞自动机：随机模拟、规则演化</span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p1">P1</span><span class="txt">机器学习全流程：特征工程、交叉验证、过拟合判断<span class="lib">scikit-learn</span></span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p1">P1</span><span class="txt">时间序列：趋势分解、平稳性、预测区间<span class="lib">statsmodels</span></span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p2">P2</span><span class="txt">启发式算法：遗传、模拟退火、粒子群</span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p2">P2</span><span class="txt">参数反演：由观测数据倒推模型参数<span class="lib">scipy.optimize.least_squares</span></span></li>
+  </ul>
+
+  <div class="alert">
+    <h4>关于“经典模型清单”</h4>
+    <p>层次分析法、灰色关联、TOPSIS、熵值法、模糊综合评价——这套东西在国赛里常见，但在美赛 C 题上直接套，评委一眼就能看出来是模板。它们不是不能用，是<b>不能作为主力方法</b>。要用就用在“辅助决策”的位置，别让整篇论文的骨架靠它们撑。</p>
+  </div>
+
+  <h3>练习</h3>
+  <p>每个必备技能配一道往年题的最小实现，控制在 50 行以内。跑出来后改一个参数，看结果怎么变——这一步比跑通更重要。</p>
+
+  <h3>验收标准</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-k="s4a"><span>6 项必备技能，每项都有一份能跑的代码，总共不超过 300 行</span></label></li>
+    <li><label><input type="checkbox" data-k="s4b"><span>拿到一份脏数据（含缺失、异常、量纲混乱），2 小时内清洗到可建模</span></label></li>
+    <li><label><input type="checkbox" data-k="s4c"><span>给一个陌生问题，20 分钟内能说出：用什么方法、需要哪些数据、结果长什么样</span></label></li>
+    <li><label><input type="checkbox" data-k="s4d"><span>能对一个已有结论做灵敏度分析，并明确回答“结论是否翻转”</span></label></li>
+  </ul>
+</article>
+
+<article class="stage">
+  <div class="stage-head">
+    <div class="stage-num">STAGE 05 · P0</div>
+    <h2>真题训练：做完整题，不是看教程</h2>
+    <div class="stage-meta"><span class="d">12/28 – 01/10</span><span>14 天</span><span>约 40 小时</span></div>
+  </div>
+  <div class="goal"><b>学习目标：</b>把技能放进真实时间里检验。真题的价值不在答案对不对，在于暴露你在第几个小时会卡住、卡在哪。</div>
+
+  <h3>关键任务</h3>
+  <ol>
+    <li><b>第一轮（3 天，压缩版）</b>：选一道近年同方向真题，只做建模 + 出结果 + 写摘要。不写完整论文，重点是走通链路。</li>
+    <li><b>第二轮（4 天，全真）</b>：换一道题，严格按 96 小时节奏，包括凌晨时段。三个人都在场，按分工表执行。</li>
+    <li>每轮结束当天写复盘，只写三件事：卡在哪、为什么卡、下次怎么绕开。<b>不要写感想。</b></li>
+    <li>做完对照 O 奖论文看差距，重点看它的假设是怎么写的、图表是怎么排的。</li>
+  </ol>
+
+  <h3>要掌握的技能</h3>
+  <ul class="skills">
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">四天节奏控制：什么时间必须产出什么，超时就砍</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">摘要写作：问题—方法—结果三段，必须带数字</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p1">P1</span><span class="txt">边做边写：模型还没定稿就开始写假设与符号表</span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p1">P1</span><span class="txt">体力分配：知道自己在第几小时效率崩塌，提前排班</span></li>
+  </ul>
+
+  <h3>练习</h3>
+  <p>优先选近三年、和你方向一致的题。题目类型可以从往年题面里看出来：给数据的偏 C，给物理情境的偏 A，给政策文本的偏 E/F。</p>
+
+  <h3>验收标准</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-k="s5a"><span>完成 1 次压缩版（3 天）并产出一页摘要</span></label></li>
+    <li><label><input type="checkbox" data-k="s5b"><span>完成 1 次全真模拟（4 天），交出完整 PDF</span></label></li>
+    <li><label><input type="checkbox" data-k="s5c"><span>全真那次的摘要里有至少 3 个具体数字</span></label></li>
+    <li><label><input type="checkbox" data-k="s5d"><span>两份复盘文档，每份写清了三个卡点的成因</span></label></li>
+  </ul>
+</article>
+
+<article class="stage">
+  <div class="stage-head">
+    <div class="stage-num">STAGE 06 · P1</div>
+    <h2>方案迭代：让模型经得起追问</h2>
+    <div class="stage-meta"><span class="d">01/11 – 01/20</span><span>10 天</span><span>约 20 小时</span></div>
+  </div>
+  <div class="goal"><b>学习目标：</b>从“能算出结果”升级到“能解释为什么这么算”。这是 H 和 M 之间最实质的差距。</div>
+
+  <h3>关键任务</h3>
+  <ol>
+    <li>回头改模拟赛的模型，加三样东西：<b>一个对比模型</b>（baseline）、<b>一组灵敏度分析</b>、<b>一段误差讨论</b>。</li>
+    <li>练“砍功能”：把 25 页摊开，标出哪三节可以删而不伤主线。四天里一定会用到这个判断。</li>
+    <li>练被质疑：让队友扮演评委，连问三个“为什么”。答不上来的地方，就是你论证链的断点。</li>
+    <li>把假设逐条检查一遍：每一条要么有依据，要么写明“这是简化，影响是……”。<b>不能有第三条。</b></li>
+  </ol>
+
+  <h3>要掌握的技能</h3>
+  <ul class="skills">
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">灵敏度分析：扰动关键参数，说明结论稳健性</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p1">P1</span><span class="txt">模型对比：至少一个更简单的 baseline，说明为什么选复杂的</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p1">P1</span><span class="txt">假设的写法：每条假设标注依据或影响</span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p1">P1</span><span class="txt">误差分析：给出置信区间或误差来源分解</span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p2">P2</span><span class="txt">模型推广：说明方法在什么条件下失效</span></li>
+  </ul>
+
+  <h3>练习</h3>
+  <p>挑你模拟赛里最自信的那个结论，把它的关键参数改动 ±20%，看结论是否还成立。如果不成立，找到翻转的临界点——那个临界点本身就是很好的论文素材。</p>
+
+  <h3>验收标准</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-k="s6a"><span>任一结论都能回答“如果这个参数错了 20%，结论还成立吗”，并给出数字</span></label></li>
+    <li><label><input type="checkbox" data-k="s6b"><span>论文里有明确的 baseline 对比，且说清了取舍理由</span></label></li>
+    <li><label><input type="checkbox" data-k="s6c"><span>每条假设后面都有依据或影响说明，没有孤立假设</span></label></li>
+    <li><label><input type="checkbox" data-k="s6d"><span>能指出论文里哪三节可以删掉而主线不断</span></label></li>
+  </ul>
+</article>
+
+<article class="stage">
+  <div class="stage-head">
+    <div class="stage-num">STAGE 07 · P0</div>
+    <h2>封板与演练：比赛期间不碰任何工具问题</h2>
+    <div class="stage-meta"><span class="d">01/21 – 01/28</span><span>8 天</span><span>约 10 小时</span></div>
+  </div>
+  <div class="goal"><b>学习目标：</b>把一切能在赛前解决的问题解决掉。这八天不学新东西，只做检查和排练。</div>
+
+  <h3>关键任务</h3>
+  <ol>
+    <li>完成注册与付款，advisor 确认收到，<b>拿到队伍控制号</b>。这一步必须在 1/29 04:00 前完成，没有补报。</li>
+    <li>做一次完整提交演练：生成 PDF → 改名为控制号 → 检查大小是否 ≤20 MB → 上传测试。全程计时。</li>
+    <li>定四天作息表与交接班。写清谁在哪几个小时必须清醒。</li>
+    <li>准备降级方案：LaTeX 编译炸了用什么、断网怎么办、电脑坏了用谁的。<b>每一套降级方案都要实际演练一次。</b></li>
+    <li>把 25 页模板留空版准备好，赛时直接填。</li>
+  </ol>
+
+  <h3>要掌握的技能</h3>
+  <ul class="skills">
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">完整走一遍提交链路，包括命名与大小校验</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">PDF 生成与压缩：图片 dpi 与文件大小的平衡</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p1">P1</span><span class="txt">应急恢复：环境崩了 15 分钟内重建</span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p2">P2</span><span class="txt">异地协作：共享文档 + 版本合并不打架</span></li>
+  </ul>
+
+  <h3>练习</h3>
+  <p>拿模拟赛的论文当素材，从零走一遍“生成 PDF 到上传成功”的全流程，掐表。<b>目标 20 分钟内完成。</b>超过 20 分钟，说明某个环节还没自动化。</p>
+
+  <h3>验收标准</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-k="s7a"><span>队伍控制号已拿到，截图存档</span></label></li>
+    <li><label><input type="checkbox" data-k="s7b"><span>提交演练完成，20 分钟内跑完，文件大小合规</span></label></li>
+    <li><label><input type="checkbox" data-k="s7c"><span>四天作息表已定，每个人知道自己哪几小时必须在</span></label></li>
+    <li><label><input type="checkbox" data-k="s7d"><span>至少两套降级方案已实际演练过</span></label></li>
+    <li><label><input type="checkbox" data-k="s7e"><span>25 页空模板就位，赛时只需填空</span></label></li>
+  </ul>
+</article>
+
+<article class="stage">
+  <div class="stage-head">
+    <div class="stage-num">STAGE 08 · 执行与回收</div>
+    <h2>四天比赛 + 赛后复盘</h2>
+    <div class="stage-meta"><span class="d">01/29 – 02/02</span><span>96 小时</span><span>赛后 7 天复盘</span></div>
+  </div>
+  <div class="goal"><b>学习目标：</b>四天里只做执行，不做学习。赛后一周把这次的经验变成可复用的资产，否则下次还是从零开始。</div>
+
+  <h3>四天节奏</h3>
+  <ol>
+    <li><b>第一晚</b>：读题、翻译、列可行性清单，选定一题并写死不再改。当晚必须产出：问题重述、假设清单、方法草图。</li>
+    <li><b>第二晚</b>：模型跑出第一版结果。允许难看，但必须有数字。同时开始写“假设”与“符号说明”——不要等结果出来才写。</li>
+    <li><b>第三晚</b>：模型定稿 + 出全部图表 + 跑灵敏度。这一晚决定论文的下限。</li>
+    <li><b>第四天</b>：只做三件事——写摘要、排版、检查。摘要占 3 小时，不要压缩。</li>
+  </ol>
+
+  <h3>赛后复盘（一周内）</h3>
+  <ul class="skills">
+    <li><span class="tag t-must">必备</span><span class="tag t-p0">P0</span><span class="txt">归档：代码、数据、图、PDF、每日决策记录</span></li>
+    <li><span class="tag t-must">必备</span><span class="tag t-p1">P1</span><span class="txt">复盘文档：卡点、误判、时间浪费在哪</span></li>
+    <li><span class="tag t-adv">进阶</span><span class="tag t-p2">P2</span><span class="txt">把可复用的部分抽成模板：代码片段、图表样式、论文骨架</span></li>
+  </ul>
+
+  <h3>验收标准</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-k="s8a"><span>交稿成功，有提交确认截图</span></label></li>
+    <li><label><input type="checkbox" data-k="s8b"><span>赛后 7 天内写完复盘，写清了三个最大的时间浪费点</span></label></li>
+    <li><label><input type="checkbox" data-k="s8c"><span>代码与论文已归档到一个下次能直接找到的地方</span></label></li>
+    <li><label><input type="checkbox" data-k="s8d"><span>抽出至少 1 个可复用模板（代码片段或论文骨架）</span></label></li>
+  </ul>
+</article>
+
+<h2><span class="num">DISCIPLINE</span>三条纪律</h2>
+<div class="rule"><span class="n">一</span><span class="t"><b>不装新工具。</b>除非某个 P0 技能确实缺工具，否则一切安装都在 S3 结束前完成。比赛期间装库失败，是最没有价值的失败。</span></div>
+<div class="rule"><span class="n">二</span><span class="t"><b>看教程不超过 30 分钟就必须动手。</b>看懂了和写出来是两件事。所有“我大概明白了”的地方，最终都会在赛场上变成卡点。</span></div>
+<div class="rule"><span class="n">三</span><span class="t"><b>每个方法都要有能跑的代码。</b>没有代码的方法等于不会。S4 结束时，你的仓库里应该有 6 份以上能直接跑的小脚本。</span></div>
+
+<h2><span class="num">WEEKLY</span>每周固定动作</h2>
 <ul>
-  <li><strong>A / B</strong>：数学建模硬功夫，微分方程、优化、离散结构。中国队的传统强项，也是竞争最卷的方向。</li>
-  <li><strong>C</strong>：数据 + 机器学习 + 洞察。近年最贴近真实工作的题，但套国赛那套评价方法会被一眼看穿。</li>
-  <li><strong>D / E / F</strong>：需要读懂政策与系统，写作比计算更吃重，适合英文表达强的队伍。</li>
+  <li><b>周日晚 30 分钟</b>：勾掉本周完成的验收项，看剩下几天够不够补。不够就砍 P2。</li>
+  <li><b>每周一次 15 分钟队内同步</b>：只说三件事——做完了什么、卡在哪、下周要什么。</li>
+  <li><b>每周至少 1 道小题</b>：不用完整论文，20 分钟内把“这题该用什么方法”写出来就行。</li>
 </ul>
 
-<h2><span class="num">PART 03</span>奖项比例：分水岭在 M</h2>
-<div class="awards">
-  <div class="aw"><span class="lb">O</span><span class="bar" style="width:6px"></span><span class="pc">&lt;1%　特等奖</span></div>
-  <div class="aw"><span class="lb">F</span><span class="bar" style="width:8px"></span><span class="pc">≈1%　提名奖</span></div>
-  <div class="aw"><span class="lb">M</span><span class="bar" style="width:42px"></span><span class="pc">≈7%　一等奖</span></div>
-  <div class="aw"><span class="lb">H</span><span class="bar gray" style="width:120px"></span><span class="pc">≈22%　二等奖</span></div>
-  <div class="aw"><span class="lb">S</span><span class="bar gray" style="width:300px"></span><span class="pc">≈68%　成功参赛</span></div>
+<div class="note">
+  <b>如果时间只剩一半怎么办：</b>砍 S1 到 3 天、S2 到 2 天、S3 压缩到 4 天，S4 只保留「数据清洗 + 规划求解 + 出图」三项，S5 变成一次全真模拟，S6 合并进 S5 的复盘。S7 一天都不能少——注册和提交演练出问题，前面的准备全部作废。
 </div>
-<p class="small">数据为 2026 年实际比例。H 是及格线，S 等于“我参加了”——真正值得写进简历的是 M 及以上。</p>
-
-<h2><span class="num">PART 04</span>时间线</h2>
-<div class="tl">
-  <div class="tl-item"><b>现在 → 2026 年底</b><span>组队、分工、方法库建设。按四天赛程反推，这段时间应该已经在做真题而不是看教程。</span></div>
-  <div class="tl-item"><b>2026-12 → 2027-01</b><span>完整模拟赛至少两轮，严格按四天节奏走，包括凌晨时段的体力分配。</span></div>
-  <div class="tl-item"><b>2027-01-29 04:00</b><span>注册截止。顾问必须由本人注册账号、填信息、完成付款。</span></div>
-  <div class="tl-item"><b>2027-01-29 06:00</b><span>开赛，题面公布。</span></div>
-  <div class="tl-item"><b>2027-02-02 10:00</b><span>交稿截止。留足上传时间，20 MB 限制要在最后一晚之前确认。</span></div>
-  <div class="tl-item"><b>2027-05-08 前</b><span>出成绩。</span></div>
-</div>
-
-<h2><span class="num">PART 05</span>五份流传资料，逐条核查过</h2>
-<p>网上能搜到的备赛资料，绝大多数已经过时。我把五份逐个打开读过，结论是：<strong>没有一份是针对 2027 赛季的</strong>。</p>
-
-<div class="alert">
-  <h4>其中有一条是错的，照做会出事</h4>
-  <p>某份流传的备赛表格在备注里写：「指导老师信息一栏为必填，如果没有指导老师，写一个团队以外的任何名字也是可以的」。<strong>这是错的。</strong>美赛的 advisor 必须真实存在，要由本人注册账号、填写信息、完成付款、赛前确认队伍。写一个假名字，这笔钱谁付？队伍谁来确认？实操上走不通，还带资格风险。</p>
-</div>
-
-<h3>另外三处时效问题</h3>
-<ul>
-  <li><strong>起算点错了</strong>：那份表按“赛前 3–4 个月”倒推，对应 2026 年 9–10 月组队。现在是 11 月底，按那张表已经处在“分工学习”中后段。</li>
-  <li><strong>方法库偏旧</strong>：清单集中在层次分析法、灰色关联、TOPSIS、熵值法、模糊综合评价——这些是国赛老套路，C 题近年基本是数据 + 机器学习，套这些容易被评委看出来。</li>
-  <li><strong>三样新规则没提</strong>：25 页总页数上限、AI 使用披露要求、2027 的新在线提交流程。</li>
-</ul>
-
-<p>还有一份百度网盘资源叫「数学竞赛」，名字骗人，点进去根本不是数模资料。唯一有复用价值的是那份备赛时间线的<strong>框架</strong>，但具体数字要按 2027 重算。</p>
-
-<h2><span class="num">PART 06</span>工作区里有什么</h2>
-<ul>
-  <li><strong>01_论文库</strong>：2025 年 MCM A 题 O 奖论文原文，加一份全文中文翻译、校勘与评析，附导读速查（方法链、六个关键数字、可复用公式）。</li>
-  <li><strong>02_赛题</strong>：历年题面与数据包。</li>
-  <li><strong>03_备赛</strong>：周计划、模拟记录、组队与分工。</li>
-  <li><strong>04_笔记</strong>：方法库、工具踩坑、优秀论文拆解。</li>
-</ul>
-<p>读 O 奖论文的正确方式不是“看懂结论”，而是还原它的方法链：它先做了什么、为什么放弃另一条路、哪个数字撑起了整篇论证。</p>
 
 <footer>
-  <span>MCM / ICM 2027</span>
+  <span>MCM / ICM 2027 · 67 天执行计划</span>
   <a href="../">返回首页</a>
 </footer>
 
 </div>
 
 <script>
-// 开赛倒计时。目标时间写死带时区，避免访客本地时区干扰
 (function(){
   var target = new Date('2027-01-29T06:00:00+08:00').getTime();
   var el = document.getElementById('days');
-  if (!el) return;
   function tick(){
     var diff = target - Date.now();
-    if (diff <= 0){ el.textContent = '0'; return; }
-    el.textContent = Math.ceil(diff / 86400000);
+    if (!el) return;
+    el.textContent = diff <= 0 ? '0' : Math.ceil(diff / 86400000);
   }
-  tick();
-  setInterval(tick, 3600000);
+  tick(); setInterval(tick, 3600000);
+})();
+
+(function(){
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input'));
+  var fill = document.getElementById('pbfill');
+  var txt = document.getElementById('pbtxt');
+  var KEY = 'mcm2027-progress';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ saved = {}; }
+
+  boxes.forEach(function(b){
+    if (saved[b.dataset.k]) b.checked = true;
+    b.addEventListener('change', function(){
+      saved[b.dataset.k] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch(e){}
+      render();
+    });
+  });
+
+  function render(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    var all = boxes.length;
+    txt.textContent = done + ' / ' + all;
+    fill.style.width = (all ? (done / all * 100) : 0) + '%';
+  }
+  render();
 })();
 </script>
 </body>
