@@ -105,6 +105,9 @@ body{
 .ch.open .ch-h svg{transform:rotate(90deg)}
 .ch-s{display:none;padding:2px 0 8px 0}
 .ch.open .ch-s{display:block}
+.ch-div{margin:16px 4px 6px;padding-top:14px;border-top:1px solid var(--line);display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+.ch-div b{font-size:11px;letter-spacing:.12em;color:var(--accent);font-weight:600}
+.ch-div i{font-style:normal;font-size:10px;color:var(--muted);letter-spacing:.02em}
 .sec{
   display:flex;align-items:flex-start;gap:8px;padding:6px 10px 6px 32px;border-radius:6px;
   cursor:pointer;font-size:13px;color:var(--ink2);line-height:1.5;transition:background .15s,color .15s;
@@ -566,7 +569,7 @@ svg.wsvg{display:block;width:100%;height:auto;overflow:visible}
     </div>
     <div class="navbtn" id="quizBtn">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M5.2 6.2l1.3 1.3 2.4-2.4"/><path d="M5.2 10.6h5.4"/></svg>
-      <div><b>自测卷</b><span>8 套章测 + 2 套模拟</span></div>
+      <div><b>自测卷</b><span>13 套章测 + 2 套模拟</span></div>
       <span class="bdg" id="qzBadge">0</span>
     </div>
     <div class="navbtn" id="flawBtn">
@@ -646,6 +649,7 @@ function buildTree(){
   var box = document.getElementById('tree'), out = '';
   var nums = Object.keys(CH).map(Number).sort(function(a,b){return a-b;});
   nums.forEach(function(n){
+    if(n === 9) out += '<div class="ch-div"><b>全本补遗</b><i>本科教学版没收的 5 章</i></div>';
     var c = CH[n];
     var done = c.sections.filter(function(s){return ST.sec[s.id]===2;}).length;
     var cur = ST.cur && String(ST.cur).split('.')[0] == n;
@@ -771,7 +775,7 @@ function go(sid, push){
 
   if(secIdx === 0){
     html += '<div class="ch-head">'+
-      '<div class="ch-kicker">第 '+o.c+' 章 · Chapter '+o.c+'</div>'+
+      '<div class="ch-kicker">第 '+o.c+' 章 · Chapter '+o.c+(c.origin?'　全本原第 '+c.origin+' 章':'')+'</div>'+
       '<h1>'+c.title+(c.en?'<em> · '+c.en+'</em>':'')+'</h1>'+
       '<div class="ch-desc">'+c.intro+'</div></div>';
   }
@@ -825,7 +829,7 @@ function goSum(anchor){
   var html = '<div class="ch-head">'+
     '<div class="ch-kicker">速查手册 · Formula Sheet</div>'+
     '<h1>知识点与公式<em>汇总</em></h1>'+
-    '<div class="ch-desc">把八章的定义、定理、公式压到一页里。考前翻一遍，比重新读正文快得多；也可以直接打印成两张 A4 贴在桌前。'+
+    '<div class="ch-desc">把十三章的定义、定理、公式压到一处。考前翻一遍，比重新读正文快得多；也可以直接打印成几张 A4 贴在桌前。'+
     '标 <b>★</b> 的是最高频、最容易记混的部分——优先看这几块。</div></div>'+
     pills;
 
@@ -892,7 +896,7 @@ function goQuizList(){
   var html = '<div class="ch-head">'+
     '<div class="ch-kicker">期末复习 · Final Review</div>'+
     '<h1>自测<em>卷</em></h1>'+
-    '<div class="ch-desc">八套章测打底，两套模拟卷收口。全部自动判分，交卷后逐题给解析；做错的自动进错题本，考前只刷那几十道就够。</div></div>';
+    '<div class="ch-desc">每章一套章测打底，两套模拟卷收口，共 102 题。全部自动判分，交卷后逐题给解析；做错的自动进错题本，考前只刷那几十道就够。</div></div>';
   html += '<div class="qz-grid">';
   QUIZ.forEach(function(p){
     var r = rec[p.id];
@@ -3194,6 +3198,687 @@ W['logiccalc'] = {
   }
 };
 
+/* ===== w5.js ===== */
+/* ============ 第三批交互组件：算法 / 数论 / 归纳 / 概率 / 自动机 ============ */
+
+document.head.insertAdjacentHTML('beforeend',
+'<style>'+
+/* 通用 */
+'.gn-wrap{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}'+
+'.gn-num{font-family:var(--mono);font-size:13px}'+
+'.gn-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}'+
+'.gn-legend span{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ink2)}'+
+'.gn-legend i{width:16px;height:3px;border-radius:2px;display:block}'+
+/* 二分 */
+'.bs-row{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 12px}'+
+'.bs-cell{width:34px;height:34px;border:1px solid var(--line);border-radius:5px;display:grid;place-items:center;'+
+'font-family:var(--mono);font-size:11.5px;background:var(--surface-2);color:var(--ink2);transition:.15s}'+
+'.bs-cell.out{opacity:.28;text-decoration:line-through}'+
+'.bs-cell.mid{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700;transform:translateY(-2px)}'+
+'.bs-cell.hit{border-color:var(--teal);background:var(--teal-soft);color:var(--teal);font-weight:700}'+
+/* 欧几里得 */
+'.eu-tbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px;margin-top:8px}'+
+'.eu-tbl td,.eu-tbl th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}'+
+'.eu-tbl th{font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.05em}'+
+'.eu-tbl tr.last td{background:var(--teal-soft);color:var(--teal);font-weight:600}'+
+'.eu-in{width:92px;padding:7px 10px;border:1px solid var(--line2);border-radius:7px;background:var(--surface);'+
+'color:var(--ink);font-family:var(--mono);font-size:13px;outline:none}'+
+'.eu-in:focus{border-color:var(--accent)}'+
+/* RSA */
+'.rsa-k{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}'+
+'.rsa-box{border:1px solid var(--line2);border-radius:8px;padding:10px 12px;background:var(--surface-2)}'+
+'.rsa-box .lb{font-size:10.5px;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:4px}'+
+'.rsa-box .v{font-family:var(--mono);font-size:14px;color:var(--ink);word-break:break-all}'+
+'.rsa-box.pub{border-color:var(--accent);background:var(--accent-soft)}'+
+'.rsa-box.priv{border-color:var(--teal);background:var(--teal-soft)}'+
+'.rsa-step{font-family:var(--mono);font-size:12px;color:var(--ink2);line-height:2}'+
+'.rsa-step b{color:var(--accent);font-weight:600}'+
+/* 递归树 */
+'.rc-stat{display:flex;gap:22px;flex-wrap:wrap;margin-top:8px}'+
+'.rc-stat div{font-size:11.5px;color:var(--muted)}'+
+'.rc-stat b{display:block;font-family:var(--mono);font-size:19px;color:var(--ink);font-weight:500;margin-top:2px}'+
+/* 贝叶斯 */
+'.by-lab{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:2px}'+
+'.by-range{width:100%;accent-color:var(--accent);margin:0 0 10px}'+
+'.by-dots{display:grid;grid-template-columns:repeat(40,1fr);gap:2px;margin:8px 0}'+
+'.by-dots i{aspect-ratio:1;border-radius:1.5px;background:var(--line)}'+
+'.by-dots i.tp{background:var(--accent)}'+
+'.by-dots i.fp{background:var(--amber)}'+
+'.by-big{font-family:var(--mono);font-size:30px;color:var(--accent);line-height:1.1}'+
+/* DFA */
+'.dfa-str{width:150px;padding:7px 10px;border:1px solid var(--line2);border-radius:7px;background:var(--surface);'+
+'color:var(--ink);font-family:var(--mono);font-size:14px;letter-spacing:.16em;outline:none}'+
+'.dfa-str:focus{border-color:var(--accent)}'+
+'.dfa-tape{display:flex;gap:3px;margin:8px 0 0;flex-wrap:wrap}'+
+'.dfa-tape span{min-width:24px;height:26px;border:1px solid var(--line);border-radius:4px;display:grid;place-items:center;'+
+'font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--surface-2)}'+
+'.dfa-tape span.done{color:var(--ink2)}'+
+'.dfa-tape span.at{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}'+
+'.dfa-verdict{font-size:13px;margin-top:8px;min-height:20px}'+
+'</style>');
+
+/* ---------- 小工具 ---------- */
+function gwSup(n){
+  var m = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+  return String(n).split('').map(function(c){return m[c]||c;}).join('');
+}
+function gwNum(x){
+  if(!isFinite(x)) return '∞';
+  if(x < 1000) return (Math.abs(x-Math.round(x))<1e-9) ? String(Math.round(x)) : x.toFixed(1);
+  if(x < 1e6) return Math.round(x).toLocaleString('en-US');
+  var e = Math.floor(Math.log10(x));
+  return (x/Math.pow(10,e)).toFixed(1)+'×10'+gwSup(e);
+}
+function gwDur(steps){
+  var s = steps/1e9;
+  if(s < 1e-6) return '不到 1 微秒';
+  if(s < 1e-3) return (s*1e6).toFixed(0)+' 微秒';
+  if(s < 1) return (s*1000).toFixed(0)+' 毫秒';
+  if(s < 60) return s.toFixed(1)+' 秒';
+  if(s < 3600) return (s/60).toFixed(1)+' 分钟';
+  if(s < 86400) return (s/3600).toFixed(1)+' 小时';
+  if(s < 86400*365) return (s/86400).toFixed(0)+' 天';
+  var y = s/(86400*365);
+  if(y < 1e4) return y.toFixed(0)+' 年';
+  if(y < 1e8) return (y/1e4).toFixed(0)+' 万年';
+  return (y/1e8).toFixed(1)+' 亿年';
+}
+
+/* ================= 1. 增长曲线 ================= */
+W['growth'] = {
+  html: function(){
+    return '<div class="w-h"><span class="sq"></span>增长曲线<em>拖动 n，看谁先撑爆</em></div>'+
+      '<div class="w-b">'+
+      '<div class="w-ctl"><span class="kv">n = <b id="grN" style="font-family:var(--mono);color:var(--accent)">16</b></span>'+
+      '<input type="range" min="1" max="64" value="16" id="grR" style="flex:1;min-width:160px;accent-color:var(--accent)"></div>'+
+      '<div class="gn-wrap" style="margin-top:10px">'+
+      '<div style="flex:1 1 300px;min-width:280px"><svg id="grSvg" viewBox="0 0 560 240" style="width:100%;height:auto"></svg>'+
+      '<div class="gn-legend" id="grLg"></div></div>'+
+      '<div style="flex:0 1 250px;min-width:230px"><table class="eu-tbl" id="grTbl"></table></div>'+
+      '</div></div>'+
+      '<div class="w-cap">纵轴是对数刻度——否则 2ⁿ 会把其他四条压成贴地的直线。对数坐标下曲线仍然向上翘，说明它的增长比任何多项式都快。</div>';
+  },
+  mount: function(el){
+    var R = el.querySelector('#grR'), N = el.querySelector('#grN'),
+        S = el.querySelector('#grSvg'), T = el.querySelector('#grTbl'), L = el.querySelector('#grLg');
+    var FS = [
+      {k:'log<sub>2</sub>n', c:'var(--muted)', f:function(n){return Math.max(1,Math.log(n)/Math.LN2);}},
+      {k:'n', c:'#6E8FB0', f:function(n){return n;}},
+      {k:'n log<sub>2</sub>n', c:'#7FA86A', f:function(n){return n*Math.max(1,Math.log(n)/Math.LN2);}},
+      {k:'n²', c:'var(--amber)', f:function(n){return n*n;}},
+      {k:'2ⁿ', c:'var(--accent)', f:function(n){return Math.pow(2,n);}}
+    ];
+    var W = 560, H = 240, PL = 42, PB = 26, PT = 10, PR = 8;
+    var MAXX = 64, MAXY = 1e19;
+    function px(n){ return PL + (n-1)/(MAXX-1)*(W-PL-PR); }
+    function py(v){ return H-PB - Math.log10(Math.max(1,v))/Math.log10(MAXY)*(H-PB-PT); }
+
+    function draw(){
+      var n = +R.value;
+      N.textContent = n;
+      var out = '';
+      // 网格
+      for(var d=0; d<=18; d+=6){
+        var y = py(Math.pow(10,d));
+        out += '<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" stroke="var(--line)" stroke-width="1"/>';
+        out += '<text x="'+(PL-6)+'" y="'+(y+3.5)+'" text-anchor="end" font-size="9" fill="var(--muted)" font-family="var(--mono)">10'+gwSup(d)+'</text>';
+      }
+      [1,16,32,48,64].forEach(function(t){
+        var x = px(t);
+        out += '<line x1="'+x+'" y1="'+(H-PB)+'" x2="'+x+'" y2="'+(H-PB+4)+'" stroke="var(--line2)"/>';
+        out += '<text x="'+x+'" y="'+(H-PB+16)+'" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="var(--mono)">'+t+'</text>';
+      });
+      // 曲线
+      FS.forEach(function(f){
+        var d = '';
+        for(var i=1;i<=64;i++){
+          var v = f.f(i);
+          d += (i===1?'M':'L') + px(i).toFixed(1) + ' ' + py(v).toFixed(1) + ' ';
+        }
+        out += '<path d="'+d+'" fill="none" stroke="'+f.c+'" stroke-width="1.8" stroke-linejoin="round" opacity=".9"/>';
+      });
+      // 当前 n
+      out += '<line x1="'+px(n)+'" y1="'+PT+'" x2="'+px(n)+'" y2="'+(H-PB)+'" stroke="var(--ink)" stroke-width="1" stroke-dasharray="3 3" opacity=".45"/>';
+      FS.forEach(function(f){
+        out += '<circle cx="'+px(n)+'" cy="'+py(f.f(n)).toFixed(1)+'" r="3" fill="'+f.c+'"/>';
+      });
+      S.innerHTML = out;
+
+      var lg = '';
+      FS.forEach(function(f){ lg += '<span><i style="background:'+f.c+'"></i>'+f.k+'</span>'; });
+      L.innerHTML = lg;
+
+      var rows = '';
+      FS.forEach(function(f){
+        var v = f.f(n);
+        rows += '<tr><td style="color:var(--muted)">'+f.k+'</td><td style="text-align:right">'+gwNum(v)+'</td>'+
+          '<td style="text-align:right;color:var(--muted);font-size:11px">'+gwDur(v)+'</td></tr>';
+      });
+      T.innerHTML = '<thead><tr><th>函数</th><th style="text-align:right">n='+n+'</th><th style="text-align:right">每秒十亿次</th></tr></thead><tbody>'+rows+'</tbody>';
+    }
+    R.addEventListener('input', draw);
+    draw();
+  }
+};
+
+/* ================= 2. 二分查找 ================= */
+W['bsearch'] = {
+  html: function(){
+    return '<div class="w-h"><span class="sq"></span>二分查找<em>每一步砍掉一半</em></div>'+
+      '<div class="w-b">'+
+      '<div class="w-ctl"><span class="kv">目标 <b id="bsT" style="font-family:var(--mono);color:var(--accent)">—</b></span>'+
+      '<span style="flex:1"></span>'+
+      '<button class="w-btn" id="bsStep">下一步</button>'+
+      '<button class="w-btn" id="bsNew">换一个目标</button></div>'+
+      '<div class="bs-row" id="bsRow"></div>'+
+      '<div style="display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px">'+
+      '<span>已比较 <b id="bsC" style="font-family:var(--mono);color:var(--accent)">0</b> 次</span>'+
+      '<span style="color:var(--muted)">线性查找预计要 <b id="bsL" style="font-family:var(--mono)">—</b> 次</span>'+
+      '<span id="bsMsg" style="color:var(--teal)"></span></div></div>'+
+      '<div class="w-cap">二分查找的前提是<b>表已排序</b>。没有这个前提，只能线性扫。这也是「先排序再查」只在查询次数很多时才划算的原因。</div>';
+  },
+  mount: function(el){
+    var A = [], lo=0, hi=0, mid=-1, target=0, cnt=0, done=false;
+    var row = el.querySelector('#bsRow'), msg = el.querySelector('#bsMsg');
+    function init(){
+      A = [];
+      var v = 2;
+      for(var i=0;i<31;i++){ v += 1 + Math.floor(Math.random()*4); A.push(v); }
+      target = A[Math.floor(Math.random()*A.length)];
+      lo = 0; hi = A.length-1; mid = -1; cnt = 0; done = false;
+      el.querySelector('#bsT').textContent = target;
+      el.querySelector('#bsL').textContent = A.length;
+      msg.textContent = '';
+      el.querySelector('#bsC').textContent = '0';
+      render();
+    }
+    function render(){
+      var out = '';
+      A.forEach(function(v,i){
+        var cls = 'bs-cell';
+        if(!done && (i<lo||i>hi)) cls += ' out';
+        if(i===mid && !done) cls += ' mid';
+        if(done && v===target) cls += ' hit';
+        out += '<span class="'+cls+'">'+v+'</span>';
+      });
+      row.innerHTML = out;
+    }
+    function step(){
+      if(done) return;
+      if(lo>hi){ done = true; msg.textContent = '没找到'; render(); return; }
+      mid = Math.floor((lo+hi)/2);
+      cnt++;
+      el.querySelector('#bsC').textContent = cnt;
+      if(A[mid]===target){
+        done = true;
+        msg.textContent = '命中，共 '+cnt+' 次比较';
+        render(); return;
+      }
+      if(A[mid] < target){ lo = mid+1; } else { hi = mid-1; }
+      render();
+    }
+    el.querySelector('#bsStep').addEventListener('click', step);
+    el.querySelector('#bsNew').addEventListener('click', init);
+    init();
+  }
+};
+
+/* ================= 3. 欧几里得算法 ================= */
+W['euclid'] = {
+  html: function(){
+    return '<div class="w-h"><span class="sq"></span>欧几里得算法<em>两千年前的最优解</em></div>'+
+      '<div class="w-b">'+
+      '<div class="w-ctl"><span class="kv">a</span><input class="eu-in" id="euA" value="662">'+
+      '<span class="kv">b</span><input class="eu-in" id="euB" value="414">'+
+      '<button class="w-btn" id="euGo">计算</button><span style="flex:1"></span>'+
+      '<span class="kv" id="euRes" style="color:var(--teal);font-family:var(--mono)"></span></div>'+
+      '<div id="euOut"></div></div>'+
+      '<div class="w-cap">每一步都把 (a, b) 换成 (b, a mod b)。余数严格递减，所以一定停；而规模每两步至少减半，所以步数是 O(log min(a,b))。</div>';
+  },
+  mount: function(el){
+    var A = el.querySelector('#euA'), B = el.querySelector('#euB'),
+        O = el.querySelector('#euOut'), R = el.querySelector('#euRes');
+    function run(){
+      var a = Math.abs(parseInt(A.value,10)), b = Math.abs(parseInt(B.value,10));
+      if(!a || !b || a>1e12 || b>1e12){ O.innerHTML = '<div class="warn" style="margin-top:8px">请输入两个正整数（不超过 10<sup>12</sup>）。</div>'; return; }
+      var x=a, y=b, rows=[], guard=0;
+      while(y!==0 && guard++<200){
+        var q = Math.floor(x/y), r = x - q*y;
+        rows.push({x:x, y:y, q:q, r:r});
+        x = y; y = r;
+      }
+      var g = x;
+      var html = '<table class="eu-tbl"><thead><tr><th>步骤</th><th>等式</th><th>余数</th></tr></thead><tbody>';
+      rows.forEach(function(s,i){
+        html += '<tr'+(s.r===0?' class="last"':'')+'><td>'+(i+1)+'</td><td>'+s.x+' = '+s.q+' × '+s.y+' + '+s.r+'</td><td>'+s.r+'</td></tr>';
+      });
+      html += '</tbody></table>';
+      // 扩展：求 s,t
+      var old_r=a, r=b, old_s=1, s=0, old_t=0, t=1;
+      while(r!==0){
+        var qq = Math.floor(old_r/r);
+        var tr = old_r - qq*r; old_r = r; r = tr;
+        var ts = old_s - qq*s; old_s = s; s = ts;
+        var tt = old_t - qq*t; old_t = t; t = tt;
+      }
+      html += '<div class="rsa-step" style="margin-top:10px">贝祖系数：<b>'+old_s+'</b> × '+a+' + <b>'+old_t+'</b> × '+b+' = <b>'+old_r+'</b>'+
+        '<br><span style="color:var(--muted)">由 sa + tb = gcd 可知，当 gcd=1 时 s 就是 a 在模 b 下的逆元。</span></div>';
+      O.innerHTML = html;
+      R.textContent = 'gcd = '+g;
+    }
+    el.querySelector('#euGo').addEventListener('click', run);
+    run();
+  }
+};
+
+/* ================= 4. RSA 演示器 ================= */
+W['rsa'] = {
+  html: function(){
+    return '<div class="w-h"><span class="sq"></span>RSA 演示器<em>选两个素数，亲手加一次密</em></div>'+
+      '<div class="w-b">'+
+      '<div class="w-ctl"><span class="kv">p</span><input class="eu-in" id="rsP" value="5" style="width:64px">'+
+      '<span class="kv">q</span><input class="eu-in" id="rsQ" value="11" style="width:64px">'+
+      '<span class="kv">e</span><input class="eu-in" id="rsE" value="3" style="width:64px">'+
+      '<span class="kv">明文 M</span><input class="eu-in" id="rsM" value="8" style="width:64px">'+
+      '<button class="w-btn" id="rsGo">加密</button></div>'+
+      '<div id="rsOut"></div></div>'+
+      '<div class="w-cap">这里的数很小，是为了能手算验证。真实 RSA 的 n 是 2048 位以上，私钥 d 无法通过试除求得——那正是安全性所在。</div>';
+  },
+  mount: function(el){
+    var P = el.querySelector('#rsP'), Q = el.querySelector('#rsQ'), E = el.querySelector('#rsE'),
+        M = el.querySelector('#rsM'), O = el.querySelector('#rsOut');
+    function isPrime(n){
+      if(n<2) return false;
+      for(var i=2;i*i<=n;i++) if(n%i===0) return false;
+      return true;
+    }
+    function gcd(a,b){ while(b){ var t=a%b; a=b; b=t; } return a; }
+    function modpow(b,e,m){
+      var r=1n, bb=BigInt(b)%BigInt(m), ee=BigInt(e);
+      while(ee>0n){ if(ee&1n) r=(r*bb)%BigInt(m); bb=(bb*bb)%BigInt(m); ee>>=1n; }
+      return Number(r);
+    }
+    function run(){
+      var p=+P.value, q=+Q.value, e=+E.value, m=+M.value;
+      var bad = [];
+      if(!isPrime(p)) bad.push('p 必须是素数');
+      if(!isPrime(q)) bad.push('q 必须是素数');
+      if(p===q) bad.push('p 与 q 不能相同');
+      var n=p*q, phi=(p-1)*(q-1);
+      if(!isPrime(p)||!isPrime(q)){ O.innerHTML='<div class="warn" style="margin-top:8px">'+bad.join('；')+'</div>'; return; }
+      if(p===q){ O.innerHTML='<div class="warn" style="margin-top:8px">'+bad.join('；')+'</div>'; return; }
+      if(gcd(e,phi)!==1){ O.innerHTML='<div class="warn" style="margin-top:8px">e 必须与 φ(n)='+phi+' 互素。</div>'; return; }
+      if(m<0||m>=n){ O.innerHTML='<div class="warn" style="margin-top:8px">明文 M 必须是 0 到 '+(n-1)+' 之间的整数（要小于 n）。</div>'; return; }
+      // 求 d
+      var d=1; while((e*d)%phi!==1 && d<phi*2) d++;
+      var C = modpow(m,e,n), Back = modpow(C,d,n);
+      var html = '<div class="rsa-k">'+
+        '<div class="rsa-box pub"><span class="lb">公钥（公开）</span><span class="v">n = '+n+'，e = '+e+'</span></div>'+
+        '<div class="rsa-box priv"><span class="lb">私钥（保密）</span><span class="v">n = '+n+'，d = '+d+'</span></div></div>'+
+        '<div class="rsa-step">'+
+        '① n = p·q = <b>'+n+'</b>　　φ(n) = (p−1)(q−1) = <b>'+phi+'</b><br>'+
+        '② 解 e·d ≡ 1 (mod φ)：'+e+'×'+d+' = '+(e*d)+' = '+Math.floor(e*d/phi)+'×'+phi+'+1<br>'+
+        '③ 加密 C = M<sup>e</sup> mod n = '+m+'<sup>'+e+'</sup> mod '+n+' = <b>'+C+'</b><br>'+
+        '④ 解密 M = C<sup>d</sup> mod n = '+C+'<sup>'+d+'</sup> mod '+n+' = <b>'+Back+'</b>'+
+        (Back===m?'　<span style="color:var(--teal)">✓ 还原成功</span>':'　<span style="color:var(--accent)">✗ 未还原</span>')+
+        '</div>';
+      O.innerHTML = html;
+    }
+    el.querySelector('#rsGo').addEventListener('click', run);
+    run();
+  }
+};
+
+/* ================= 5. 递归调用树 ================= */
+W['recur'] = {
+  html: function(){
+    return '<div class="w-h"><span class="sq"></span>递归调用树<em>同一件事被算了几遍</em></div>'+
+      '<div class="w-b">'+
+      '<div class="w-ctl"><span class="kv">求 f(n)，n =</span>'+
+      '<span class="chip" data-rn="5">5</span><span class="chip on" data-rn="6">6</span><span class="chip" data-rn="7">7</span>'+
+      '<span style="flex:1"></span><span class="kv" style="color:var(--muted)">同色 = 同一个子问题</span></div>'+
+      '<div id="rcSvg" style="margin-top:6px"></div>'+
+      '<div class="rc-stat" id="rcStat"></div></div>'+
+      '<div class="w-cap">每个结点都是一次函数调用。f(3) 在整棵树里出现多次，每次都从头算——这就是朴素递归慢的原因。把算过的结果存起来（记忆化），调用次数会从指数级掉到线性。</div>';
+  },
+  mount: function(el){
+    var n = 6;
+    function buildTree(k, depth){
+      var node = {k:k, d:depth, kids:[], x:0, y:26+depth*46};
+      if(k<=2){
+        buildTree.leafX = (buildTree.leafX||0) + 46;
+        node.x = buildTree.leafX;
+      } else {
+        var a = buildTree(k-1, depth+1);
+        var b = buildTree(k-2, depth+1);
+        node.kids = [a,b];
+        node.x = (a.x+b.x)/2;
+      }
+      return node;
+    }
+    function flatten(node, arr){
+      arr.push(node);
+      node.kids.forEach(function(c){ flatten(c, arr); });
+      return arr;
+    }
+    function render(){
+      buildTree.leafX = 0;
+      var root = buildTree(n, 0);
+      var all = flatten(root, []);
+      var count = {}, maxc = 0, hot = 0;
+      all.forEach(function(o){ count[o.k] = (count[o.k]||0)+1; });
+      Object.keys(count).forEach(function(k){ if(count[k]>maxc){ maxc=count[k]; hot=+k; } });
+
+      var W = 640, H = 46 + (n-1)*46 + 34;
+      var out = '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto">';
+      all.forEach(function(o){
+        o.kids.forEach(function(c){
+          var active = (o.k===hot && c.k===hot);
+          out += '<line x1="'+o.x+'" y1="'+o.y+'" x2="'+c.x+'" y2="'+c.y+'" stroke="'+(active?'var(--accent)':'var(--line2)')+'" stroke-width="'+(active?1.6:1)+'" opacity="'+(active?.85:.6)+'"/>';
+        });
+      });
+      all.forEach(function(o){
+        var isHot = (o.k===hot);
+        var fill = isHot ? 'var(--accent-soft)' : 'var(--surface-2)';
+        var stroke = isHot ? 'var(--accent)' : 'var(--line2)';
+        var col = isHot ? 'var(--accent)' : 'var(--ink2)';
+        out += '<circle cx="'+o.x+'" cy="'+o.y+'" r="15" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.2"/>';
+        out += '<text x="'+o.x+'" y="'+(o.y+4)+'" text-anchor="middle" font-size="11" font-family="var(--mono)" fill="'+col+'">'+o.k+'</text>';
+      });
+      out += '</svg>';
+
+      el.querySelector('#rcSvg').innerHTML = out;
+      el.querySelector('#rcStat').innerHTML =
+        '<div>总调用次数<b>'+all.length+'</b></div>'+
+        '<div>不同子问题<b>'+(n-1)+'</b></div>'+
+        '<div>f('+hot+') 被算了<b>'+maxc+' 次</b></div>'+
+        '<div>记忆化后<b>'+(n-1)+' 次</b></div>';
+    }
+    el.querySelectorAll('[data-rn]').forEach(function(b){
+      b.addEventListener('click', function(){
+        el.querySelectorAll('[data-rn]').forEach(function(x){x.classList.remove('on');});
+        b.classList.add('on');
+        n = +b.getAttribute('data-rn');
+        render();
+      });
+    });
+    render();
+  }
+};
+
+/* ================= 6. 贝叶斯计算器 ================= */
+W['bayes'] = {
+  html: function(){
+    return '<div class="w-h"><span class="sq"></span>贝叶斯计算器<em>阳性之后，到底多大概率真病</em></div>'+
+      '<div class="w-b">'+
+      '<div class="gn-wrap">'+
+      '<div style="flex:1 1 280px;min-width:250px">'+
+      '<div class="by-lab"><span>患病率</span><b id="byPv" style="font-family:var(--mono)">1.0%</b></div>'+
+      '<input class="by-range" type="range" id="byP" min="1" max="200" value="10">'+
+      '<div class="by-lab"><span>灵敏度（患病者检出率）</span><b id="bySv" style="font-family:var(--mono)">99%</b></div>'+
+      '<input class="by-range" type="range" id="byS" min="50" max="100" value="99">'+
+      '<div class="by-lab"><span>假阳性率（健康者误报）</span><b id="byFv" style="font-family:var(--mono)">2%</b></div>'+
+      '<input class="by-range" type="range" id="byF" min="0" max="30" value="2">'+
+      '</div>'+
+      '<div style="flex:1 1 260px;min-width:240px">'+
+      '<div style="font-size:11px;color:var(--muted);letter-spacing:.06em">阳性者中真患病的比例</div>'+
+      '<div class="by-big" id="byOut">33.3%</div>'+
+      '<div class="by-dots" id="byDots"></div>'+
+      '<div style="font-size:11px;color:var(--muted);line-height:1.8">'+
+      '<span style="color:var(--accent)">■</span> 真阳性　<span style="color:var(--amber)">■</span> 假阳性　<span style="color:var(--line2)">■</span> 其余</div>'+
+      '<div id="byNum" style="font-size:12px;color:var(--ink2);margin-top:6px;line-height:1.9"></div>'+
+      '</div></div></div>'+
+      '<div class="w-cap">把患病率调到 10%，同一个检测的后验立刻从 33% 跳到 85%。<b>检测本身没变，变的是先验。</b>这就是为什么罕见病不适合全民筛查。</div>';
+  },
+  mount: function(el){
+    var P = el.querySelector('#byP'), S = el.querySelector('#byS'), F = el.querySelector('#byF'),
+        PV = el.querySelector('#byPv'), SV = el.querySelector('#bySv'), FV = el.querySelector('#byFv'),
+        O = el.querySelector('#byOut'), D = el.querySelector('#byDots'), NM = el.querySelector('#byNum');
+    function draw(){
+      var prior = +P.value/1000;        // 1..200 -> 0.1%..20%
+      var sens = +S.value/100;          // 0.5..1
+      var fpr = +F.value/100;           // 0..0.3
+      PV.textContent = (prior*100).toFixed(1)+'%';
+      SV.textContent = (sens*100).toFixed(0)+'%';
+      FV.textContent = (fpr*100).toFixed(0)+'%';
+
+      var N = 1000;
+      var sick = Math.round(N*prior);
+      var tp = Math.round(sick*sens);
+      var fp = Math.round((N-sick)*fpr);
+      var pos = tp+fp;
+      var post = pos ? tp/pos : 0;
+      O.textContent = (post*100).toFixed(1)+'%';
+
+      // 点阵：真阳性在前，假阳性其次
+      var out = '';
+      for(var i=0;i<N;i++){
+        var cls = i<tp ? 'tp' : (i<tp+fp ? 'fp' : '');
+        out += '<i class="'+cls+'"></i>';
+      }
+      D.innerHTML = out;
+      NM.innerHTML = '每 1000 人：患病 <b>'+sick+'</b>，其中阳性 '+tp+'；健康 '+(N-sick)+'，误报 '+fp+
+        '<br>阳性共 '+pos+' 人，真患病 '+tp+' 人';
+    }
+    [P,S,F].forEach(function(x){ x.addEventListener('input', draw); });
+    draw();
+  }
+};
+
+/* ================= 7. DFA 模拟器 ================= */
+W['dfa'] = {
+  html: function(){
+    return '<div class="w-h"><span class="sq"></span>自动机模拟器<em>看机器一个字符一个字符地走</em></div>'+
+      '<div class="w-b">'+
+      '<div class="w-ctl"><span class="kv">识别</span>'+
+      '<span class="chip on" data-dfa="even">偶数个 1</span>'+
+      '<span class="chip" data-dfa="c01">含 01</span>'+
+      '<span class="chip" data-dfa="e00">以 00 结尾</span>'+
+      '<span class="chip" data-dfa="d3">被 3 整除</span></div>'+
+      '<div class="w-ctl" style="margin-top:8px">'+
+      '<input class="dfa-str" id="dfaIn" value="10110" spellcheck="false">'+
+      '<button class="w-btn" id="dfaRun">运行</button>'+
+      '<button class="w-btn" id="dfaStep">单步</button>'+
+      '<button class="w-btn" id="dfaRst">重置</button>'+
+      '<span style="flex:1"></span><span class="kv" id="dfaCnt"></span></div>'+
+      '<div id="dfaSvg" style="margin-top:8px"></div>'+
+      '<div class="dfa-tape" id="dfaTape"></div>'+
+      '<div class="dfa-verdict" id="dfaMsg"></div></div>'+
+      '<div class="w-cap">双圈是接受状态。读完整条串后停在双圈里，串就被接受。注意：DFA 没有内存，它能记住的全部信息就是「当前在哪个圈里」。</div>';
+  },
+  mount: function(el){
+    var MACH = {
+      even: {
+        n:['q0','q1'], pos:[[150,110],[350,110]], start:0, acc:[0],
+        t:{'0':[0,1],'1':[1,0]}, title:'偶数个 1'
+      },
+      c01: {
+        n:['q0','q1','q2'], pos:[[110,150],[240,56],[380,150]], start:0, acc:[2],
+        t:{'0':[1,1,2],'1':[0,2,2]}, title:'含 01'
+      },
+      e00: {
+        n:['q0','q1','q2'], pos:[[110,150],[240,56],[380,150]], start:0, acc:[2],
+        t:{'0':[1,2,2],'1':[0,0,0]}, title:'以 00 结尾'
+      },
+      d3: {
+        n:['r0','r1','r2'], pos:[[110,150],[240,56],[380,150]], start:0, acc:[0],
+        t:{'0':[0,2,1],'1':[1,0,2]}, title:'二进制数被 3 整除'
+      }
+    };
+    var cur = 'even', st = 0, pos = 0, s = '10110', timer = null, lastEdge = null;
+
+    function edgePath(m, i, j, sym){
+      var a = m.pos[i], b = m.pos[j], R = 25;
+      if(i===j){
+        return {d:'M '+(a[0]-10)+' '+(a[1]-R)+' C '+(a[0]-34)+' '+(a[1]-R-42)+' '+(a[0]+34)+' '+(a[1]-R-42)+' '+(a[0]+10)+' '+(a[1]-R),
+                lx:a[0], ly:a[1]-R-34};
+      }
+      var dx = b[0]-a[0], dy = b[1]-a[1], len = Math.sqrt(dx*dx+dy*dy) || 1;
+      // 以「小下标 → 大下标」为基准方向，保证正反两条弧分居两侧
+      var i0 = Math.min(i,j), i1 = Math.max(i,j);
+      var A = m.pos[i0], B = m.pos[i1];
+      var vx = B[0]-A[0], vy = B[1]-A[1], vl = Math.sqrt(vx*vx+vy*vy) || 1;
+      vx /= vl; vy /= vl;
+      var bend = (i<j ? 26 : -26);
+      var mx = (A[0]+B[0])/2 - vy*bend, my = (A[1]+B[1])/2 + vx*bend;
+      var dirx = (i<j) ? vx : -vx, diry = (i<j) ? vy : -vy;
+      var sx = a[0] + dirx*R, sy = a[1] + diry*R;
+      var ex = b[0] - dirx*R, ey = b[1] - diry*R;
+      return {d:'M '+sx+' '+sy+' Q '+mx+' '+my+' '+ex+' '+ey,
+              lx:0.25*sx + 0.5*mx + 0.25*ex, ly:0.25*sy + 0.5*my + 0.25*ey};
+    }
+
+    function draw(){
+      var m = MACH[cur], out = '';
+      out += '<svg viewBox="0 0 480 220" style="width:100%;max-width:520px;height:auto">';
+      out += '<defs>'+
+        '<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--line2)"/></marker>'+
+        '<marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--teal)"/></marker>'+
+        '</defs>';
+      // 起始箭头
+      var sp = m.pos[m.start];
+      out += '<line x1="'+(sp[0]-62)+'" y1="'+sp[1]+'" x2="'+(sp[0]-28)+'" y2="'+sp[1]+'" stroke="var(--muted)" stroke-width="1.4" marker-end="url(#ah)"/>';
+      // 转移
+      m.n.forEach(function(_, i){
+        ['0','1'].forEach(function(sym){
+          var j = m.t[sym][i];
+          var e = edgePath(m, i, j, sym);
+          var act = (lastEdge && lastEdge[0]===i && lastEdge[1]===j && lastEdge[2]===sym);
+          out += '<path d="'+e.d+'" fill="none" stroke="'+(act?'var(--teal)':'var(--line2)')+'" stroke-width="'+(act?2.2:1.3)+'" marker-end="url(#'+(act?'ah2':'ah')+')" opacity="'+(act?1:.85)+'"/>';
+          out += '<text x="'+e.lx+'" y="'+e.ly+'" text-anchor="middle" font-size="11" font-family="var(--mono)" fill="'+(act?'var(--teal)':'var(--muted)')+'" style="paint-order:stroke;stroke:var(--surface);stroke-width:3px">'+sym+'</text>';
+        });
+      });
+      // 状态
+      m.n.forEach(function(name, i){
+        var p = m.pos[i], on = (i===st);
+        out += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="25" fill="'+(on?'var(--accent-soft)':'var(--surface)')+'" stroke="'+(on?'var(--accent)':'var(--line2)')+'" stroke-width="'+(on?2.2:1.4)+'"/>';
+        if(m.acc.indexOf(i)>=0){
+          out += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="20" fill="none" stroke="'+(on?'var(--accent)':'var(--line2)')+'" stroke-width="1.2"/>';
+        }
+        out += '<text x="'+p[0]+'" y="'+(p[1]+4)+'" text-anchor="middle" font-size="12" font-family="var(--mono)" fill="'+(on?'var(--accent)':'var(--ink2)')+'">'+name+'</text>';
+      });
+      out += '</svg>';
+      el.querySelector('#dfaSvg').innerHTML = out;
+
+      // 纸带
+      var tape = '';
+      for(var i=0;i<s.length;i++){
+        var cls = i<pos ? 'done' : (i===pos ? 'at' : '');
+        tape += '<span class="'+cls+'">'+s[i]+'</span>';
+      }
+      el.querySelector('#dfaTape').innerHTML = tape || '<span style="border:none;background:none;color:var(--muted)">空串 λ</span>';
+      el.querySelector('#dfaCnt').textContent = '已读 '+pos+' / '+s.length;
+    }
+    function reset(){
+      if(timer){ clearInterval(timer); timer=null; }
+      st = MACH[cur].start; pos = 0; lastEdge = null;
+      el.querySelector('#dfaMsg').innerHTML = '<span style="color:var(--muted)">从 '+MACH[cur].n[st]+' 出发，读「'+s+'」</span>';
+      draw();
+    }
+    function step(){
+      var m = MACH[cur];
+      if(pos >= s.length){
+        var ok = m.acc.indexOf(st)>=0;
+        el.querySelector('#dfaMsg').innerHTML = ok
+          ? '<span style="color:var(--teal)">✓ 接受：停在 '+m.n[st]+'（接受状态）</span>'
+          : '<span style="color:var(--accent)">✗ 拒绝：停在 '+m.n[st]+'（非接受状态）</span>';
+        if(timer){ clearInterval(timer); timer=null; }
+        return;
+      }
+      var sym = s[pos];
+      var nx = m.t[sym][st];
+      lastEdge = [st, nx, sym];
+      st = nx; pos++;
+      draw();
+      if(pos>=s.length){
+        var ok2 = m.acc.indexOf(st)>=0;
+        el.querySelector('#dfaMsg').innerHTML = ok2
+          ? '<span style="color:var(--teal)">✓ 接受：停在 '+m.n[st]+'（接受状态）</span>'
+          : '<span style="color:var(--accent)">✗ 拒绝：停在 '+m.n[st]+'（非接受状态）</span>';
+      }
+    }
+    el.querySelector('#dfaIn').addEventListener('input', function(e){
+      var v = e.target.value.replace(/[^01]/g,'');
+      e.target.value = v; s = v; reset();
+    });
+    el.querySelectorAll('[data-dfa]').forEach(function(b){
+      b.addEventListener('click', function(){
+        el.querySelectorAll('[data-dfa]').forEach(function(x){x.classList.remove('on');});
+        b.classList.add('on');
+        cur = b.getAttribute('data-dfa');
+        reset();
+      });
+    });
+    el.querySelector('#dfaStep').addEventListener('click', function(){
+      if(timer){ clearInterval(timer); timer=null; }
+      step();
+    });
+    el.querySelector('#dfaRun').addEventListener('click', function(){
+      if(timer){ clearInterval(timer); timer=null; }
+      reset();
+      timer = setInterval(step, 620);
+    });
+    el.querySelector('#dfaRst').addEventListener('click', reset);
+    reset();
+  }
+};
+
+/* ================= 8. 生日悖论 ================= */
+W['birthday'] = {
+  html: function(){
+    return '<div class="w-h"><span class="sq"></span>生日悖论<em>23 个人就过半了</em></div>'+
+      '<div class="w-b">'+
+      '<div class="w-ctl"><span class="kv">人数 n = <b id="bdN" style="font-family:var(--mono);color:var(--accent)">23</b></span>'+
+      '<input type="range" min="1" max="60" value="23" id="bdR" style="flex:1;min-width:170px;accent-color:var(--accent)"></div>'+
+      '<div class="gn-wrap" style="margin-top:8px"><div style="flex:1 1 300px;min-width:270px">'+
+      '<svg id="bdSvg" viewBox="0 0 520 190" style="width:100%;height:auto"></svg></div>'+
+      '<div style="flex:0 1 190px;min-width:170px">'+
+      '<div class="by-big" id="bdP" style="font-size:32px">50.7%</div>'+
+      '<div style="font-size:11.5px;color:var(--muted);margin-top:4px">至少两人生日相同</div>'+
+      '<div id="bdT" style="font-size:12px;color:var(--ink2);margin-top:10px;line-height:2"></div>'+
+      '</div></div></div>'+
+      '<div class="w-cap">直觉算的是「有人和我同一天生日」，概率约 n/365；但问题问的是「任意两人」，配对数是 C(n,2)，增长快得多。n=23 时已有 253 对。</div>';
+  },
+  mount: function(el){
+    var R = el.querySelector('#bdR'), N = el.querySelector('#bdN'),
+        S = el.querySelector('#bdSvg'), P = el.querySelector('#bdP'), T = el.querySelector('#bdT');
+    function prob(n){
+      if(n<2) return 0;
+      var p = 1;
+      for(var i=0;i<n;i++) p *= (365-i)/365;
+      return 1-p;
+    }
+    function draw(){
+      var n = +R.value;
+      N.textContent = n;
+      var v = prob(n);
+      P.textContent = (v*100).toFixed(1)+'%';
+      var W=520,H=190,L=34,B=24,Tp=10;
+      var x = function(k){ return L + (k-1)/59*(W-L-8); };
+      var y = function(p){ return H-B - p*(H-B-Tp); };
+      var out='';
+      [0,0.5,1].forEach(function(p){
+        out += '<line x1="'+L+'" y1="'+y(p)+'" x2="'+(W-8)+'" y2="'+y(p)+'" stroke="var(--line)" stroke-width="1"/>';
+        out += '<text x="'+(L-5)+'" y="'+(y(p)+3)+'" text-anchor="end" font-size="9" fill="var(--muted)" font-family="var(--mono)">'+(p*100)+'%</text>';
+      });
+      [1,10,23,41,60].forEach(function(k){
+        out += '<text x="'+x(k)+'" y="'+(H-B+14)+'" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="var(--mono)">'+k+'</text>';
+      });
+      var d='';
+      for(var k=1;k<=60;k++) d += (k===1?'M':'L')+x(k).toFixed(1)+' '+y(prob(k)).toFixed(1)+' ';
+      out += '<path d="'+d+'" fill="none" stroke="var(--accent)" stroke-width="2"/>';
+      out += '<line x1="'+x(n)+'" y1="'+Tp+'" x2="'+x(n)+'" y2="'+(H-B)+'" stroke="var(--ink)" stroke-width="1" stroke-dasharray="3 3" opacity=".4"/>';
+      out += '<circle cx="'+x(n)+'" cy="'+y(v).toFixed(1)+'" r="4" fill="var(--accent)"/>';
+      out += '<line x1="'+L+'" y1="'+y(0.5)+'" x2="'+(W-8)+'" y2="'+y(0.5)+'" stroke="var(--teal)" stroke-width="1" stroke-dasharray="4 3" opacity=".7"/>';
+      S.innerHTML = out;
+      var pairs = n*(n-1)/2;
+      T.innerHTML = '配对数 <b style="font-family:var(--mono)">'+pairs+'</b><br>全不同概率 <b style="font-family:var(--mono)">'+((1-v)*100).toFixed(1)+'%</b>';
+    }
+    R.addEventListener('input', draw);
+    draw();
+  }
+};
+
 </script>
 <script>
 CH[1] = {
@@ -5213,6 +5898,1008 @@ CH[8] = {
 
 ]};
 
+CH[9] = {
+  title: '算法',
+  en: 'Algorithms',
+  origin: 3,
+  intro: '「算法」听起来像编程课，但这一章问的是两个更基本的问题：<b>什么样的步骤才算「能算出来」</b>，以及<b>输入翻倍时，代价会翻多少倍</b>。后一个问题的答案，决定了你写的程序在数据量变大时是还能跑，还是直接卡死。这一章被本科教学版删掉了，但它是后面数论、图算法、复杂度理论的地基。',
+  sections: [
+
+{
+  id:'9.1', title:'算法的定义与查找',
+  blocks:[
+    {t:'lead', h:'算法不是一段代码。<b>代码是算法的一种写法，算法是写代码之前那个东西</b>——把输入变成输出的明确规则。'},
+    {t:'def', lb:'算法', h:'<p>算法是求解某类问题的一组有限步骤，必须满足五条：</p><ul style="margin:6px 0 0"><li><b>输入</b>：有明确给定的一组数据。</li><li><b>输出</b>：对每组输入都产生一个结果。</li><li><b>确定性</b>：每一步做什么，写得没有歧义。</li><li><b>有限性</b>：执行有限步后一定停。</li><li><b>正确性</b>：对合法输入，输出确实是正确答案。</li></ul>'},
+    {t:'p', h:'注意「有限性」说的是<b>每一步都能在有限时间内完成</b>，并且<b>总步数有限</b>。一个永远不终止的过程，哪怕每步都对，也不算算法——它只是「半算法」。'},
+    {t:'p', h:'写算法时我们不用具体语言，而用<b>伪代码</b>：像程序，但省掉声明、分号、内存管理这些细节，只留下逻辑骨架。'},
+    {t:'h3', h:'第一个例子：在有序表里找一个数'},
+    {t:'p', h:'<b>线性查找</b>从头到尾逐个比对，最坏要看 <m>n</m> 次。<b>二分查找</b>利用「表已排序」这个额外信息：每次看中间那个数，比它小就去左半，大就去右半，区间每次都砍一半。'},
+    {t:'table', head:['','线性查找','二分查找'],
+      rows:[
+        ['要求','无','表必须已排序'],
+        ['最坏比较次数','<m>n</m>','<m>⌊log<sub>2</sub>n⌋+1</m>'],
+        ['n = 1000','1000','10'],
+        ['n = 10<sup>6</sup>','100 万','20'],
+        ['n = 10<sup>9</sup>','10 亿','30']
+      ]},
+    {t:'warn', h:'<p>二分查找快 100 万倍，代价是<b>必须先排序</b>。而排序本身要 <m>O(n log n)</m>。所以：<b>只查一次就线性查，要查很多次才值得先排序</b>。这是工程上最常被忽略的取舍。</p>'},
+    {t:'w', id:'bsearch'},
+    {t:'p', h:'这就是为什么「猜数字」游戏里高手总猜 50、再猜 25：每一问都把可能性减半，20 问就能覆盖 100 万种情况。信息论上，每次比较只给 1 bit 信息，<m>⌈log<sub>2</sub>n⌉</m> 次是理论下界，二分查找已经最优。'},
+
+    {t:'ex', title:'例 1　二分查找的步数', q:'在 1 到 1000 之间猜一个数，每次被告知「大了 / 小了 / 对了」。最少保证几次能猜到？',
+      steps:[
+        '每次询问把候选集合分成两半，最坏情况留下较大的一半。',
+        '<m>1000 → 500 → 250 → 125 → 63 → 32 → 16 → 8 → 4 → 2 → 1</m>，共 10 次。',
+        '公式：<m>⌈log<sub>2</sub>1000⌉ = 10</m>。'
+      ], ans:'10 次（<m>⌈log<sub>2</sub>1000⌉</m>）'},
+
+    {t:'exs', id:'9.1', items:[
+      {q:'为什么「用自然语言描述得很清楚的步骤」不一定算算法？',
+       hint:'回到五条性质里找。',
+       steps:['自然语言常有歧义，违反<b>确定性</b>。','比如「取合适的数」，不同人理解不同。','算法要求每步唯一确定，所以要用形式化描述或伪代码。'],
+       ans:'自然语言有歧义，违反确定性'},
+      {q:'对长度 <m>n=2<sup>20</sup></m> 的有序表做二分查找，最坏比较多少次？',
+       hint:'<m>2<sup>20</sup></m> 是 1048576。',
+       steps:['<m>log<sub>2</sub>2<sup>20</sup> = 20</m>。','最坏还要加 1（最后一次比较）。'],
+       ans:'21 次'}
+    ]}
+  ]
+},
+
+{
+  id:'9.2', title:'排序算法',
+  blocks:[
+    {t:'lead', h:'排序是算法课的第一个正经问题，因为它有<b>很多种正确解法，代价差别巨大</b>——正好用来理解「不同算法」到底差在哪。'},
+    {t:'h3', h:'三种基本排序'},
+    {t:'table', head:['算法','做法','最坏比较次数','时间复杂度'],
+      rows:[
+        ['冒泡排序','相邻两个比，大的往后挪，一轮定一个','<m>n(n−1)/2</m>','<m>O(n<sup>2</sup>)</m>'],
+        ['插入排序','把新元素插进前面已排好的部分','<m>n(n−1)/2</m>','<m>O(n<sup>2</sup>)</m>，近乎有序时 <m>O(n)</m>'],
+        ['归并排序','对半切开，各自排好，再合并','<m>O(n log n)</m>','<m>O(n log n)</m>，稳定'],
+        ['快速排序','选基准，小的放左、大的放右，递归','<m>O(n<sup>2</sup>)</m>','平均 <m>O(n log n)</m>']
+      ]},
+    {t:'p', h:'<b>归并排序为什么是 <m>n log n</m>？</b>把长度为 <m>n</m> 的表对半分，切了 <m>log<sub>2</sub>n</m> 层才切到单元素；每一层合并所有段总共比较 <m>n</m> 次左右。层数乘每层工作量，就是 <m>n log n</m>。'},
+    {t:'f', h:'T(n) = 2T(n/2) + n  ⟹  T(n) = O(n log n)', note:'递归式的展开见第 11.4 节'},
+    {t:'p', h:'<b>为什么 <m>n log n</m> 是「比较排序」的天花板？</b>因为 <m>n</m> 个元素有 <m>n!</m> 种排列，每次比较只回答「是 / 否」两个结果，所以至少要 <m>log<sub>2</sub>(n!)</m> 次比较；由斯特林公式，<m>log<sub>2</sub>(n!) ≈ n log<sub>2</sub>n</m>。任何比较排序都跳不过这个下界。'},
+    {t:'tip', h:'<p>想突破 <m>n log n</m>，唯一的办法是<b>不比大小</b>：计数排序、基数排序用「值的范围」当索引，能做到 <m>O(n+k)</m>。代价是要求数据是限定范围内的整数。</p><p>这也是算法设计的一条通用经验：<b>换个假设，下界就变了</b>。</p>'},
+    {t:'p', h:'实践中没有「最好的排序」。数据近乎有序时插入排序最快；内存不够时用外部归并；要求稳定就避开堆排序和快排；有大量重复值时三路快排最优。'},
+
+    {t:'ex', title:'例 1　冒泡排序的比较次数', q:'对 <m>n=6</m> 个数做冒泡排序，最坏要比较多少次？',
+      steps:[
+        '第 1 轮比较 5 次，第 2 轮 4 次……最后一轮 1 次。',
+        '总数 <m>5+4+3+2+1 = 15</m>。',
+        '一般式：<m>n(n−1)/2</m>；<m>n=6</m> 得 15。'
+      ], ans:'15 次'},
+
+    {t:'exs', id:'9.2', items:[
+      {q:'<m>n=1000</m> 时，冒泡排序大约比归并排序多花多少倍时间？',
+       hint:'用 <m>n/2</m> 与 <m>log<sub>2</sub>n</m> 比。',
+       steps:['冒泡约 <m>n<sup>2</sup>/2 = 500000</m> 次比较。','归并约 <m>n log<sub>2</sub>n = 1000×10 = 10000</m> 次。','比值约 50。'],
+       ans:'约 50 倍'},
+      {q:'为什么说「比较排序的下界是 <m>n log n</m>」不算推翻归并排序的最优性？',
+       hint:'下界说的是「不可能更快」，不是「某种算法更快」。',
+       steps:['下界证明的是<b>任何</b>基于比较的算法都至少要这么多次。','归并排序达到了这个量级，所以它在比较模型内是最优的。','要更快必须换模型（基数排序等）。'],
+       ans:'下界是模型内的极限，归并已达最优量级'}
+    ]}
+  ]
+},
+
+{
+  id:'9.3', title:'增长函数与大 O',
+  blocks:[
+    {t:'lead', h:'大 O 不是「算运行时间」，而是<b>描述一条曲线的形状</b>。它回答的是：输入变大时，代价往哪个方向涨。'},
+    {t:'def', lb:'大 O 记号', h:'<p><m>f(n) = O(g(n))</m> 表示：存在常数 <m>C</m> 和 <m>n<sub>0</sub></m>，使得当 <m>n &gt; n<sub>0</sub></m> 时，<m>|f(n)| ≤ C·|g(n)|</m>。</p><p>说人话：<b>从某个规模往后，<m>f</m> 长不过 <m>g</m> 的某个常数倍</b>。</p>'},
+    {t:'table', head:['记号','读法','含义','类比'],
+      rows:[
+        ['<m>f = O(g)</m>','大 O','<m>f</m> 增长不快于 <m>g</m>（上界）','≤'],
+        ['<m>f = Ω(g)</m>','大 Omega','<m>f</m> 增长不慢于 <m>g</m>（下界）','≥'],
+        ['<m>f = Θ(g)</m>','大 Theta','<m>f</m> 与 <m>g</m> 同阶','='],
+        ['<m>f = o(g)</m>','小 o','<m>f</m> 增长严格慢于 <m>g</m>','&lt;']
+      ]},
+    {t:'p', h:'<b>怎么用：</b>只留最高阶项，去掉系数。<m>3n<sup>2</sup> + 5n + 2 = O(n<sup>2</sup>)</m>，因为 <m>n</m> 变大后 <m>3n<sup>2</sup></m> 完全压住其余两项。'},
+    {t:'warn', h:'<p>大 O 丢掉的是常数，但常数在工程上可能是<b>几十倍</b>。两个都是 <m>O(n log n)</m> 的排序，实际速度能差 3 倍。</p><p>所以：<b>先看阶，同阶再看常数</b>。不要因为同阶就认为一样快。</p>'},
+    {t:'w', id:'growth'},
+    {t:'h3', h:'常见增长速度排序'},
+    {t:'f', h:'1 &lt; log n &lt; √n &lt; n &lt; n log n &lt; n² &lt; n³ &lt; 2ⁿ &lt; n!', note:'从慢到快'},
+    {t:'table', head:['复杂度','n=10','n=50','n=100','n=1000'],
+      rows:[
+        ['<m>log<sub>2</sub>n</m>','3','6','7','10'],
+        ['<m>n</m>','10','50','100','1000'],
+        ['<m>n log<sub>2</sub>n</m>','33','282','664','9966'],
+        ['<m>n<sup>2</sup></m>','100','2500','10<sup>4</sup>','10<sup>6</sup>'],
+        ['<m>n<sup>3</sup></m>','1000','1.25×10<sup>5</sup>','10<sup>6</sup>','10<sup>9</sup>'],
+        ['<m>2<sup>n</sup></m>','1024','10<sup>15</sup>','10<sup>30</sup>','10<sup>301</sup>']
+      ]},
+    {t:'p', h:'看最后一行：<m>n=50</m> 时 <m>2<sup>50</sup></m> 已经是 <m>10<sup>15</sup></m>——按每秒十亿次算要跑 13 天，<m>n=100</m> 时宇宙年龄都不够。这就是「指数爆炸」的真实含义，也是为什么 NP 完全问题让人头疼。'},
+
+    {t:'ex', title:'例 1　证明 <m>3n<sup>2</sup>+5n+2 = O(n<sup>2</sup>)</m>', q:'按定义找出常数 <m>C</m> 和 <m>n<sub>0</sub></m>。',
+      steps:[
+        '当 <m>n ≥ 1</m> 时，<m>5n ≤ 5n<sup>2</sup></m>，<m>2 ≤ 2n<sup>2</sup></m>。',
+        '所以 <m>3n<sup>2</sup>+5n+2 ≤ 3n<sup>2</sup>+5n<sup>2</sup>+2n<sup>2</sup> = 10n<sup>2</sup></m>。',
+        '取 <m>C = 10</m>，<m>n<sub>0</sub> = 1</m>，定义成立。'
+      ], ans:'<m>C=10</m>，<m>n<sub>0</sub>=1</m>'},
+
+    {t:'exs', id:'9.3', items:[
+      {q:'<m>f(n) = 2n<sup>3</sup> + 100n<sup>2</sup></m>，它是 <m>O(n<sup>2</sup>)</m> 吗？',
+       hint:'看 n 很大时谁主导。',
+       steps:['<m>n</m> 增大后 <m>n<sup>3</sup></m> 项压住 <m>n<sup>2</sup></m>。','不存在常数 <m>C</m> 使 <m>2n<sup>3</sup> ≤ Cn<sup>2</sup></m> 对所有大 <m>n</m> 成立。'],
+       ans:'不是，它是 <m>O(n<sup>3</sup>)</m>'},
+      {q:'<m>log<sub>2</sub>n</m> 和 <m>√n</m> 哪个增长快？',
+       hint:'代 <m>n = 10<sup>6</sup></m> 试试。',
+       steps:['<m>log<sub>2</sub>10<sup>6</sup> ≈ 20</m>。','<m>√(10<sup>6</sup>) = 1000</m>。','<m>n</m> 越大差距越大，<m>√n</m> 快得多。'],
+       ans:'<m>√n</m> 快，<m>log n = O(√n)</m>'},
+      {q:'一个算法要 <m>2<sup>n</sup></m> 步，另一个要 <m>n<sup>10</sup></m> 步。<m>n</m> 很小时谁快？很大时呢？',
+       hint:'两条曲线会交叉。',
+       steps:['<m>n=10</m>：<m>2<sup>10</sup>=1024</m>，<m>10<sup>10</sup></m>，指数快。','<m>n=100</m>：<m>2<sup>100</sup>≈10<sup>30</sup></m>，<m>100<sup>10</sup>=10<sup>20</sup></m>，多项式快。','交叉点大约在 <m>n≈60</m> 附近。'],
+       ans:'小 n 时指数快，大 n 时多项式快'}
+    ]}
+  ]
+},
+
+{
+  id:'9.4', title:'算法设计策略',
+  blocks:[
+    {t:'lead', h:'大部分算法不是凭空想出来的，而是套用几种固定套路。认识套路，比记住单个算法有用得多。'},
+    {t:'h3', h:'贪心：每步都选眼前最好的'},
+    {t:'p', h:'贪心的优点是简单快速，缺点是<b>不保证全局最优</b>。它对某些问题恰好正确（如活动选择、最小生成树），对另一些问题会翻车（如 0-1 背包）。'},
+    {t:'p', h:'<b>找零问题</b>：币值 25、10、5、1 分，找 63 分。贪心给 25+25+10+1+1+1，共 6 枚，正确。但如果币值是 1、3、4 分，找 6 分，贪心给 4+1+1（3 枚），最优是 3+3（2 枚）——贪心失败。'},
+    {t:'h3', h:'分治：切开、各自解决、合并'},
+    {t:'p', h:'归并排序、二分查找、快速幂都是分治。判断能不能分治看两点：<b>子问题是否同型</b>，<b>合并是否便宜</b>。如果合并比原问题还贵，分治就白搭。'},
+    {t:'h3', h:'动态规划：记住算过的'},
+    {t:'p', h:'分治把问题切小，但子问题<b>互相独立</b>；动态规划处理的子问题<b>会重复</b>。做法是把每个子问题的答案存进表里，用空间换时间。'},
+    {t:'table', head:['策略','适用信号','典型例子','失效场景'],
+      rows:[
+        ['贪心','局部最优能推出全局最优','活动选择、Huffman、最小生成树','0-1 背包、硬币面值不规则'],
+        ['分治','子问题同型且独立','归并排序、快速幂、大整数乘法','子问题重叠严重'],
+        ['动态规划','子问题重复、有最优子结构','斐波那契、背包、编辑距离','状态无法压缩'],
+        ['回溯','需要枚举所有可行解','八皇后、数独','规模稍大就爆炸']
+      ]},
+    {t:'p', h:'<b>斐波那契</b>是动态规划最好的入门例子。朴素递归算 <m>f(40)</m> 要几亿次调用，因为同一个 <m>f(k)</m> 被反复重算；改成从 <m>f(1)</m> 往上递推，只要 40 次加法。'},
+    {t:'w', id:'recur'},
+    {t:'h3', h:'P 与 NP'},
+    {t:'p', h:'<b>P</b> 是能在多项式时间内<b>求解</b>的问题；<b>NP</b> 是能在多项式时间内<b>验证</b>一个解的问题。显然 <m>P ⊆ NP</m>，但 <m>P = NP</m> 与否至今未解——这是克雷研究所七个千禧年问题之一。'},
+    {t:'p', h:'直觉上：<b>解数独很难，检查一个填好的数独对不对却很快</b>。这类「验证容易、求解难」的问题就是 NP 的典型。如果哪天有人证明 <m>P = NP</m>，所有这类问题都能被快速求解，现代密码学大半要重写。'},
+
+    {t:'ex', title:'例 1　为什么贪心在 0-1 背包上失败', q:'背包容量 10，物品 A（重 6，值 10）、B（重 5，值 9）、C（重 4，值 7）。按「单位重量价值最高」贪心会怎么选？最优是什么？',
+      steps:[
+        '单位价值：A ≈ 1.67，B = 1.8，C = 1.75。贪心先选 B。',
+        '剩容量 5，C 重 4 装得下，再选 C。总重 9，总值 16，剩 1 装不下 A。',
+        '但 A + C 总重 10、总值 17，比 16 更好。',
+        '贪心错在只看比值，没看「选 B 之后浪费了 1 格、且挡住了 A」。'
+      ], ans:'贪心得 16；最优是 A + C = 17'},
+    {t:'exs', id:'9.4', items:[
+      {q:'算 <m>f(30)</m> 时，朴素递归与递推的加法次数大约差多少？',
+       hint:'斐波那契递归树节点数约 <m>1.6<sup>n</sup></m>。',
+       steps:['朴素递归调用次数约 <m>1.6<sup>30</sup> ≈ 1.3×10<sup>6</sup></m>。','递推只需 29 次加法。','差约 4 万倍，而且 <m>n</m> 越大差得越快。'],
+       ans:'约 4 万倍'},
+      {q:'「给一个解，能在多项式时间内验证它对」属于 P 还是 NP？',
+       hint:'看定义。',
+       steps:['这是 NP 的定义：可快速验证。','注意 NP 不要求能快速求解。','P 问题也满足可快速验证，所以 <m>P ⊆ NP</m>。'],
+       ans:'NP'}
+    ]}
+  ]
+}
+
+]};
+
+CH[10] = {
+  title: '数论与密码学',
+  en: 'Number Theory and Cryptography',
+  origin: 4,
+  intro: '这一章只有一个核心动作：<b>把整数折起来</b>。模运算把无限长的数轴卷成一个有限长的环，于是「除以 7 余几」这种事可以像加减乘一样运算。听起来像玩具，但你每次在网上付款，背后跑的就是这套东西——RSA 的全部安全性，建立在「大整数分解很难」这一个事实上。',
+  sections: [
+
+{
+  id:'10.1', title:'整除与模运算',
+  blocks:[
+    {t:'lead', h:'数论从一条最简单的定义开始：一个数能不能被另一个数整除。'},
+    {t:'def', lb:'整除', h:'<p><m>a | b</m> 表示存在整数 <m>c</m> 使 <m>b = ac</m>。读作「<m>a</m> 整除 <m>b</m>」。</p><p>注意符号方向：<m>3 | 12</m> 成立，<m>12 | 3</m> 不成立。另外 <m>a | 0</m> 对一切非零 <m>a</m> 成立，因为 <m>0 = a·0</m>。</p>'},
+    {t:'thm', lb:'整除的基本性质', h:'<ul style="margin:4px 0 0"><li>若 <m>a|b</m> 且 <m>b|c</m>，则 <m>a|c</m>（传递）</li><li>若 <m>a|b</m> 且 <m>a|c</m>，则 <m>a|(mb+nc)</m> 对任意整数 <m>m,n</m> 成立（线性组合）</li><li>若 <m>a|b</m> 且 <m>b|a</m>，则 <m>a = ±b</m></li></ul>'},
+    {t:'def', lb:'带余除法', h:'<p>对任意整数 <m>a</m> 和正整数 <m>m</m>，存在唯一的 <m>q, r</m> 使 <m>a = qm + r</m>，其中 <m>0 ≤ r &lt; m</m>。</p><p><m>q</m> 叫商，<m>r</m> 叫余数，记作 <m>a mod m = r</m>。</p>'},
+    {t:'p', h:'「唯一」这两个字是模运算能成立的根本。如果余数可以取多种值，<m>a mod m</m> 就不是一个确定的数，后面的运算全都无从谈起。'},
+    {t:'def', lb:'同余', h:'<p><m>a ≡ b (mod m)</m> 表示 <m>m | (a − b)</m>。也就是说，<b><m>a</m> 和 <m>b</m> 除以 <m>m</m> 的余数相同</b>。</p>'},
+    {t:'p', h:'同余是一种<b>等价关系</b>（第 5 章的概念）：它把全体整数分成 <m>m</m> 个类，同类里的数互相同余。这就是「把数轴卷成环」的准确说法。'},
+    {t:'thm', lb:'同余的运算性质', h:'<p>若 <m>a ≡ b (mod m)</m> 且 <m>c ≡ d (mod m)</m>，则：</p><ul style="margin:4px 0 0"><li><m>a + c ≡ b + d</m></li><li><m>a − c ≡ b − d</m></li><li><m>ac ≡ bd</m></li><li><m>a<sup>k</sup> ≡ b<sup>k</sup></m>（对任意正整数 <m>k</m>）</li></ul><p style="margin-top:6px">这四条加起来的意思是：<b>同余式可以像等式一样做加减乘和乘方</b>。但<b>不能随便做除法</b>——下面会讲为什么。</p>'},
+    {t:'warn', h:'<p><m>2×3 ≡ 2×8 (mod 10)</m> 成立（都是 6），但如果两边同时约掉 2，得 <m>3 ≡ 8 (mod 10)</m>，错了。</p><p><b>除法要成立，必须除数和模互素</b>。这一条是 10.4 节解同余方程的关键。</p>'},
+    {t:'p', h:'<b>怎么快速算大指数的余数？</b>不能真去算 <m>3<sup>100</sup></m>，那是个 48 位数。办法是「降幂」：找到一个指数周期，把大指数折回小范围。这就要用到费马小定理和欧拉定理（10.5 节）。'},
+
+    {t:'ex', title:'例 1　算 <m>3<sup>100</sup> mod 7</m>', q:'不直接计算 <m>3<sup>100</sup></m>，求它除以 7 的余数。',
+      steps:[
+        '先看 3 的幂模 7：<m>3<sup>1</sup>=3</m>，<m>3<sup>2</sup>=9≡2</m>，<m>3<sup>3</sup>≡6</m>，<m>3<sup>4</sup>≡4</m>，<m>3<sup>5</sup>≡5</m>，<m>3<sup>6</sup>≡1</m>。',
+        '周期是 6（这正符合费马小定理：<m>3<sup>6</sup> ≡ 1 mod 7</m>）。',
+        '<m>100 = 6×16 + 4</m>，所以 <m>3<sup>100</sup> ≡ (3<sup>6</sup>)<sup>16</sup>·3<sup>4</sup> ≡ 1·4 = 4</m>。'
+      ], ans:'4'},
+
+    {t:'exs', id:'10.1', items:[
+      {q:'求 <m>7<sup>222</sup> mod 11</m>。',
+       hint:'费马小定理：<m>7<sup>10</sup> ≡ 1 mod 11</m>。',
+       steps:['<m>222 = 10×22 + 2</m>。','<m>7<sup>222</sup> ≡ (7<sup>10</sup>)<sup>22</sup>·7<sup>2</sup> ≡ 7<sup>2</sup> = 49</m>。','<m>49 = 4×11 + 5</m>。'],
+       ans:'5'},
+      {q:'<m>17 ≡ 2 (mod 5)</m>，那么 <m>17<sup>2</sup> mod 5</m> 等于多少？',
+       hint:'用幂的同余性质。',
+       steps:['<m>17<sup>2</sup> ≡ 2<sup>2</sup> = 4 (mod 5)</m>。','直接验算：<m>289 = 57×5 + 4</m>，一致。'],
+       ans:'4'},
+      {q:'为什么同余式两边不能随便约掉同一个数？',
+       hint:'举一个反例。',
+       steps:['<m>2×3 ≡ 2×8 (mod 10)</m> 成立。','约掉 2 得 <m>3 ≡ 8 (mod 10)</m>，不成立。','因为 2 与模 10 不互素，约分改变了模。'],
+       ans:'除数和模必须互素才能约'}
+    ]}
+  ]
+},
+
+{
+  id:'10.2', title:'整数表示与进制',
+  blocks:[
+    {t:'lead', h:'计算机里没有「十进制」这回事，只有高低电平。所以整数在机器里是二进制串，而人写代码时常用十六进制——因为 4 位二进制正好对应 1 位十六进制，读起来短。'},
+    {t:'def', lb:'b 进制表示', h:'<p>正整数 <m>n</m> 写成 <m>(a<sub>k</sub>a<sub>k−1</sub>…a<sub>1</sub>a<sub>0</sub>)<sub>b</sub></m>，意思是</p><div class="f" style="margin:6px 0">n = a<sub>k</sub>b<sup>k</sup> + a<sub>k−1</sub>b<sup>k−1</sup> + … + a<sub>1</sub>b + a<sub>0</sub></div><p>其中每位 <m>0 ≤ a<sub>i</sub> &lt; b</m>。</p>'},
+    {t:'table', head:['进制','基数','每位取值','用途'],
+      rows:[
+        ['二进制','2','0,1','机器内部'],
+        ['八进制','8','0–7','旧式权限位'],
+        ['十进制','10','0–9','人读'],
+        ['十六进制','16','0–9, A–F','内存地址、颜色值、哈希']
+      ]},
+    {t:'h3', h:'十进制转 b 进制：除基取余'},
+    {t:'p', h:'不断除以 <m>b</m>，把余数从下往上读。以 <m>241</m> 转二进制为例：'},
+    {t:'table', head:['步骤','除法','商','余数'],
+      rows:[
+        ['1','241 ÷ 2','120','1'],
+        ['2','120 ÷ 2','60','0'],
+        ['3','60 ÷ 2','30','0'],
+        ['4','30 ÷ 2','15','0'],
+        ['5','15 ÷ 2','7','1'],
+        ['6','7 ÷ 2','3','1'],
+        ['7','3 ÷ 2','1','1'],
+        ['8','1 ÷ 2','0','1']
+      ]},
+    {t:'p', h:'余数倒着读：<m>11110001</m>。验算：<m>128+64+32+16+1 = 241</m>。'},
+    {t:'p', h:'转十六进制更快：<m>241 = 15×16 + 1</m>，即 <m>(F1)<sub>16</sub></m>。二进制四位一组也能直接换：<m>1111 0001 → F 1</m>。'},
+    {t:'p', h:'<b>为什么程序员偏爱十六进制？</b>因为 <m>16 = 2<sup>4</sup></m>，一个十六进制位刚好对应四个二进制位，互相转换不需要计算器，肉眼就能换。十进制做不到这一点。'},
+    {t:'p', h:'顺带一提，网页颜色 <code>#C08A5E</code> 就是三个字节的十六进制：红 <code>C0</code>=192，绿 <code>8A</code>=138，蓝 <code>5E</code>=94。'},
+
+    {t:'ex', title:'例 1　二进制转十进制', q:'求 <m>(10110111)<sub>2</sub></m> 的十进制值。',
+      steps:[
+        '按位展开：<m>1×2<sup>7</sup> + 0×2<sup>6</sup> + 1×2<sup>5</sup> + 1×2<sup>4</sup> + 0×2<sup>3</sup> + 1×2<sup>2</sup> + 1×2 + 1</m>。',
+        '即 <m>128 + 32 + 16 + 4 + 2 + 1</m>。',
+        '求和得 183。'
+      ], ans:'183'},
+
+    {t:'exs', id:'10.2', items:[
+      {q:'把 <m>(2A)<sub>16</sub></m> 转成十进制与二进制。',
+       hint:'A 代表 10。',
+       steps:['<m>2×16 + 10 = 42</m>。','<m>42 = 32 + 8 + 2 = 101010<sub>2</sub></m>。','也可逐位换：<m>2→0010，A→1010</m>，得 <m>00101010</m>。'],
+       ans:'十进制 42，二进制 101010'},
+      {q:'一个字节最多能表示多少个不同的值？',
+       hint:'8 位，每位两种。',
+       steps:['每位 0 或 1，共 <m>2<sup>8</sup></m> 种。','即 256 个，范围 0–255（无符号）。'],
+       ans:'256 个'}
+    ]}
+  ]
+},
+
+{
+  id:'10.3', title:'素数、最大公约数与欧几里得算法',
+  blocks:[
+    {t:'lead', h:'素数是大整数的「原子」：每个大于 1 的整数都能唯一分解成素数乘积。而求两个数的最大公约数，有一个两千多年前就最优的算法。'},
+    {t:'def', lb:'素数', h:'<p>大于 1 且只能被 1 和自身整除的整数叫<b>素数</b>；否则叫<b>合数</b>。1 既不是素数也不是合数。</p>'},
+    {t:'thm', lb:'算术基本定理', h:'<p>每个大于 1 的整数都能<b>唯一</b>地写成素数幂的乘积（不计顺序）：</p><div class="f" style="margin:6px 0">n = p<sub>1</sub><sup>a<sub>1</sub></sup> p<sub>2</sub><sup>a<sub>2</sub></sup> … p<sub>k</sub><sup>a<sub>k</sub></sup></div><p>「唯一」是这个定理的分量所在。它保证了 gcd、lcm、约数个数都有确定的公式。</p>'},
+    {t:'p', h:'例：<m>3600 = 2<sup>4</sup>·3<sup>2</sup>·5<sup>2</sup></m>。有了分解式，最大公约数取每个素数的<b>最小</b>指数，最小公倍数取<b>最大</b>指数：'},
+    {t:'f', h:'gcd(3600, 1260) = 2²·3²·5 = 180，lcm = 2⁴·3²·5²·7 = 25200'},
+    {t:'def', lb:'互素', h:'<p><m>gcd(a,b) = 1</m> 时称 <m>a</m> 与 <m>b</m> <b>互素</b>。注意互素不要求各自是素数——<m>8</m> 和 <m>9</m> 互素，但都不是素数。</p>'},
+    {t:'h3', h:'欧几里得算法'},
+    {t:'thm', lb:'辗转相除', h:'<div class="f" style="margin:4px 0">gcd(a, b) = gcd(b, a mod b)</div><p>反复用这条等式，直到余数为 0，此时的除数就是 gcd。</p>'},
+    {t:'p', h:'为什么成立？因为 <m>a</m> 和 <m>b</m> 的<b>公因数集合</b>，与 <m>b</m> 和 <m>a mod b</m> 的公因数集合完全相同。<m>a = qb + r</m> 说明任何同时整除 <m>a</m>、<m>b</m> 的数必整除 <m>r</m>，反之亦然。'},
+    {t:'w', id:'euclid'},
+    {t:'p', h:'<b>它有多快？</b>每两步规模至少减半，所以步数是 <m>O(log min(a,b))</m>。求两个 1000 位数的 gcd，只需几千步——这就是它两千年没被淘汰的原因。'},
+    {t:'thm', lb:'贝祖定理', h:'<p>存在整数 <m>s, t</m> 使</p><div class="f" style="margin:6px 0">s·a + t·b = gcd(a, b)</div><p>把欧几里得算法<b>倒着推</b>就能求出 <m>s, t</m>，这叫扩展欧几里得算法。</p>'},
+    {t:'p', h:'贝祖定理最重要的推论：<b><m>a</m> 在模 <m>m</m> 下有逆元，当且仅当 <m>gcd(a,m)=1</m></b>。因为 <m>sa + tm = 1</m> 两边模 <m>m</m> 得 <m>sa ≡ 1</m>，<m>s</m> 就是逆元。RSA 求私钥 <m>d</m> 用的正是这一步。'},
+
+    {t:'ex', title:'例 1　求 gcd(414, 662)', q:'用欧几里得算法求最大公约数。',
+      steps:[
+        '<m>662 = 1×414 + 248</m>',
+        '<m>414 = 1×248 + 166</m>',
+        '<m>248 = 1×166 + 82</m>',
+        '<m>166 = 2×82 + 2</m>',
+        '<m>82 = 41×2 + 0</m>，余数为 0，停止。'
+      ], ans:'gcd = 2'},
+
+    {t:'exs', id:'10.3', items:[
+      {q:'求 <m>7</m> 在模 <m>26</m> 下的逆元。',
+       hint:'用扩展欧几里得倒推。',
+       steps:['<m>26 = 3×7 + 5</m>，<m>7 = 1×5 + 2</m>，<m>5 = 2×2 + 1</m>。','回代：<m>1 = 5 − 2×2 = 5 − 2(7−5) = 3×5 − 2×7</m>。','再代 <m>5 = 26 − 3×7</m>：<m>1 = 3×26 − 11×7</m>。','所以 <m>−11×7 ≡ 1</m>，<m>−11 ≡ 15 (mod 26)</m>。'],
+       ans:'15（验算 <m>7×15 = 105 = 4×26+1</m>）'},
+      {q:'<m>gcd(17, 31)</m> 是多少？17 在模 31 下有逆元吗？',
+       hint:'31 是素数，17 不是它的倍数。',
+       steps:['31 是素数，17 不被 31 整除。','所以 <m>gcd(17,31) = 1</m>，互素。','由贝祖定理，逆元存在。'],
+       ans:'gcd = 1，有逆元（逆元是 11，因 <m>17×11=187=6×31+1</m>）'},
+      {q:'为什么「试除法判断素数」对 100 位数不可行？',
+       hint:'要试到多少？',
+       steps:['需试到 <m>√n</m>。','100 位数开方是 50 位数。','每秒试十亿个也要 <m>10<sup>41</sup></m> 秒，远超宇宙年龄。'],
+       ans:'需试到 <m>√n</m>，规模仍是指数级'}
+    ]}
+  ]
+},
+
+{
+  id:'10.4', title:'线性同余与中国剩余定理',
+  blocks:[
+    {t:'lead', h:'上一节解决了「求逆元」，这一节解决「解方程」。形式只有一种：<m>ax ≡ b (mod m)</m>，但它的解法和解的个数都有讲究。'},
+    {t:'thm', lb:'线性同余方程', h:'<p>方程 <m>ax ≡ b (mod m)</m> 有解，当且仅当 <m>gcd(a,m) | b</m>。若有解，则在模 <m>m</m> 下恰有 <m>gcd(a,m)</m> 个不同的解。</p>'},
+    {t:'p', h:'<b>怎么解？</b>三步：'},
+    {t:'ol', items:[
+      '先算 <m>d = gcd(a,m)</m>，检查 <m>d | b</m>。不整除就无解，结束。',
+      '两边和模同时除以 <m>d</m>，得到 <m>(a/d)x ≡ (b/d) (mod m/d)</m>，此时 <m>a/d</m> 与 <m>m/d</m> 互素。',
+      '用扩展欧几里得求 <m>a/d</m> 的逆元，乘到右边，得到 <m>x<sub>0</sub></m>；再加 <m>m/d</m> 的倍数，得到全部 <m>d</m> 个解。'
+    ]},
+    {t:'p', h:'<b>例：</b>解 <m>3x ≡ 4 (mod 7)</m>。<m>gcd(3,7)=1</m>，唯一解。3 的逆元是 5（<m>3×5=15≡1</m>），所以 <m>x ≡ 5×4 = 20 ≡ 6 (mod 7)</m>。'},
+    {t:'h3', h:'中国剩余定理'},
+    {t:'thm', lb:'CRT', h:'<p>设 <m>m<sub>1</sub>, …, m<sub>k</sub></m> <b>两两互素</b>，则同余方程组</p><div class="f" style="margin:4px 0">x ≡ a<sub>1</sub> (mod m<sub>1</sub>)，…，x ≡ a<sub>k</sub> (mod m<sub>k</sub>)</div><p>在模 <m>M = m<sub>1</sub>m<sub>2</sub>…m<sub>k</sub></m> 下有<b>唯一</b>解。</p>'},
+    {t:'p', h:'<b>构造法</b>（考试常用的就是它）：'},
+    {t:'ol', items:[
+      '算 <m>M = m<sub>1</sub>…m<sub>k</sub></m>，以及每个 <m>M<sub>i</sub> = M / m<sub>i</sub></m>。',
+      '对每个 <m>i</m>，求 <m>M<sub>i</sub></m> 在模 <m>m<sub>i</sub></m> 下的逆元 <m>y<sub>i</sub></m>。',
+      '令 <m>x = Σ a<sub>i</sub>M<sub>i</sub>y<sub>i</sub></m>，再对 <m>M</m> 取余。'
+    ]},
+    {t:'p', h:'这个定理听起来抽象，其实它就是<b>「韩信点兵」</b>：士兵三人一排余 2、五人一排余 3、七人一排余 2，问有多少人。答案在 105 以内唯一。'},
+    {t:'p', h:'工程上它有个漂亮的应用：<b>用多个小模数并行计算</b>。想算一个巨大整数的运算，可以拆成几组小模数分别算，最后用 CRT 拼回去，每组都能用 64 位整数装下。'},
+
+    {t:'ex', title:'例 1　解同余方程组', q:'求满足 <m>x ≡ 2 (mod 3)</m>、<m>x ≡ 3 (mod 5)</m>、<m>x ≡ 2 (mod 7)</m> 的最小正整数。',
+      steps:[
+        '<m>M = 3×5×7 = 105</m>，<m>M<sub>1</sub>=35</m>，<m>M<sub>2</sub>=21</m>，<m>M<sub>3</sub>=15</m>。',
+        '求逆元：<m>35 ≡ 2 (mod 3)</m>，2 的逆元是 2，故 <m>y<sub>1</sub>=2</m>；<m>21 ≡ 1 (mod 5)</m>，<m>y<sub>2</sub>=1</m>；<m>15 ≡ 1 (mod 7)</m>，<m>y<sub>3</sub>=1</m>。',
+        '<m>x = 2×35×2 + 3×21×1 + 2×15×1 = 140 + 63 + 30 = 233</m>。',
+        '<m>233 mod 105 = 23</m>。'
+      ], ans:'23（验算：23÷3 余 2，÷5 余 3，÷7 余 2）'},
+
+    {t:'exs', id:'10.4', items:[
+      {q:'解 <m>4x ≡ 6 (mod 10)</m>。',
+       hint:'先看 gcd(4,10)。',
+       steps:['<m>d = gcd(4,10) = 2</m>，<m>2 | 6</m>，有解，共 2 个。','同除 2：<m>2x ≡ 3 (mod 5)</m>。','2 的逆元是 3，<m>x ≡ 9 ≡ 4 (mod 5)</m>。','两个解：<m>x ≡ 4</m> 和 <m>x ≡ 9 (mod 10)</m>。'],
+       ans:'<m>x ≡ 4</m> 或 <m>9 (mod 10)</m>'},
+      {q:'<m>x ≡ 1 (mod 2)</m>、<m>x ≡ 2 (mod 4)</m> 有解吗？',
+       hint:'模数不互素，CRT 不直接适用。',
+       steps:['第一个式子说明 x 是奇数。','第二个式子说明 x 除以 4 余 2，即 x 是偶数。','矛盾，无解。'],
+       ans:'无解'},
+      {q:'CRT 为什么要求模数两两互素？',
+       hint:'如果不互素会怎样？',
+       steps:['构造法里要求 <m>M<sub>i</sub></m> 在模 <m>m<sub>i</sub></m> 下可逆。','<m>M<sub>i</sub></m> 是除 <m>m<sub>i</sub></m> 外所有模数之积；若某个 <m>m<sub>j</sub></m> 与 <m>m<sub>i</sub></m> 不互素，则 <m>gcd(M<sub>i</sub>, m<sub>i</sub>) &gt; 1</m>。','逆元不存在，构造失败（此时可能无解，也可能解不唯一）。'],
+       ans:'否则 <m>M<sub>i</sub></m> 不可逆，构造失效'}
+    ]}
+  ]
+},
+
+{
+  id:'10.5', title:'RSA 公钥密码',
+  blocks:[
+    {t:'lead', h:'前面所有工具在这里合成一件事：<b>让加密方法公开，仍然没人能解密</b>。这不是魔术，是把「求幂容易」和「分解难」这两个不对称性拼在一起。'},
+    {t:'def', lb:'欧拉函数', h:'<p><m>φ(n)</m> 表示 <m>1</m> 到 <m>n</m> 中与 <m>n</m> 互素的整数个数。</p><ul style="margin:4px 0 0"><li><m>p</m> 是素数时，<m>φ(p) = p − 1</m>。</li><li><m>n = pq</m>（两个不同素数），<m>φ(n) = (p−1)(q−1)</m>。</li></ul>'},
+    {t:'thm', lb:'欧拉定理', h:'<p>若 <m>gcd(a, n) = 1</m>，则</p><div class="f" style="margin:6px 0">a<sup>φ(n)</sup> ≡ 1 (mod n)</div>'},
+    {t:'thm', lb:'费马小定理', h:'<p><m>p</m> 为素数且 <m>p ∤ a</m> 时，</p><div class="f" style="margin:6px 0">a<sup>p−1</sup> ≡ 1 (mod p)</div><p>它是欧拉定理在 <m>n</m> 为素数时的特例（<m>φ(p)=p−1</m>）。</p>'},
+    {t:'p', h:'这两个定理的实际用途是<b>降幂</b>：指数再大，都能先对 <m>φ(n)</m> 取余，把指数压下来。'},
+    {t:'h3', h:'RSA 的六步'},
+    {t:'ol', items:[
+      '<b>选素数</b>：随机取两个大素数 <m>p, q</m>（实际各 1024 位以上）。',
+      '<b>算模数</b>：<m>n = pq</m>，公开；<m>φ(n) = (p−1)(q−1)</m>，保密。',
+      '<b>选公钥指数</b> <m>e</m>：满足 <m>1 &lt; e &lt; φ(n)</m> 且 <m>gcd(e, φ(n)) = 1</m>。常用 65537。',
+      '<b>算私钥</b> <m>d</m>：解 <m>ed ≡ 1 (mod φ(n))</m>，即 <m>d</m> 是 <m>e</m> 的逆元。',
+      '<b>加密</b>：<m>C = M<sup>e</sup> mod n</m>。',
+      '<b>解密</b>：<m>M = C<sup>d</sup> mod n</m>。'
+    ]},
+    {t:'p', h:'<b>为什么解密能还原？</b>因为 <m>ed = 1 + kφ(n)</m>，所以'},
+    {t:'f', h:'C<sup>d</sup> = M<sup>ed</sup> = M<sup>1+kφ(n)</sup> = M · (M<sup>φ(n)</sup>)<sup>k</sup> ≡ M · 1<sup>k</sup> = M　(mod n)'},
+    {t:'p', h:'最后一步用了欧拉定理。整个 RSA 的正确性就压在这一行上。'},
+    {t:'w', id:'rsa'},
+    {t:'warn', h:'<p><b>实际使用有几个坑：</b></p><ul><li>明文不能直接当数用，要先做填充（OAEP），否则同样的明文每次加密结果相同，可被比对。</li><li><m>M</m> 必须小于 <m>n</m>，否则要分段。</li><li><m>p</m> 和 <m>q</m> 不能太接近，否则 <m>√n</m> 附近搜索就能分解。</li><li>教科书 RSA 是<b>确定性</b>的，不能直接当签名方案用，必须先哈希。</li></ul>'},
+    {t:'h3', h:'为什么难破解'},
+    {t:'p', h:'攻击者知道 <m>n</m> 和 <m>e</m>，想求 <m>d</m> 就得知道 <m>φ(n)</m>，而求 <m>φ(n)</m> 等价于分解 <m>n</m>。目前最快的分解算法（数域筛法）对 2048 位数仍需天文时间。<b>RSA 的安全性不是「证明安全」，而是「暂时没人做得到」</b>。'},
+    {t:'p', h:'这也是为什么量子计算让人紧张：Shor 算法能在多项式时间内分解大整数。一旦实用量子计算机出现，RSA 就失效了——所以现在已经在推后量子密码。'},
+    {t:'p', h:'<b>数字签名</b>是 RSA 的另一半用途，方向反过来：用<b>私钥</b>加密摘要（签名），别人用<b>公钥</b>解密验证。因为只有你持有 <m>d</m>，所以验证通过就说明确实是你发的。'},
+
+    {t:'ex', title:'例 1　完整跑一遍小型 RSA', q:'取 <m>p=5</m>、<m>q=11</m>、<m>e=3</m>，加密 <m>M=8</m>，再解密验证。',
+      steps:[
+        '<m>n = 5×11 = 55</m>，<m>φ(n) = 4×10 = 40</m>。',
+        '<m>e=3</m>，<m>gcd(3,40)=1</m>，合法。',
+        '解 <m>3d ≡ 1 (mod 40)</m>：<m>3×27 = 81 = 2×40+1</m>，所以 <m>d=27</m>。',
+        '加密：<m>C = 8<sup>3</sup> mod 55 = 512 mod 55 = 17</m>（<m>55×9=495</m>）。',
+        '解密：<m>17<sup>27</sup> mod 55</m>。用快速幂算得 8。',
+        '公钥 <m>(55, 3)</m>，私钥 <m>(55, 27)</m>。'
+      ], ans:'密文 17，解密回 8'},
+
+    {t:'exs', id:'10.5', items:[
+      {q:'<m>p=7</m>、<m>q=13</m>、<m>e=5</m>，求 <m>n</m>、<m>φ(n)</m>、<m>d</m>。',
+       hint:'<m>ed ≡ 1 (mod φ)</m>。',
+       steps:['<m>n = 91</m>，<m>φ = 6×12 = 72</m>。','解 <m>5d ≡ 1 (mod 72)</m>。','<m>5×29 = 145 = 2×72+1</m>，所以 <m>d = 29</m>。'],
+       ans:'<m>n=91</m>，<m>φ=72</m>，<m>d=29</m>'},
+      {q:'为什么 <m>e</m> 常取 65537？',
+       hint:'二进制是 10000000000000001。',
+       steps:['65537 是素数，且 <m>65537 = 2<sup>16</sup>+1</m>。','二进制只有两个 1，快速幂只需 17 次平方和 1 次乘法。','加密很快，而安全性不受影响。'],
+       ans:'它是 <m>2<sup>16</sup>+1</m>，快速幂只需 17 次平方，加密极快'},
+      {q:'如果两个人用了相同的 <m>n</m>，但不同的 <m>e</m>，安全吗？',
+       hint:'<m>φ(n)</m> 是共享的。',
+       steps:['知道 <m>n</m> 和任一 <m>e</m> 仍无法求 <m>d</m>（要分解 n）。','但一旦其中一方的 <m>d</m> 泄露，就能算出 <m>φ(n)</m>，进而求出另一方的 <m>d</m>。','所以实际系统中每个用户必须有独立的 <m>n</m>。'],
+       ans:'不安全，一个私钥泄露会连累另一个'}
+    ]}
+  ]
+}
+
+]};
+
+CH[11] = {
+  title: '归纳与递归',
+  en: 'Induction and Recursion',
+  origin: 5,
+  intro: '归纳法常被误解成「举几个例子然后猜」。恰恰相反，它是<b>把无穷多个命题压成两步</b>的严密工具：一步验证起点，一步证明「如果这一步成立，下一步也成立」。而递归定义和归纳证明是同一枚硬币的两面——定义怎么长出来，证明就怎么长出来。',
+  sections: [
+
+{
+  id:'11.1', title:'数学归纳法',
+  blocks:[
+    {t:'lead', h:'想象一排无限长的多米诺骨牌。<b>你只需要做两件事</b>：推倒第一块，并保证任意一块倒下时能撞倒下一块。剩下的，物理定律替你完成。'},
+    {t:'thm', lb:'第一数学归纳法', h:'<p>要证对一切正整数 <m>n</m>，命题 <m>P(n)</m> 成立，只需：</p><ol style="margin:6px 0 0"><li><b>基础步</b>：<m>P(1)</m> 成立。</li><li><b>归纳步</b>：对任意 <m>k ≥ 1</m>，若 <m>P(k)</m> 成立，则 <m>P(k+1)</m> 成立。</li></ol><p style="margin-top:6px">两步都成立，则 <m>∀n P(n)</m>。</p>'},
+    {t:'p', h:'<b>最容易搞混的一点</b>：归纳步里你不是在「假设 <m>P(n)</m> 对所有 n 成立」——那叫循环论证。你只假设<b>某一个</b> <m>k</m> 成立，然后推出 <m>k+1</m>。这个「如果……则……」的蕴涵，本身对每个 <m>k</m> 都要证。'},
+    {t:'p', h:'把它想成一条链子：基础步给出第一环，归纳步给出「每一环都扣着下一环」的保证。链子的长度是无限的，但你要检查的只有两种连接方式。'},
+
+    {t:'ex', title:'例 1　前 n 个奇数之和', q:'证明 <m>1 + 3 + 5 + … + (2n−1) = n<sup>2</sup></m>。',
+      steps:[
+        '<b>基础步</b>：<m>n=1</m> 时左边 <m>= 1</m>，右边 <m>= 1<sup>2</sup> = 1</m>，成立。',
+        '<b>归纳假设</b>：设 <m>n=k</m> 时成立，即 <m>1+3+…+(2k−1) = k<sup>2</sup></m>。',
+        '<b>推 <m>k+1</m></b>：<m>1+3+…+(2k−1)+(2k+1) = k<sup>2</sup> + 2k + 1</m>。',
+        '<m>k<sup>2</sup>+2k+1 = (k+1)<sup>2</sup></m>，正好是 <m>n=k+1</m> 的右边。',
+        '由归纳原理，对一切正整数成立。'
+      ], ans:'成立'},
+
+    {t:'exs', id:'11.1', items:[
+      {q:'证明 <m>1 + 2 + … + n = n(n+1)/2</m>。',
+       hint:'归纳步里把 <m>k(k+1)/2</m> 加上 <m>k+1</m>。',
+       steps:['基础步：<m>n=1</m> 时 <m>1 = 1×2/2</m>。','假设 <m>Σ<sub>i=1</sub><sup>k</sup> i = k(k+1)/2</m>。','加 <m>k+1</m>：<m>k(k+1)/2 + (k+1) = (k+1)(k+2)/2</m>。','正是 <m>n=k+1</m> 的形式。'],
+       ans:'成立'},
+      {q:'证明当 <m>n ≥ 5</m> 时 <m>2<sup>n</sup> &gt; n<sup>2</sup></m>。',
+       hint:'基础步从 <m>n=5</m> 开始，归纳步要说明 <m>2k<sup>2</sup> ≥ (k+1)<sup>2</sup></m>。',
+       steps:['基础步：<m>2<sup>5</sup> = 32 &gt; 25</m>。','假设 <m>2<sup>k</sup> &gt; k<sup>2</sup></m>（<m>k ≥ 5</m>），则 <m>2<sup>k+1</sup> &gt; 2k<sup>2</sup></m>。','当 <m>k ≥ 3</m> 时 <m>2k<sup>2</sup> − (k+1)<sup>2</sup> = k<sup>2</sup>−2k−1 &gt; 0</m>。','所以 <m>2<sup>k+1</sup> &gt; (k+1)<sup>2</sup></m>。'],
+       ans:'成立（从 n=5 起）'},
+      {q:'下面这个证明错在哪：「任意 n 匹马都同色」。归纳步说：取 n+1 匹马，去掉第一匹得 n 匹（同色），去掉最后一匹也得 n 匹（同色），两组有重叠，故全部同色。',
+       hint:'看看 n 最小的时候。',
+       steps:['<m>n=1</m> 时（即从 1 匹推到 2 匹），「去掉第一匹」和「去掉最后一匹」得到的是两匹不同的马。','这两组<b>没有重叠</b>，无法传递同色。','归纳步要求对一切 <m>k ≥ 1</m> 成立，在 <m>k=1</m> 处断裂。'],
+       ans:'归纳步在 k=1 时不成立，两组没有交集'}
+    ]}
+  ]
+},
+
+{
+  id:'11.2', title:'强归纳法与良序性',
+  blocks:[
+    {t:'lead', h:'有些命题，推 <m>k+1</m> 时需要的不只是 <m>P(k)</m>，而是前面<b>所有</b>的结论。这时候用强归纳。'},
+    {t:'thm', lb:'强归纳法', h:'<p>要证 <m>∀n ≥ n<sub>0</sub>, P(n)</m>：</p><ol style="margin:6px 0 0"><li><b>基础步</b>：验证 <m>P(n<sub>0</sub>)</m>（有时需要验证前几项）。</li><li><b>归纳步</b>：假设 <m>P(n<sub>0</sub>), P(n<sub>0</sub>+1), …, P(k)</m> <b>全部</b>成立，推出 <m>P(k+1)</m>。</li></ol>'},
+    {t:'p', h:'<b>强归纳并不比普通归纳更强</b>。两种形式在逻辑上等价，只是「假设更多」让证明写起来方便。凡是能用强归纳证的，都能改写成普通归纳，只是要多绕几步。'},
+    {t:'p', h:'为什么它更好用？因为很多问题天然是「拆成更小的部分」：把一个整数拆成两个更小的整数相乘，把一棵树拆成两棵子树。拆出来的部分比 <m>k</m> 小多少不确定，只知道「更小」，这时就需要对<b>所有</b>更小的情形都有结论。'},
+
+    {t:'ex', title:'例 1　素数分解的存在性', q:'证明每个大于 1 的整数都能写成素数乘积。',
+      steps:[
+        '<b>基础步</b>：<m>n=2</m> 是素数，本身就是「一个素数的乘积」。',
+        '<b>归纳步</b>：设对一切 <m>2 ≤ m &lt; n</m> 成立，考虑 <m>n</m>。',
+        '若 <m>n</m> 是素数，直接成立。',
+        '若 <m>n</m> 是合数，则 <m>n = ab</m>，其中 <m>2 ≤ a, b &lt; n</m>。',
+        '由归纳假设，<m>a</m> 和 <m>b</m> 都能写成素数乘积，乘起来就是 <m>n</m> 的分解。'
+      ], ans:'存在性成立（唯一性由算术基本定理给出）'},
+
+    {t:'exs', id:'11.2', items:[
+      {q:'用 4 分和 7 分邮票，证明任何 <m>n ≥ 18</m> 的邮资都能凑出。',
+       hint:'验证 18、19、20、21 四个基础情形，之后每次加 4。',
+       steps:['基础：<m>18=7+7+4</m>，<m>19=7+4+4+4</m>，<m>20=4×5</m>，<m>21=7×3</m>。','归纳步：设 <m>n ≥ 22</m> 时 <m>n−4 ≥ 18</m> 已能凑出。','在 <m>n−4</m> 的方案上再加一张 4 分，得 <m>n</m>。','因为递推跨度是 4，基础步要连续验 4 个。'],
+       ans:'成立'},
+      {q:'为什么强归纳的基础步有时要验好几项？',
+       hint:'看递推的跨度。',
+       steps:['如果归纳步从 <m>n−4</m> 推到 <m>n</m>，就需要连续 4 个起点。','起点不够，链条中间会断。','普通归纳只跨 1 步，所以验 1 项就够。'],
+       ans:'递推跨度为 d 时，需连续验证 d 个基础情形'},
+      {q:'叙述良序原理，并说明它为什么和归纳法等价。',
+       hint:'反证：如果命题有反例，取最小的那个。',
+       steps:['良序原理：任何非空正整数集都有最小元。','若归纳法成立而良序不成立，就能构造无穷递降，矛盾。','反之，若命题有反例，取最小反例 <m>m</m>，则 <m>m−1</m> 都成立，由归纳步得 <m>m</m> 成立，矛盾。'],
+       ans:'非空正整数集必有最小元；与归纳法互为等价形式'}
+    ]}
+  ]
+},
+
+{
+  id:'11.3', title:'递归定义与结构归纳',
+  blocks:[
+    {t:'lead', h:'归纳法证明「所有 n 如何」，结构归纳证明「所有对象如何」。前提是对象本身要用递归的方式定义出来。'},
+    {t:'def', lb:'递归定义', h:'<p>一个结构用递归方式定义，必须包含三部分：</p><ol style="margin:6px 0 0"><li><b>基础情形</b>：最基本对象属于该集合。</li><li><b>递归规则</b>：由已有对象构造新对象的方法。</li><li><b>排斥条款</b>：除此之外没有别的对象（常省略，但逻辑上必需）。</li></ol>'},
+    {t:'p', h:'例：阶乘 <m>n! = n·(n−1)!</m>，<m>0! = 1</m>；斐波那契 <m>f<sub>n</sub> = f<sub>n−1</sub>+f<sub>n−2</sub></m>，<m>f<sub>0</sub>=0, f<sub>1</sub>=1</m>；字符串长度 <m>l(λ)=0</m>，<m>l(wx)=l(w)+1</m>。'},
+    {t:'p', h:'<b>第三条最容易被忽略</b>，但它决定了定义是否「紧」。没有排斥条款，你无法排除「偷偷混进来的额外对象」，后面的证明就失去基础。'},
+    {t:'thm', lb:'结构归纳法', h:'<p>要证性质 <m>P</m> 对某个递归定义的结构全体成立：</p><ol style="margin:6px 0 0"><li>对<b>每个基础情形</b>验证 <m>P</m>。</li><li>对<b>每条递归规则</b>，假设输入对象满足 <m>P</m>，证明构造出的新对象也满足 <m>P</m>。</li></ol>'},
+    {t:'p', h:'这和普通归纳的关系：普通归纳是按 <m>n</m> 从小到大证；结构归纳是按「构造的层数」证。树、表达式、语法串都只能用后者。'},
+
+    {t:'ex', title:'例 1　满二叉树的叶子数', q:'满二叉树（每个内部结点恰有两个孩子）中，叶子数 <m>l(T)</m> 与内部结点数 <m>i(T)</m> 满足 <m>l(T) = i(T) + 1</m>。用结构归纳证明。',
+      steps:[
+        '<b>基础情形</b>：单个结点既是根也是叶子，<m>i=0</m>，<m>l=1</m>，<m>1 = 0+1</m>，成立。',
+        '<b>递归规则</b>：设 <m>T</m> 由根、左子树 <m>T<sub>1</sub></m>、右子树 <m>T<sub>2</sub></m> 构成。',
+        '归纳假设：<m>l(T<sub>1</sub>) = i(T<sub>1</sub>)+1</m>，<m>l(T<sub>2</sub>) = i(T<sub>2</sub>)+1</m>。',
+        '则 <m>i(T) = i(T<sub>1</sub>)+i(T<sub>2</sub>)+1</m>，<m>l(T) = l(T<sub>1</sub>)+l(T<sub>2</sub>)</m>。',
+        '代入：<m>l(T) = i(T<sub>1</sub>)+1+i(T<sub>2</sub>)+1 = i(T)+1</m>。'
+      ], ans:'<m>l(T) = i(T)+1</m>'},
+
+    {t:'exs', id:'11.3', items:[
+      {q:'递归定义集合 <m>S = {3<sup>n</sup> | n ≥ 0}</m>。',
+       hint:'基础情形 1，递归规则乘 3。',
+       steps:['基础：<m>1 ∈ S</m>。','递归：若 <m>x ∈ S</m>，则 <m>3x ∈ S</m>。','排斥：<m>S</m> 中再无其他元素。'],
+       ans:'<m>1∈S</m>；<m>x∈S ⟹ 3x∈S</m>'},
+      {q:'用结构归纳证明：满二叉树的高度 <m>h</m> 满足 <m>h ≤ i(T)</m>（单结点高度记 0）。',
+       hint:'基础情形 <m>h=0, i=0</m>。',
+       steps:['基础：<m>0 ≤ 0</m>。','设 <m>T</m> 的两棵子树高度为 <m>h<sub>1</sub>, h<sub>2</sub></m>，则 <m>h = 1 + max(h<sub>1</sub>, h<sub>2</sub>)</m>。','由归纳假设 <m>h<sub>1</sub> ≤ i(T<sub>1</sub>)</m>，<m>h<sub>2</sub> ≤ i(T<sub>2</sub>)</m>。','<m>h ≤ 1 + max(i(T<sub>1</sub>), i(T<sub>2</sub>)) ≤ 1 + i(T<sub>1</sub>) + i(T<sub>2</sub>) = i(T)</m>。'],
+       ans:'成立'}
+    ]}
+  ]
+},
+
+{
+  id:'11.4', title:'递归算法',
+  blocks:[
+    {t:'lead', h:'递归算法就是「把问题交给一个更小的自己」。写法极短，但代价可能极高——关键在于<b>子问题有没有被重复计算</b>。'},
+    {t:'p', h:'<b>汉诺塔</b>是最干净的递归：把 <m>n−1</m> 个盘子移到辅助柱，把最大的移过去，再把 <m>n−1</m> 个移过去。步数 <m>T(n) = 2T(n−1)+1</m>，解得 <m>T(n) = 2<sup>n</sup>−1</m>。64 个盘子要 <m>1.8×10<sup>19</sup></m> 步，按每秒一步要 5800 亿年。'},
+    {t:'p', h:'<b>斐波那契</b>是反面教材：<m>f(n) = f(n−1)+f(n−2)</m> 直接递归，会把同一个 <m>f(k)</m> 算无数次。调用次数本身按黄金比 <m>φ<sup>n</sup></m> 增长。'},
+    {t:'w', id:'recur'},
+    {t:'p', h:'<b>递归式的展开</b>：把 <m>T(n)</m> 一层层代进去，直到出现基础情形，再把每层的工作量加起来。以归并排序为例：'},
+    {t:'f', h:'T(n) = 2T(n/2) + n = 4T(n/4) + 2n = … = 2<sup>k</sup>T(n/2<sup>k</sup>) + kn'},
+    {t:'p', h:'取 <m>k = log<sub>2</sub>n</m> 使 <m>n/2<sup>k</sup> = 1</m>，得 <m>T(n) = n·T(1) + n log<sub>2</sub>n = O(n log n)</m>。'},
+    {t:'p', h:'这就是「递归树」方法：<b>树有多少层，每层总共做多少活</b>，两者相乘就是复杂度。'},
+    {t:'table', head:['递归式','解法','典型算法'],
+      rows:[
+        ['<m>T(n)=T(n−1)+1</m>','<m>O(n)</m>','线性递归、阶乘'],
+        ['<m>T(n)=2T(n−1)+1</m>','<m>O(2<sup>n</sup>)</m>','汉诺塔'],
+        ['<m>T(n)=T(n/2)+1</m>','<m>O(log n)</m>','二分查找'],
+        ['<m>T(n)=2T(n/2)+n</m>','<m>O(n log n)</m>','归并排序'],
+        ['<m>T(n)=2T(n/2)+1</m>','<m>O(n)</m>','树的遍历']
+      ]},
+    {t:'tip', h:'<p><b>什么时候该把递归改成递推？</b>两个信号：子问题被重复计算（斐波那契），或者递归深度会爆栈（<m>n</m> 上万）。</p><p>前者用记忆化或自底向上填表，后者改写成循环加显式栈。</p>'},
+
+    {t:'ex', title:'例 1　汉诺塔的步数', q:'<m>n</m> 个盘子最少要移动多少次？',
+      steps:[
+        '设 <m>T(n)</m> 为最少步数。',
+        '必须先把上面 <m>n−1</m> 个移到辅助柱：<m>T(n−1)</m> 步。',
+        '把最大的移到目标柱：1 步。',
+        '再把 <m>n−1</m> 个移过去：<m>T(n−1)</m> 步。',
+        '所以 <m>T(n) = 2T(n−1)+1</m>，<m>T(1)=1</m>。展开得 <m>T(n) = 2<sup>n</sup>−1</m>。'
+      ], ans:'<m>2<sup>n</sup>−1</m>'},
+
+    {t:'exs', id:'11.4', items:[
+      {q:'朴素递归算 <m>f(10)</m> 要调用多少次？',
+       hint:'调用次数 <m>C(n) = C(n−1)+C(n−2)+1</m>，<m>C(1)=C(2)=1</m>。',
+       steps:['<m>C(3)=3</m>，<m>C(4)=5</m>，<m>C(5)=9</m>，<m>C(6)=15</m>。','继续：<m>C(7)=25</m>，<m>C(8)=41</m>，<m>C(9)=67</m>，<m>C(10)=109</m>。','而递推只要 9 次加法。'],
+       ans:'109 次'},
+      {q:'为什么二分查找的递归式是 <m>T(n)=T(n/2)+1</m> 而不是 <m>2T(n/2)</m>？',
+       hint:'每次只走一半。',
+       steps:['比较中间元素后，只在左半或右半<b>其中之一</b>继续找。','子问题只有 1 个，不是 2 个。','所以是 <m>T(n/2)</m>，解出 <m>O(log n)</m>。'],
+       ans:'因为每步只递归一个子问题'},
+      {q:'归并排序的递归树有几层？每层总工作量是多少？',
+       hint:'对半分。',
+       steps:['层数 <m>log<sub>2</sub>n + 1</m>（从 n 切到 1）。','每层合并总比较次数约 <m>n</m>。','相乘得 <m>O(n log n)</m>。'],
+       ans:'<m>log<sub>2</sub>n</m> 层，每层 <m>O(n)</m>'}
+    ]}
+  ]
+},
+
+{
+  id:'11.5', title:'程序正确性',
+  blocks:[
+    {t:'lead', h:'程序「跑通了」不等于正确。测试只能证明存在错误，不能证明没有错误。<b>要证明正确，得用逻辑。</b>'},
+    {t:'def', lb:'正确性的两层', h:'<ul style="margin:4px 0 0"><li><b>部分正确</b>：若程序终止，则结果符合规格。</li><li><b>终止性</b>：程序对一切合法输入都会停。</li><li>两者合起来叫<b>完全正确</b>。</li></ul>'},
+    {t:'p', h:'注意这个拆分很聪明：它把「结果对不对」和「会不会停」分开证。因为前者用逻辑推，后者常用计数或良序原理。'},
+    {t:'def', lb:'霍尔三元组', h:'<p><m>{P} S {Q}</m> 读作：<b>若执行 <m>S</m> 前断言 <m>P</m> 成立，且 <m>S</m> 终止，则执行后 <m>Q</m> 成立</b>。</p><p><m>P</m> 叫前置条件，<m>Q</m> 叫后置条件。</p>'},
+    {t:'h3', h:'循环不变式'},
+    {t:'p', h:'循环是正确性证明的难点，因为它的执行次数不确定。办法是找一个<b>循环不变式</b>：一个在每次循环前后都成立的断言。证明分三步：'},
+    {t:'ol', items:[
+      '<b>初始化</b>：进入循环前，不变式成立。',
+      '<b>保持</b>：若某轮开始时不成立式成立，则该轮结束时仍成立。',
+      '<b>终止</b>：循环结束时，不变式加上退出条件，能推出后置条件。'
+    ]},
+    {t:'p', h:'这和数学归纳法是同一个骨架：初始化对应基础步，保持对应归纳步，终止对应「归纳到终点」。'},
+    {t:'p', h:'<b>例</b>：下面这段求 <m>a<sup>n</sup></m> 的循环'},
+    {t:'f', h:'i = 0; p = 1;　while i &lt; n: p = p·a; i = i+1', note:'结束时 p = aⁿ'},
+    {t:'p', h:'取不变式「<m>p = a<sup>i</sup></m> 且 <m>i ≤ n</m>」。初始化：<m>i=0, p=1=a<sup>0</sup></m>，成立。保持：每轮 <m>p</m> 乘 <m>a</m>、<m>i</m> 加 1，<m>p = a<sup>i</sup></m> 仍成立。终止：<m>i = n</m>，代入得 <m>p = a<sup>n</sup></m>。'},
+    {t:'p', h:'<b>终止性怎么证？</b>找一个<b>严格递减且有下界</b>的量。上面循环里 <m>n − i</m> 每轮减 1，最小到 0，所以必然终止。这个量叫<b>循环变式</b>（variant）。'},
+    {t:'warn', h:'<p>找不变式是门手艺，没有通用算法。经验是：<b>写下循环变量的含义</b>。「<m>p</m> 存的是前 <m>i</m> 项的积」「<m>i</m> 之前的部分已排好序」——这类句子往往就是不变式。</p>'},
+
+    {t:'ex', title:'例 1　数组求和的不变式', q:'证明：循环 <code>s=0; i=0; while i&lt;n: s=s+A[i]; i=i+1</code> 结束后 <m>s</m> 等于数组前 <m>n</m> 项之和。',
+      steps:[
+        '不变式取「<m>s = A[0]+…+A[i−1]</m> 且 <m>0 ≤ i ≤ n</m>」。',
+        '<b>初始化</b>：<m>i=0</m>，空和为 0，成立。',
+        '<b>保持</b>：第 <m>i</m> 轮把 <m>A[i]</m> 加进 <m>s</m>，<m>i</m> 变 <m>i+1</m>，不变式仍成立。',
+        '<b>终止</b>：<m>i=n</m>，代回得 <m>s = A[0]+…+A[n−1]</m>。',
+        '<b>终止性</b>：<m>n−i</m> 严格递减且非负。'
+      ], ans:'完全正确'},
+
+    {t:'exs', id:'11.5', items:[
+      {q:'「程序对所有测试用例都通过了」能否证明程序正确？',
+       hint:'测试是抽样还是穷举？',
+       steps:['测试只能覆盖有限个输入。','输入空间通常是无限的，未测到的地方可能有错。','测试能<b>否证</b>正确性（找到反例），不能<b>证明</b>。'],
+       ans:'不能，测试只能发现错误'},
+      {q:'循环 <code>while x != 1: if x even: x=x/2 else: x=3x+1</code> 的终止性能证明吗？',
+       hint:'这是考拉兹猜想。',
+       steps:['这是著名的 3n+1 问题（考拉兹猜想）。','至今无人证明它对一切正整数终止，也无人找到反例。','说明「找一个递减的变式」并不总能做到。'],
+       ans:'不能，这是未解猜想'}
+    ]}
+  ]
+}
+
+]};
+
+CH[12] = {
+  title: '离散概率',
+  en: 'Discrete Probability',
+  origin: 7,
+  intro: '概率不是「感觉上有多大可能」，而是<b>数事件里的元素</b>。样本空间定好，事件就是它的子集，概率就是子集大小除以总大小。这一章真正有用的两个工具是：<b>条件概率</b>（把样本空间换掉）和<b>期望的线性性</b>（不用管分布也能算期望）。',
+  sections: [
+
+{
+  id:'12.1', title:'概率基础',
+  blocks:[
+    {t:'lead', h:'扔一个骰子，样本空间是 <m>{1,2,3,4,5,6}</m>。「点数是偶数」这个事件是子集 <m>{2,4,6}</m>。概率就是 <m>3/6</m>。<b>没有比这更玄的东西</b>。'},
+    {t:'def', lb:'样本空间与事件', h:'<p><b>样本空间</b> <m>S</m> 是所有可能结果的集合。<b>事件</b> <m>E</m> 是 <m>S</m> 的子集。</p><p>若每个结果等可能，则</p><div class="f" style="margin:6px 0">P(E) = |E| / |S|</div>'},
+    {t:'p', h:'这个定义只适用于<b>等可能</b>的情形。骰子灌了铅、硬币两面不等重，就不能这么算，得用公理化定义（每条结果带一个权重，权重和为 1）。'},
+    {t:'thm', lb:'基本性质', h:'<ul style="margin:4px 0 0"><li><m>0 ≤ P(E) ≤ 1</m>，<m>P(S)=1</m>，<m>P(∅)=0</m></li><li><b>补事件</b>：<m>P(Ē) = 1 − P(E)</m></li><li><b>容斥</b>：<m>P(E∪F) = P(E) + P(F) − P(E∩F)</m></li><li>若 <m>E ⊆ F</m>，则 <m>P(E) ≤ P(F)</m></li></ul>'},
+    {t:'p', h:'<b>补事件是最常用的技巧</b>。「至少一个」几乎总是从反面算更快：<m>P(至少一个) = 1 − P(一个都没有)</m>。'},
+    {t:'p', h:'<b>生日问题</b>就是这个技巧的经典：23 个人里至少两人生日相同的概率是 50.7%，反直觉地高。算法是算「全都不同」：'},
+    {t:'f', h:'P(全不同) = (365/365)·(364/365)·…·(343/365) ≈ 0.493　⟹　P(至少一对相同) ≈ 0.507'},
+    {t:'w', id:'birthday'},
+    {t:'p', h:'为什么这么高？因为「一对相同」的<b>配对</b>有 <m>C(23,2)=253</m> 对，每一对都有约 <m>1/365</m> 的碰撞机会。人直觉上算的是「有人和我同一天生日」（约 22/365），而不是「任意两人」。'},
+    {t:'warn', h:'<p>算概率前先问三个问题：</p><ol style="margin:6px 0 0"><li>样本空间是什么？每个结果等可能吗？</li><li>事件是「至少一个」还是「恰好一个」？</li><li>要不要用补事件？</li></ol><p style="margin-top:6px">三个问题里错一个，答案就全错。</p>'},
+
+    {t:'ex', title:'例 1　两个骰子', q:'掷两个骰子，点数之和为 7 的概率是多少？',
+      steps:[
+        '样本空间是<b>有序对</b>，共 <m>6×6 = 36</m> 个结果（不能算成 21 种组合，因为组合不等可能）。',
+        '和为 7 的有：(1,6)(2,5)(3,4)(4,3)(5,2)(6,1)，共 6 个。',
+        '<m>P = 6/36 = 1/6</m>。'
+      ], ans:'<m>1/6</m>'},
+
+    {t:'exs', id:'12.1', items:[
+      {q:'从 1 到 100 随机取一个整数，它能被 3 或 5 整除的概率是多少？',
+       hint:'用容斥。',
+       steps:['被 3 整除：<m>⌊100/3⌋ = 33</m> 个。','被 5 整除：20 个。','同时被 3、5 整除即被 15 整除：6 个。','<m>33+20−6 = 47</m>，概率 <m>47/100</m>。'],
+       ans:'0.47'},
+      {q:'一枚硬币掷 4 次，至少出现一次正面的概率？',
+       hint:'用补事件。',
+       steps:['反事件是「四次全反面」，概率 <m>(1/2)<sup>4</sup> = 1/16</m>。','<m>1 − 1/16 = 15/16</m>。'],
+       ans:'<m>15/16</m>'},
+      {q:'为什么「两个骰子点数和」不能把样本空间当成 21 种组合？',
+       hint:'(1,1) 和 (1,2) 的可能性一样吗？',
+       steps:['组合 (1,2) 对应 (1,2) 和 (2,1) 两种有序结果。','组合 (1,1) 只有一种。','两者不等可能，所以不能用组合数当分母。'],
+       ans:'组合不等可能，必须用有序对'}
+    ]}
+  ]
+},
+
+{
+  id:'12.2', title:'条件概率与独立性',
+  blocks:[
+    {t:'lead', h:'「已知某件事发生了，另一件事的概率」——这不是新概念，只是<b>把样本空间缩小到已知事件里</b>。'},
+    {t:'def', lb:'条件概率', h:'<p>当 <m>P(F) &gt; 0</m> 时，</p><div class="f" style="margin:6px 0">P(E | F) = P(E ∩ F) / P(F)</div><p>直观：把 <m>F</m> 当成新的样本空间，看 <m>E</m> 在其中占多大比例。</p>'},
+    {t:'p', h:'<b>从集合角度理解</b>：原来的分母是 <m>|S|</m>，现在分母换成 <m>|F|</m>，分子换成 <m>|E∩F|</m>。就这一件事。'},
+    {t:'thm', lb:'乘法法则', h:'<p><m>P(E ∩ F) = P(F)·P(E|F) = P(E)·P(F|E)</m>。多个事件可以链式展开：</p><div class="f" style="margin:6px 0">P(E<sub>1</sub>∩…∩E<sub>n</sub>) = P(E<sub>1</sub>)P(E<sub>2</sub>|E<sub>1</sub>)…P(E<sub>n</sub>|E<sub>1</sub>…E<sub>n−1</sub>)</div>'},
+    {t:'def', lb:'独立', h:'<p><m>E</m> 与 <m>F</m> <b>独立</b>，如果</p><div class="f" style="margin:6px 0">P(E ∩ F) = P(E)·P(F)</div><p>等价地（当概率非零）：<m>P(E|F) = P(E)</m>——知道 <m>F</m> 发生与否，不改变 <m>E</m> 的概率。</p>'},
+    {t:'warn', h:'<p><b>互斥 ≠ 独立</b>，这两件事经常被混为一谈。</p><p>若 <m>E</m> 与 <m>F</m> 互斥且概率都大于 0，则 <m>P(E∩F)=0 ≠ P(E)P(F) &gt; 0</m>，所以它们<b>一定不独立</b>。互斥意味着「一个发生就排除了另一个」，这是极强的相关性。</p>'},
+    {t:'p', h:'<b>独立性的判断不能靠直觉。</b>「掷两枚硬币，第一枚正面」与「两枚结果相同」独立吗？算一下：<m>P(相同)=1/2</m>，<m>P(相同|第一枚正)=P(第二枚正)=1/2</m>，相同，独立。但换成三枚硬币，「第一枚正面」与「三枚中正面数为偶数」就不独立了。'},
+    {t:'p', h:'多个事件<b>两两独立</b>也不等于<b>相互独立</b>。三事件相互独立要求每一个子集的交都等于各自概率的乘积，四个等式全成立才行。'},
+
+    {t:'ex', title:'例 1　不放回抽牌', q:'一副 52 张牌，不放回抽两张。已知第一张是 A，第二张也是 A 的概率？',
+      steps:[
+        '第一张抽走一张 A，剩 3 张 A、51 张牌。',
+        '在新的样本空间里，概率是 <m>3/51 = 1/17</m>。',
+        '若改为<b>放回</b>，则仍是 <m>4/52 = 1/13</m>，两次独立。'
+      ], ans:'<m>1/17</m>（放回则 <m>1/13</m>）'},
+
+    {t:'exs', id:'12.2', items:[
+      {q:'<m>P(E)=0.4</m>，<m>P(F)=0.5</m>，<m>P(E∩F)=0.2</m>。两者独立吗？',
+       hint:'比较乘积。',
+       steps:['<m>P(E)P(F) = 0.4×0.5 = 0.2</m>。','正好等于 <m>P(E∩F)</m>。'],
+       ans:'独立'},
+      {q:'若 <m>P(E)=0.3</m>、<m>P(F)=0.4</m> 且互斥，它们独立吗？',
+       hint:'互斥时交事件概率是多少？',
+       steps:['互斥则 <m>P(E∩F) = 0</m>。','<m>P(E)P(F) = 0.12 ≠ 0</m>。','所以不独立。'],
+       ans:'不独立'},
+      {q:'为什么「不放回抽样」会让两次结果不独立？',
+       hint:'看第二次的样本空间。',
+       steps:['第一次的结果改变了剩余牌堆的构成。','第二次的概率依赖第一次抽到了什么。','<m>P(第二次A) = 1/13</m>，但 <m>P(第二次A|第一次A) = 1/17</m>，不等。'],
+       ans:'第一次抽走了牌，改变了第二次的样本空间'}
+    ]}
+  ]
+},
+
+{
+  id:'12.3', title:'贝叶斯定理',
+  blocks:[
+    {t:'lead', h:'贝叶斯回答的是一个反方向的问题：<b>看到了结果，怎么反推原因</b>。医生看到阳性报告，想知道病人真患病的概率——这就是贝叶斯。'},
+    {t:'thm', lb:'全概率公式', h:'<p>若 <m>F<sub>1</sub>, …, F<sub>n</sub></m> 构成样本空间的一个划分（互不相交、并起来是全集），则</p><div class="f" style="margin:6px 0">P(E) = Σ<sub>i</sub> P(E | F<sub>i</sub>) · P(F<sub>i</sub>)</div>'},
+    {t:'thm', lb:'贝叶斯定理', h:'<div class="f" style="margin:6px 0">P(F | E) = P(E | F)·P(F) / P(E)</div><p>分母 <m>P(E)</m> 通常用全概率公式展开成「各种原因下出现 E 的总和」。</p>'},
+    {t:'p', h:'四个名字要分清：<m>P(F)</m> 是<b>先验</b>（看结果之前对原因的信念），<m>P(E|F)</m> 是<b>似然</b>（该原因下出现这个结果的概率），<m>P(F|E)</m> 是<b>后验</b>（看到结果之后更新的信念），<m>P(E)</m> 是<b>证据</b>（归一化常数）。'},
+    {t:'p', h:'<b>为什么重要？</b>因为人脑天生把 <m>P(E|F)</m> 和 <m>P(F|E)</m> 搞反。医生说「这个检测准确率 99%」，指的是 <m>P(阳性|患病)</m>，而不是你关心的 <m>P(患病|阳性)</m>。两者可以差几十倍。'},
+    {t:'w', id:'bayes'},
+    {t:'tip', h:'<p><b>算贝叶斯的笨办法最可靠</b>：假设总共有 10000 人，按先验算出患病和健康各多少人，再按似然算出各有多少人阳性，最后用「真阳性 / 全部阳性」。用人数代替概率，几乎不会算错。</p>'},
+
+    {t:'ex', title:'例 1　疾病检测', q:'某病患病率 1%。检测灵敏度 99%（患病者 99% 阳性），假阳性率 2%（健康者 2% 阳性）。某人阳性，他真患病的概率是多少？',
+      steps:[
+        '设总人数 10000：患病 100 人，健康 9900 人。',
+        '患病者中阳性：<m>100×0.99 = 99</m> 人。',
+        '健康者中误报阳性：<m>9900×0.02 = 198</m> 人。',
+        '全部阳性 <m>99+198 = 297</m> 人，其中真患病 99 人。',
+        '<m>P = 99/297 = 1/3</m>。'
+      ], ans:'约 33.3%，远低于直觉的 99%'},
+    {t:'p', h:'这个结果不是悖论。<b>因为健康人基数太大了</b>，2% 的误报率乘上 9900 人，绝对数就压过了 99 个真阳性。这也解释了为什么罕见病不适合全民筛查——假阳性会把医疗系统淹掉。'},
+
+    {t:'exs', id:'12.3', items:[
+      {q:'把上题的患病率改成 10%，后验变成多少？',
+       hint:'同样用 10000 人算。',
+       steps:['患病 1000 人，阳性 <m>990</m> 人。','健康 9000 人，误报 <m>180</m> 人。','<m>990/(990+180) = 990/1170 ≈ 0.846</m>。'],
+       ans:'约 84.6%'},
+      {q:'为什么 <m>P(E|F)</m> 和 <m>P(F|E)</m> 一般不等？',
+       hint:'举一个极端例子。',
+       steps:['设 <m>F</m> = 人，<m>E</m> = 会呼吸。','<m>P(呼吸|人) = 1</m>，但 <m>P(人|呼吸)</m> 远小于 1（还有别的动物）。','分母不同：一个是 <m>P(F)</m>，一个是 <m>P(E)</m>。'],
+       ans:'分母不同，条件概率不是对称关系'}
+    ]}
+  ]
+},
+
+{
+  id:'12.4', title:'期望与方差',
+  blocks:[
+    {t:'lead', h:'期望不是「最可能的值」，而是<b>长期平均值</b>。掷一个骰子，期望 3.5，但永远掷不出 3.5。'},
+    {t:'def', lb:'期望', h:'<p>离散随机变量 <m>X</m> 取值 <m>x<sub>1</sub>, x<sub>2</sub>, …</m>，概率 <m>p(x<sub>i</sub>)</m>，则</p><div class="f" style="margin:6px 0">E(X) = Σ x<sub>i</sub> p(x<sub>i</sub>)</div>'},
+    {t:'p', h:'<b>例</b>：掷骰子 <m>E(X) = (1+2+3+4+5+6)/6 = 3.5</m>。掷 1000 次的平均值会非常接近 3.5，这就是大数定律的直观。'},
+    {t:'thm', lb:'期望的线性性', h:'<div class="f" style="margin:4px 0">E(X + Y) = E(X) + E(Y)</div><p><b>不需要 X 与 Y 独立</b>。这是期望最好用的性质，没有之一。</p>'},
+    {t:'p', h:'<b>经典应用：n 个人随机拿回帽子，期望有多少人拿对？</b>令 <m>X<sub>i</sub></m> 表示第 <m>i</m> 人拿对（1 或 0）。<m>P(X<sub>i</sub>=1) = 1/n</m>，所以 <m>E(X<sub>i</sub>) = 1/n</m>。由线性性：'},
+    {t:'f', h:'E(拿对人数) = Σ E(X<sub>i</sub>) = n · (1/n) = 1'},
+    {t:'p', h:'不管 <m>n</m> 是 10 还是 100 万，期望都是 1 个。这个结论如果硬算分布，会非常麻烦——线性性一步到位。'},
+    {t:'def', lb:'方差', h:'<p><m>V(X) = E((X − E(X))<sup>2</sup>) = E(X<sup>2</sup>) − (E(X))<sup>2</sup></m>，标准差 <m>σ = √V(X)</m>。</p><p>期望描述「重心」，方差描述「分散程度」。</p>'},
+    {t:'p', h:'注意 <m>E(X<sup>2</sup>) ≠ (E(X))<sup>2</sup></m>，两者差一个方差。这个坑考试很爱设。'},
+    {t:'p', h:'<b>几何分布</b>：反复试验直到首次成功，每次成功率 <m>p</m>，则期望次数 <m>1/p</m>。直觉：成功率为 1/6 时，平均要试 6 次。'},
+    {t:'p', h:'<b>期望与决策</b>：彩票的期望收益通常低于票价（否则发行方亏本）。但期望低不代表不该买——如果 2 元换一个「可能中 500 万」的想象，效用上未必不划算。期望是数学，值不值是另一回事。'},
+
+    {t:'ex', title:'例 1　两个骰子的期望和', q:'掷两个骰子，点数之和的期望是多少？',
+      steps:[
+        '设 <m>X<sub>1</sub>, X<sub>2</sub></m> 分别为两个骰子，<m>E(X<sub>1</sub>) = E(X<sub>2</sub>) = 3.5</m>。',
+        '由线性性，<m>E(X<sub>1</sub>+X<sub>2</sub>) = 3.5 + 3.5 = 7</m>。',
+        '不需要列出 36 种情况，也不需要两者独立。'
+      ], ans:'7'},
+
+    {t:'exs', id:'12.4', items:[
+      {q:'掷一枚骰子，求 <m>E(X<sup>2</sup>)</m> 与 <m>V(X)</m>。',
+       hint:'<m>E(X<sup>2</sup>) = (1+4+9+16+25+36)/6</m>。',
+       steps:['<m>E(X<sup>2</sup>) = 91/6 ≈ 15.17</m>。','<m>(E(X))<sup>2</sup> = 3.5<sup>2</sup> = 12.25</m>。','<m>V = 15.17 − 12.25 = 35/12 ≈ 2.92</m>。'],
+       ans:'<m>E(X<sup>2</sup>)=91/6</m>，<m>V(X)=35/12</m>'},
+      {q:'一个游戏：掷骰子，掷出 6 得 10 元，否则付 2 元。期望收益是多少？值得玩吗？',
+       hint:'算加权平均。',
+       steps:['<m>E = 10×(1/6) + (−2)×(5/6)</m>。','<m>= 10/6 − 10/6 = 0</m>。'],
+       ans:'期望为 0，公平游戏（长期不赚不亏）'},
+      {q:'为什么 <m>E(XY) = E(X)E(Y)</m> 需要独立性，而 <m>E(X+Y)</m> 不需要？',
+       hint:'看乘积里有没有交叉项。',
+       steps:['和的期望展开后是 <m>Σx p + Σy p</m>，逐项可拆。','积的期望是 <m>Σ xy p(x,y)</m>，需要 <m>p(x,y)=p(x)p(y)</m> 才能拆成两个和相乘。','所以乘积需要独立，加法不需要。'],
+       ans:'加法逐项可拆，乘法需要联合分布可分解'}
+    ]}
+  ]
+}
+
+]};
+
+CH[13] = {
+  title: '计算模型',
+  en: 'Modeling Computation',
+  origin: 13,
+  intro: '前面十二章都在讲「怎么算」。这一章反过来问：<b>什么才算「能算」</b>？答案是三个层层加码的机器：有限状态机（只能记常数信息）、带输出的状态机、图灵机（有无限纸带）。最后你会发现，有些问题<b>根本没有算法</b>——这不是技术不够，是逻辑上的不可能。',
+  sections: [
+
+{
+  id:'13.1', title:'语言与文法',
+  blocks:[
+    {t:'lead', h:'要研究「计算的极限」，得先把「问题」变成精确的数学对象。办法是把问题看成<b>字符串的集合</b>。'},
+    {t:'def', lb:'字母表与串', h:'<ul style="margin:4px 0 0"><li><b>字母表</b> <m>Σ</m>：非空有限符号集，如 <m>{0,1}</m> 或 <m>{a,b,c}</m>。</li><li><b>串</b>：字母的有限序列。<b>空串</b>记作 <m>λ</m>（或 <m>ε</m>）。</li><li><m>Σ<sup>*</sup></m>：由 <m>Σ</m> 中符号组成的所有串的集合，含空串。</li><li><b>语言</b>：<m>Σ<sup>*</sup></m> 的子集。</li></ul>'},
+    {t:'p', h:'<b>为什么用语言建模问题？</b>因为任何「输入」都能编码成串：一个整数、一张图、一段程序，都能写成 0/1 串。于是「判定某类输入是否满足性质」就变成了「某个串是否属于某个语言」。'},
+    {t:'def', lb:'文法', h:'<p>文法是一个四元组 <m>G = (V, T, S, P)</m>：</p><ul style="margin:6px 0 0"><li><m>V</m>：变量（非终结符）集合</li><li><m>T</m>：终结符集合（<m>V ∩ T = ∅</m>）</li><li><m>S</m>：起始符号</li><li><m>P</m>：产生式集合，形如 <m>A → w</m></li></ul>'},
+    {t:'p', h:'从 <m>S</m> 出发，反复用产生式替换左边的变量，直到串里只剩终结符。这个过程叫<b>派生</b>，记作 <m>S ⇒* w</m>。文法生成的语言就是所有能派生出的串。'},
+    {t:'p', h:'<b>例</b>：<m>S → 0S1</m>，<m>S → λ</m>。派生过程：<m>S ⇒ 0S1 ⇒ 00S11 ⇒ 0011</m>。这个文法生成的语言是'},
+    {t:'f', h:'L(G) = { 0<sup>n</sup>1<sup>n</sup> | n ≥ 0 }'},
+    {t:'p', h:'这个例子很重要：它<b>不是正则语言</b>。因为要数 0 的个数再配同样多的 1，需要「记住」数到几了——有限个状态做不到。这就是 13.2 节要讲的边界。'},
+    {t:'p', h:'<b>BNF（巴科斯-诺尔范式）</b>是文法的工程写法，你在语言规范里见过：'},
+    {t:'f', h:'⟨标识符⟩ ::= ⟨字母⟩ | ⟨标识符⟩⟨字母⟩ | ⟨标识符⟩⟨数字⟩', note:'变量用尖括号包起来，::= 代替 →'},
+    {t:'p', h:'编程语言的语法就是这么定义的，编译器前端的第一步（词法、语法分析）就是在判断「这段代码能否由文法派生出来」。'},
+
+    {t:'ex', title:'例 1　写一个文法', q:'写出生成「以 a 开头、后接任意个 b」的语言 <m>{ab<sup>n</sup> | n ≥ 0}</m> 的文法。',
+      steps:[
+        '起始符号必须产生一个 a。',
+        '然后用一个递归变量产生任意个 b。',
+        '<m>S → aA</m>，<m>A → bA</m>，<m>A → λ</m>。',
+        '验证：<m>S ⇒ aA ⇒ abA ⇒ abbA ⇒ abb</m>。'
+      ], ans:'<m>S → aA</m>；<m>A → bA | λ</m>'},
+
+    {t:'exs', id:'13.1', items:[
+      {q:'<m>Σ = {a,b}</m>，<m>Σ<sup>*</sup></m> 中有多少个长度为 3 的串？',
+       hint:'每位两个选择。',
+       steps:['每一位可取 a 或 b。','<m>2<sup>3</sup> = 8</m>。'],
+       ans:'8 个'},
+      {q:'文法 <m>S → SS | a | λ</m> 生成什么语言？',
+       hint:'先看最短的串。',
+       steps:['最短是 <m>λ</m> 和 <m>a</m>。','用 <m>S→SS</m> 可以拼接任意两个已有的串。','所以生成的是「任意个 a 组成的串」，含空串。'],
+       ans:'<m>{a<sup>n</sup> | n ≥ 0}</m>'},
+      {q:'为什么 <m>{0<sup>n</sup>1<sup>n</sup>}</m> 无法用正则表达式描述？',
+       hint:'正则表达式没有「计数器」。',
+       steps:['正则表达式只能表达「有限状态能记住的信息」。','要匹配 <m>0<sup>n</sup>1<sup>n</sup></m> 必须记住读了几个 0，<m>n</m> 无上界。','有限状态装不下无界计数。'],
+       ans:'需要无界计数，超出有限状态能力'}
+    ]}
+  ]
+},
+
+{
+  id:'13.2', title:'有限状态自动机',
+  blocks:[
+    {t:'lead', h:'有限状态自动机是<b>没有内存的机器</b>：它只能记住「我现在处于哪个状态」，而状态数固定。它的全部能力，就是在这张固定的图上走路。'},
+    {t:'def', lb:'确定性有限自动机（DFA）', h:'<p>一个 DFA 是五元组 <m>M = (S, I, f, s<sub>0</sub>, F)</m>：</p><ul style="margin:6px 0 0"><li><m>S</m>：有限状态集</li><li><m>I</m>：输入字母表</li><li><m>f: S × I → S</m>：转移函数（每个状态每个输入<b>恰有一个</b>去向）</li><li><m>s<sub>0</sub></m>：起始状态</li><li><m>F ⊆ S</m>：接受状态集</li></ul>'},
+    {t:'p', h:'<b>「确定性」的含义</b>：给定当前状态和当前输入，下一步去哪是唯一的。这也是它叫 DFA 的原因；允许「多个可能去向」的版本叫 NFA，两者识别能力其实相同。'},
+    {t:'p', h:'读完整条输入串后，若停在接受状态，就说这个串被<b>接受</b>；否则被拒绝。一个 DFA 接受的所有串构成一个<b>正则语言</b>。'},
+    {t:'w', id:'dfa'},
+    {t:'p', h:'<b>怎么读状态图？</b>圆圈是状态，双圈是接受状态，箭头是转移，从「无处而来」的箭头指向起始状态。走完输入后看落在单圈还是双圈。'},
+    {t:'h3', h:'常见任务的 DFA 设计'},
+    {t:'table', head:['要识别的语言','需要记住什么','状态数'],
+      rows:[
+        ['1 的个数为偶数','当前是奇还是偶','2'],
+        ['串中含有 01','还没见到 0 / 见到了 0 / 已出现 01','3'],
+        ['被 3 整除（二进制）','当前余数 0、1、2','3'],
+        ['以 00 结尾','末尾有几个连续的 0（0/1/2 个）','3']
+      ]},
+    {t:'p', h:'<b>设计方法</b>：问自己「读到一半时，我需要记住哪些信息才能继续判断」。记住的信息就是状态。<b>需要的状态数 = 需要区分的情形数</b>。'},
+    {t:'p', h:'<b>它的极限在哪？</b>有限状态机无法完成「配对计数」——比如 <m>0<sup>n</sup>1<sup>n</sup></m>、括号匹配、回文判断。因为这些任务要求记住一个无上界的数，而状态数必须固定。这不是设计得不好，是原理上不可能。'},
+
+    {t:'ex', title:'例 1　偶数个 1', q:'设计 DFA，识别「含有偶数个 1」的二进制串。',
+      steps:[
+        '只需记住当前 1 的个数是奇还是偶，两个状态。',
+        '<m>s<sub>0</sub></m>（偶，起始且接受），<m>s<sub>1</sub></m>（奇）。',
+        '读 0：状态不变。读 1：在 <m>s<sub>0</sub></m> 与 <m>s<sub>1</sub></m> 之间切换。',
+        '空串也含 0 个 1（偶数），所以 <m>s<sub>0</sub></m> 是接受状态。'
+      ], ans:'两状态，读 1 翻转，读 0 保持'},
+
+    {t:'exs', id:'13.2', items:[
+      {q:'设计 DFA 识别「以 01 结尾」的串，需要几个状态？',
+       hint:'记住末尾匹配了几位。',
+       steps:['状态 0：末尾没有匹配任何前缀。','状态 1：末尾是 0。','状态 2：末尾已是 01（接受）。','读 0 从状态 1 回状态 1，读 1 从状态 1 进状态 2。'],
+       ans:'3 个状态'},
+      {q:'为什么 DFA 无法识别括号是否配对？',
+       hint:'嵌套层数有上界吗？',
+       steps:['配对要求记住当前嵌套深度。','深度可以是任意大，没有上界。','有限状态数装不下无界深度。'],
+       ans:'嵌套深度无界，超出有限状态'},
+      {q:'一个 DFA 有 3 个状态、字母表 <m>{0,1}</m>，转移表最多有多少个条目？',
+       hint:'每个状态每种输入一项。',
+       steps:['<m>3 × 2 = 6</m>。','每一项都必须有定义（DFA 要求完全）。'],
+       ans:'6 项'}
+    ]}
+  ]
+},
+
+{
+  id:'13.3', title:'带输出的有限状态机',
+  blocks:[
+    {t:'lead', h:'DFA 只回答「接不接受」。很多实际系统需要<b>输出</b>：售货机要出货，电梯要开门，协议要回包。于是有了带输出的版本。'},
+    {t:'table', head:['类型','输出取决于','典型场景'],
+      rows:[
+        ['Moore 机','当前<b>状态</b>','状态本身就是输出，如交通灯'],
+        ['Mealy 机','当前状态 + <b>输入</b>','输入触发动作，如售货机'],
+        ['DFA','无输出，只有接受/拒绝','语言识别']
+      ]},
+    {t:'p', h:'<b>Moore 机</b>：每个状态挂一个输出值，读入改变状态，输出随之改变。形式上是 <m>(S, I, O, f, g, s<sub>0</sub>)</m>，其中 <m>g: S → O</m>。'},
+    {t:'p', h:'<b>Mealy 机</b>：输出挂在<b>转移</b>上，形式是 <m>g: S × I → O</m>。同一条转移，输入不同则输出不同。'},
+    {t:'p', h:'<b>例：自动售货机</b>（Mealy）。状态表示「已投多少钱」：0 元、5 元、10 元。投 5 元从 0 到 5，不输出；从 5 到 10，不输出；在 10 元状态再投 5 元，输出「出货 + 找零」。这就是一个三状态的 Mealy 机。'},
+    {t:'p', h:'<b>例：电梯</b>（Moore）。状态是楼层，输出是「当前楼层显示」。按键改变状态，显示跟着变。'},
+    {t:'p', h:'两种模型<b>表达能力相同</b>：任何 Moore 机都能转成等价的 Mealy 机，反之亦然（Mealy 转 Moore 可能要多一个状态来记住上一次的输入）。选择哪种只看哪种写起来自然。'},
+    {t:'tip', h:'<p>状态机不只是理论。TCP 连接就是一个状态机（LISTEN / SYN-SENT / ESTABLISHED / FIN-WAIT…），正则表达式引擎是 NFA 的模拟，游戏里的 AI 行为树本质也是状态机。</p><p>凡是有「记住当前处境、按输入切换」的需求，状态机就是最简模型。</p>'},
+
+    {t:'ex', title:'例 1　串检测器', q:'设计一个 Mealy 机，读二进制串，每当刚读到的两位是 01 时输出 1，否则输出 0。',
+      steps:[
+        '状态只需记住「上一位是不是 0」：<m>s<sub>0</sub></m>（否），<m>s<sub>1</sub></m>（是）。',
+        '在 <m>s<sub>0</sub></m> 读 0 → 去 <m>s<sub>1</sub></m>，输出 0；读 1 → 留 <m>s<sub>0</sub></m>，输出 0。',
+        '在 <m>s<sub>1</sub></m> 读 1 → 去 <m>s<sub>0</sub></m>，输出 <b>1</b>（组成 01）；读 0 → 留 <m>s<sub>1</sub></m>，输出 0。',
+        '输入 0010 的输出序列是 0001。'
+      ], ans:'两状态 Mealy 机，仅在 s₁ 读到 1 时输出 1'},
+
+    {t:'exs', id:'13.3', items:[
+      {q:'交通灯控制器更适合 Moore 还是 Mealy？',
+       hint:'灯的颜色由什么决定？',
+       steps:['灯色只取决于当前处于哪个相位（红/绿/黄）。','与「刚按下什么按钮」无直接关系。','所以是 Moore 机。'],
+       ans:'Moore 机'},
+      {q:'Moore 机转 Mealy 机需要增加状态吗？',
+       hint:'输出挂在状态上还是转移上。',
+       steps:['Moore 的输出由状态决定。','把它搬到「进入该状态的转移」上即可。','不需要新增状态。'],
+       ans:'不需要'},
+      {q:'自动售货机为什么通常用 Mealy 而不是 Moore？',
+       hint:'出货是状态还是动作？',
+       steps:['出货是「投币这一动作」触发的瞬时事件。','Moore 的输出会随状态持续存在，不适合一次性动作。','Mealy 把输出挂在转移上，正好对应「投币 → 出货」。'],
+       ans:'出货是转移触发的瞬时动作'}
+    ]}
+  ]
+},
+
+{
+  id:'13.4', title:'图灵机',
+  blocks:[
+    {t:'lead', h:'有限状态机缺一样东西：<b>内存</b>。给它一条无限长的纸带，它就能记账、能回退、能模拟任何计算机——这就是图灵机。'},
+    {t:'def', lb:'图灵机', h:'<p>图灵机 <m>T = (S, I, Γ, f, s<sub>0</sub>, □, F)</m>：</p><ul style="margin:6px 0 0"><li><m>S</m>：有限状态集</li><li><m>I</m>：输入字母表，<m>I ⊆ Γ − {□}</m></li><li><m>Γ</m>：纸带字母表（可写的符号）</li><li><m>□</m>：空白符（纸带初始大多为空）</li><li><m>f</m>：转移函数，<m>f(s, x) = (s′, x′, D)</m>，<m>D ∈ {L, R}</m></li><li><m>s<sub>0</sub></m>：起始状态；<m>F</m>：停机（接受）状态</li></ul>'},
+    {t:'p', h:'每一步做三件事：<b>读</b>当前格、<b>写</b>一个新符号、<b>左移或右移</b>一格，然后切换状态。就这么简单。'},
+    {t:'p', h:'<b>关键在纸带是无限的</b>。这意味着它可以存储任意多的中间结果，不再受「状态数固定」的限制。这是它与有限状态机的本质差别，也是它能模拟一切算法的原因。'},
+    {t:'p', h:'<b>例：二进制串取反</b>。转移规则：读到 0 写 1 右移，读到 1 写 0 右移，读到 □ 停机。输入 <code>1011</code>，纸带最后变成 <code>0100</code>。'},
+    {t:'p', h:'<b>例：加法</b>。用一串 1 表示数，两个数之间用 0 隔开。<m>3+2</m> 写成 <code>111011</code>。图灵机的做法是把中间的 0 改成 1，再删掉末尾一个 1，得到 <code>11111</code>（5）。'},
+    {t:'tip', h:'<p><b>不要被「无限纸带」吓到。</b>任何一次具体计算都只用了有限格；「无限」只是说没有预设上限，需要时可以往两边延伸。</p><p>这和你的电脑一样：内存有限，但程序不需要事先声明「我最多用多少格」。</p>'},
+
+    {t:'ex', title:'例 1　为什么图灵机能做有限状态机做不了的事', q:'用图灵机识别 <m>0<sup>n</sup>1<sup>n</sup></m>，思路是什么？',
+      steps:[
+        '从左端开始，把一个 0 改成 X，右移到串尾，把一个 1 改成 Y。',
+        '左移回到最左的未标记 0，重复。',
+        '若 0 用完时 1 也正好用完，接受；否则拒绝。',
+        '关键：<b>用纸带上的标记记住「已经配对到哪」</b>，而不是靠状态数去数。'
+      ], ans:'用纸带标记替代计数，逐对消去'},
+
+    {t:'exs', id:'13.4', items:[
+      {q:'图灵机的纸带初始为 <code>111</code>，规则是「读到 1 写 0 右移，读到 □ 停机」。停机后纸带是什么？',
+       hint:'逐个改写。',
+       steps:['第 1 步：读 1 写 0，右移。','第 2、3 步同样。','第 4 步读到 □，停机。'],
+       ans:'<code>000</code>'},
+      {q:'为什么「有限状态机 + 无限纸带」的能力远大于「有限状态机」？',
+       hint:'状态数固定意味着什么？',
+       steps:['有限状态机的全部记忆就是当前状态，信息量 <m>log<sub>2</sub>|S|</m> 位。','纸带可以存任意多的符号，记忆量无上界。','所以后者能完成需要计数的任务。'],
+       ans:'记忆容量从常数变成无界'},
+      {q:'图灵机的「停机」和「拒绝」有什么区别？',
+       hint:'看它是否进入终止状态。',
+       steps:['停机指进入 <m>F</m> 中的状态，计算结束并接受。','如果没有可用转移，机器卡住，这算拒绝或崩溃。','还有一种情况：永远不停，既不接受也不拒绝。'],
+       ans:'停机是正常终止并接受；也可能拒绝或永不停机'}
+    ]}
+  ]
+},
+
+{
+  id:'13.5', title:'可计算性与复杂度',
+  blocks:[
+    {t:'lead', h:'有了图灵机这个精确模型，就能问一个吓人的问题：<b>是不是所有问题都有算法</b>？答案是<b>不是</b>，而且理由非常干净。'},
+    {t:'thm', lb:'丘奇-图灵论题', h:'<p>任何「有效可计算」的函数，都能被图灵机计算。</p><p>这不是定理而是<b>论题</b>——它把直观概念「能算」和形式概念「图灵可计算」等同起来，无法证明，但所有等价模型（λ 演算、递归函数、 register machine）都指向同一类函数，所以被广泛接受。</p>'},
+    {t:'thm', lb:'停机问题不可判定', h:'<p>不存在图灵机 <m>H(P, I)</m>，能对任意程序 <m>P</m> 和输入 <m>I</m> 判定「<m>P</m> 在 <m>I</m> 上会不会停」。</p>'},
+    {t:'p', h:'<b>证明（对角线法）</b>，三步：'},
+    {t:'ol', items:[
+      '假设存在这样的 <m>H</m>。构造 <m>D(P)</m>：若 <m>H(P,P)</m> 说「会停」，则 <m>D</m> 死循环；若说「不停」，则 <m>D</m> 立即停。',
+      '把 <m>D</m> 自己喂给自己，问 <m>H(D,D)</m>。',
+      '若 <m>H</m> 说 <m>D(D)</m> 会停，则按定义 <m>D(D)</m> 死循环，矛盾；若说不停，则 <m>D(D)</m> 立即停，也矛盾。'
+    ]},
+    {t:'p', h:'所以 <m>H</m> 不存在。<b>这不是「还没找到」，是逻辑上不可能</b>。推论：没有通用的程序能判断「这段代码有没有 bug」「这个循环会不会死」「两个程序是否等价」。'},
+    {t:'p', h:'<b>那 P 与 NP 呢？</b>停机问题说的是「根本不可计算」，P vs NP 说的是「可计算但可能很慢」。两者不是一个层面：'},
+    {t:'table', head:['类别','含义','例子'],
+      rows:[
+        ['P','多项式时间可解','排序、最短路、判断素数'],
+        ['NP','多项式时间可验证','数独、SAT、旅行商判定版'],
+        ['NP 完全','NP 中最难的一类，互相可归约','SAT、3-着色、背包判定'],
+        ['不可判定','根本没有算法','停机问题、程序等价性']
+      ]},
+    {t:'p', h:'现在已知 <m>P ≠ NP</m> 的只有「相对化」意义下的部分结果，主流猜想是 <m>P ≠ NP</m>。如果哪天证明相等，所有 NP 问题都能高效求解，RSA 会当场失效（因为分解是 NP 的）。'},
+    {t:'warn', h:'<p><b>一个常见的误解</b>：「图灵机太弱，所以停机问题不可判定；换成超级计算机就行了」。</p><p>不对。证明里没有用到图灵机的任何性能限制，只用到「程序可以读自己的代码」这一点。任何能表达「程序」的计算模型，都会遇到同样的对角线。</p>'},
+
+    {t:'ex', title:'例 1　为什么「判断程序有没有 bug」不可能通用地做到', q:'把「程序有 bug」归约到停机问题。',
+      steps:[
+        '假设有工具 <m>B(P)</m> 能判断任意程序 <m>P</m> 是否有 bug。',
+        '构造 <m>P′</m>：运行 <m>P</m>，若 <m>P</m> 停机则触发一个必然的错误。',
+        '于是「<m>P′</m> 有 bug」等价于「<m>P</m> 会停机」。',
+        '若能判断 bug，就能判断停机，与停机问题不可判定矛盾。'
+      ], ans:'可归约到停机问题，故不存在通用判定工具'},
+
+    {t:'exs', id:'13.5', items:[
+      {q:'「这段代码会不会死循环」这个问题，是否存在通用算法？',
+       hint:'这就是停机问题的一个实例。',
+       steps:['若有通用算法，就能判定任意程序是否停机。','停机问题不可判定。','所以不存在。'],
+       ans:'不存在'},
+      {q:'为什么「能验证」不等于「能求解」？',
+       hint:'数独。',
+       steps:['给一个填好的数独，检查每行每列每宫是否合法很快。','但从零解出数独可能很慢。','这正是 NP 的直觉：验证容易，求解难。'],
+       ans:'验证只需检查给定解，求解要搜索整个空间'},
+      {q:'如果 <m>P = NP</m>，RSA 会怎样？',
+       hint:'分解大整数属于哪个类？',
+       steps:['整数分解在 NP 中（给定因子可快速验证）。','若 <m>P = NP</m>，分解就有多项式算法。','RSA 的安全性依赖分解困难，届时失效。'],
+       ans:'RSA 失效，需换后量子密码'}
+    ]}
+  ]
+}
+
+]};
+
 /* ===== 速查手册：知识点与公式汇总 ===== */
 var SUM = [
 
@@ -5564,6 +7251,192 @@ var SUM = [
 <tr><td colspan="2"><b>边界环绕</b>：最左列与最右列相邻，最上行与最下行相邻（格雷码首尾只差一位）</td></tr>
 </tbody></table>
 <p class="kv" style="color:var(--muted)">步骤：格雷码排表 → 填 1 → 圈尽可能大的 2 的幂方块（可重叠）→ 每圈写一项 → 相加。</p>
+`},
+
+{ n:9, title:'算法', tag:'复杂度、查找、排序、设计策略', html: `
+<h3 style="margin-top:0">★ 三种渐近记号</h3>
+<table class="tbl dense"><thead><tr><th style="width:90px">记号</th><th>含义</th><th>类比</th></tr></thead><tbody>
+<tr><td><m>f = O(g)</m></td><td>从某个 n 起，<m>f</m> 不超过 <m>g</m> 的常数倍（上界）</td><td>≤</td></tr>
+<tr><td><m>f = Ω(g)</m></td><td><m>f</m> 不低于 <m>g</m> 的常数倍（下界）</td><td>≥</td></tr>
+<tr><td><m>f = Θ(g)</m></td><td>上下界同阶</td><td>=</td></tr>
+<tr><td><m>f = o(g)</m></td><td>增长严格更慢</td><td>&lt;</td></tr>
+</tbody></table>
+<p class="kv" style="color:var(--muted)">用法：只留最高阶项、去掉系数。<m>3n<sup>2</sup>+5n+2 = O(n<sup>2</sup>)</m>。</p>
+
+<h3>常见增长（从慢到快）</h3>
+<div class="f" style="margin:6px 0">1 &lt; log n &lt; √n &lt; n &lt; n log n &lt; n² &lt; n³ &lt; 2ⁿ &lt; n!</div>
+<table class="tbl dense"><thead><tr><th>复杂度</th><th>n=1000</th><th>每秒十亿次可处理</th></tr></thead><tbody>
+<tr><td><m>log<sub>2</sub>n</m></td><td>10</td><td>规模几乎无上限</td></tr>
+<tr><td><m>n log<sub>2</sub>n</m></td><td>约 10<sup>4</sup></td><td>约 4×10<sup>7</sup></td></tr>
+<tr><td><m>n<sup>2</sup></m></td><td>10<sup>6</sup></td><td>约 3×10<sup>4</sup></td></tr>
+<tr><td><m>n<sup>3</sup></m></td><td>10<sup>9</sup></td><td>约 1000</td></tr>
+<tr><td><m>2<sup>n</sup></m></td><td>10<sup>301</sup></td><td>约 30</td></tr>
+<tr><td><m>n!</m></td><td>—</td><td>约 12</td></tr>
+</tbody></table>
+
+<h3>查找与排序</h3>
+<table class="tbl dense"><thead><tr><th style="width:110px">算法</th><th>最坏代价</th><th>关键前提 / 特点</th></tr></thead><tbody>
+<tr><td>线性查找</td><td><m>O(n)</m></td><td>无需有序</td></tr>
+<tr><td>二分查找</td><td><m>O(log n)</m>，<m>⌊log<sub>2</sub>n⌋+1</m> 次比较</td><td><b>必须已排序</b></td></tr>
+<tr><td>冒泡 / 插入</td><td><m>O(n<sup>2</sup>)</m>，<m>n(n−1)/2</m> 次比较</td><td>插入排序在近乎有序时 <m>O(n)</m></td></tr>
+<tr><td>归并排序</td><td><m>O(n log n)</m></td><td>稳定，需额外空间</td></tr>
+<tr><td>快速排序</td><td>平均 <m>O(n log n)</m>，最坏 <m>O(n<sup>2</sup>)</m></td><td>原地，但需选好基准</td></tr>
+<tr><td>比较排序下界</td><td><m>Ω(n log n)</m></td><td>由 <m>log<sub>2</sub>(n!)</m> 推出</td></tr>
+</tbody></table>
+
+<h3>四种设计策略</h3>
+<table class="tbl dense"><thead><tr><th style="width:90px">策略</th><th>适用信号</th><th>典型例子</th></tr></thead><tbody>
+<tr><td>贪心</td><td>局部最优能推出全局最优</td><td>活动选择、Huffman、MST</td></tr>
+<tr><td>分治</td><td>子问题同型且互不重叠</td><td>归并排序、快速幂</td></tr>
+<tr><td>动态规划</td><td>子问题重复、有最优子结构</td><td>斐波那契、背包、编辑距离</td></tr>
+<tr><td>回溯</td><td>需要枚举可行解</td><td>八皇后、数独</td></tr>
+</tbody></table>
+<p class="kv" style="color:var(--muted)">P：多项式时间可解；NP：多项式时间可验证。<m>P ⊆ NP</m>，是否相等未解。</p>
+`},
+
+{ n:10, title:'数论与密码学', tag:'整除、gcd、同余、CRT、RSA', html: `
+<h3 style="margin-top:0">★ 同余与运算</h3>
+<table class="tbl dense"><thead><tr><th style="width:110px">概念</th><th>内容</th></tr></thead><tbody>
+<tr><td>整除</td><td><m>a|b ⟺ ∃c, b=ac</m></td></tr>
+<tr><td>带余除法</td><td><m>a = qm + r</m>，<m>0 ≤ r &lt; m</m>，<m>q,r</m> 唯一</td></tr>
+<tr><td>同余</td><td><m>a ≡ b (mod m) ⟺ m | (a−b)</m></td></tr>
+<tr><td>可加减乘</td><td><m>a+c ≡ b+d</m>，<m>ac ≡ bd</m>，<m>a<sup>k</sup> ≡ b<sup>k</sup></m></td></tr>
+<tr><td>除法</td><td><b>仅当除数与模互素</b>才能约</td></tr>
+<tr><td>大指数降幂</td><td>先找周期（费马 / 欧拉），再把指数折回小范围</td></tr>
+</tbody></table>
+
+<h3>gcd 与欧几里得</h3>
+<table class="tbl dense"><thead><tr><th style="width:130px">结论</th><th>内容</th></tr></thead><tbody>
+<tr><td>辗转相除</td><td><m>gcd(a,b) = gcd(b, a mod b)</m>，余数为 0 时除数即 gcd</td></tr>
+<tr><td>复杂度</td><td><m>O(log min(a,b))</m></td></tr>
+<tr><td>贝祖定理</td><td><m>sa + tb = gcd(a,b)</m>，扩展欧几里得可求 <m>s,t</m></td></tr>
+<tr><td>逆元存在</td><td><m>a</m> 在模 <m>m</m> 下可逆 <m>⟺ gcd(a,m)=1</m></td></tr>
+<tr><td>算术基本定理</td><td>每个 <m>n&gt;1</m> 唯一分解为素数幂乘积</td></tr>
+<tr><td>gcd / lcm</td><td>取最小 / 最大指数；<m>gcd·lcm = ab</m></td></tr>
+</tbody></table>
+
+<h3>线性同余与 CRT</h3>
+<table class="tbl dense"><thead><tr><th style="width:130px">结论</th><th>内容</th></tr></thead><tbody>
+<tr><td>有解条件</td><td><m>ax ≡ b (mod m)</m> 有解 <m>⟺ gcd(a,m) | b</m></td></tr>
+<tr><td>解的个数</td><td>有解时在模 <m>m</m> 下恰有 <m>gcd(a,m)</m> 个</td></tr>
+<tr><td>解法</td><td>同除 <m>d=gcd</m> → 求逆元 → 乘到右边 → 加 <m>m/d</m> 的倍数</td></tr>
+<tr><td>CRT</td><td>模数两两互素时，方程组在模 <m>M=∏m<sub>i</sub></m> 下解唯一</td></tr>
+<tr><td>构造</td><td><m>x = Σ a<sub>i</sub>M<sub>i</sub>y<sub>i</sub></m>，<m>M<sub>i</sub>=M/m<sub>i</sub></m>，<m>y<sub>i</sub></m> 是 <m>M<sub>i</sub></m> 模 <m>m<sub>i</sub></m> 的逆</td></tr>
+</tbody></table>
+
+<h3>★ RSA</h3>
+<table class="tbl dense"><thead><tr><th style="width:110px">步骤</th><th>内容</th></tr></thead><tbody>
+<tr><td>1 选素数</td><td>取大素数 <m>p, q</m></td></tr>
+<tr><td>2 算模数</td><td><m>n=pq</m>；<m>φ(n)=(p−1)(q−1)</m> 保密</td></tr>
+<tr><td>3 公钥 e</td><td><m>gcd(e, φ(n))=1</m>，常用 65537</td></tr>
+<tr><td>4 私钥 d</td><td><m>ed ≡ 1 (mod φ(n))</m></td></tr>
+<tr><td>5 加密</td><td><m>C = M<sup>e</sup> mod n</m></td></tr>
+<tr><td>6 解密</td><td><m>M = C<sup>d</sup> mod n</m></td></tr>
+<tr><td>正确性</td><td><m>ed = 1+kφ(n)</m>，由欧拉定理 <m>M<sup>φ(n)</sup>≡1</m> 还原</td></tr>
+<tr><td>安全性</td><td>依赖大整数分解困难；量子计算机上的 Shor 算法可破</td></tr>
+</tbody></table>
+<p class="kv" style="color:var(--muted)">欧拉定理：<m>gcd(a,n)=1 ⟹ a<sup>φ(n)</sup>≡1 (mod n)</m>；费马小定理是其 <m>n</m> 为素数的特例。</p>
+`},
+
+{ n:11, title:'归纳与递归', tag:'三种归纳、递归定义、递归式、不变式', html: `
+<h3 style="margin-top:0">★ 三种归纳形式</h3>
+<table class="tbl dense"><thead><tr><th style="width:100px">形式</th><th>基础步</th><th>归纳步</th></tr></thead><tbody>
+<tr><td>第一归纳法</td><td>证 <m>P(1)</m></td><td>设 <m>P(k)</m>，证 <m>P(k+1)</m></td></tr>
+<tr><td>强归纳法</td><td>证 <m>P(1)…P(n<sub>0</sub>)</m>（视跨度）</td><td>设 <m>P(1)…P(k)</m> 全真，证 <m>P(k+1)</m></td></tr>
+<tr><td>结构归纳</td><td>对每个基础情形验证</td><td>对每条递归规则：设输入满足，证构造结果满足</td></tr>
+<tr><td>良序原理</td><td colspan="2">非空正整数集必有最小元；与归纳法等价（取最小反例）</td></tr>
+</tbody></table>
+<p class="kv" style="color:var(--muted)">常见错误：循环论证（把要证的当假设）、漏基础步、归纳步在最小 <m>k</m> 处断裂（如「所有马同色」在 <m>k=1</m> 失效）。</p>
+
+<h3>递归定义的三要素</h3>
+<table class="tbl dense"><thead><tr><th style="width:110px">要素</th><th>作用</th></tr></thead><tbody>
+<tr><td>基础情形</td><td>给出最基本的对象</td></tr>
+<tr><td>递归规则</td><td>由已有对象构造新对象</td></tr>
+<tr><td>排斥条款</td><td>声明「除此之外没有别的」，保证定义是紧的</td></tr>
+</tbody></table>
+
+<h3>★ 常见递归式</h3>
+<table class="tbl dense"><thead><tr><th>递归式</th><th>解</th><th>来源</th></tr></thead><tbody>
+<tr><td><m>T(n)=T(n−1)+1</m></td><td><m>O(n)</m></td><td>阶乘、线性递归</td></tr>
+<tr><td><m>T(n)=2T(n−1)+1</m></td><td><m>O(2<sup>n</sup>)</m></td><td>汉诺塔（精确 <m>2<sup>n</sup>−1</m>）</td></tr>
+<tr><td><m>T(n)=T(n/2)+1</m></td><td><m>O(log n)</m></td><td>二分查找</td></tr>
+<tr><td><m>T(n)=2T(n/2)+n</m></td><td><m>O(n log n)</m></td><td>归并排序</td></tr>
+<tr><td><m>T(n)=2T(n/2)+1</m></td><td><m>O(n)</m></td><td>树的遍历</td></tr>
+</tbody></table>
+<p class="kv" style="color:var(--muted)">展开法：<m>T(n)=2T(n/2)+n=4T(n/4)+2n=…=2<sup>k</sup>T(n/2<sup>k</sup>)+kn</m>，取 <m>k=log<sub>2</sub>n</m>。</p>
+
+<h3>循环不变式三步</h3>
+<table class="tbl dense"><thead><tr><th style="width:100px">步骤</th><th>要证的事</th></tr></thead><tbody>
+<tr><td>初始化</td><td>进入循环前不变式成立（对应基础步）</td></tr>
+<tr><td>保持</td><td>每轮开始时成立 ⟹ 本轮结束时仍成立（对应归纳步）</td></tr>
+<tr><td>终止</td><td>循环结束条件 + 不变式 ⟹ 后置条件</td></tr>
+<tr><td>终止性</td><td>另找严格递减且有下界的量（变式）</td></tr>
+</tbody></table>
+<p class="kv" style="color:var(--muted)">部分正确（若终止则结果对）+ 终止性 = 完全正确。</p>
+`},
+
+{ n:12, title:'离散概率', tag:'样本空间、条件概率、贝叶斯、期望', html: `
+<h3 style="margin-top:0">★ 基本公式</h3>
+<table class="tbl dense"><thead><tr><th style="width:120px">名称</th><th>公式</th></tr></thead><tbody>
+<tr><td>等可能概率</td><td><m>P(E) = |E| / |S|</m></td></tr>
+<tr><td>补事件</td><td><m>P(Ē) = 1 − P(E)</m></td></tr>
+<tr><td>容斥</td><td><m>P(E∪F) = P(E)+P(F)−P(E∩F)</m></td></tr>
+<tr><td>条件概率</td><td><m>P(E|F) = P(E∩F)/P(F)</m>，<m>P(F)&gt;0</m></td></tr>
+<tr><td>乘法法则</td><td><m>P(E∩F) = P(F)P(E|F)</m></td></tr>
+<tr><td>独立</td><td><m>P(E∩F)=P(E)P(F) ⟺ P(E|F)=P(E)</m></td></tr>
+<tr><td>全概率</td><td><m>P(E) = Σ P(E|F<sub>i</sub>)P(F<sub>i</sub>)</m>（<m>F<sub>i</sub></m> 为划分）</td></tr>
+<tr><td>贝叶斯</td><td><m>P(F|E) = P(E|F)P(F) / P(E)</m></td></tr>
+</tbody></table>
+<p class="kv" style="color:var(--muted)"><b>互斥 ≠ 独立</b>：互斥且概率非零时一定不独立。生日问题 <m>n=23</m> 时概率约 0.507，配对数是 <m>C(23,2)=253</m>。</p>
+
+<h3>★ 期望与方差</h3>
+<table class="tbl dense"><thead><tr><th style="width:120px">名称</th><th>公式 / 结论</th></tr></thead><tbody>
+<tr><td>期望</td><td><m>E(X) = Σ x<sub>i</sub>p(x<sub>i</sub>)</m></td></tr>
+<tr><td>线性性</td><td><m>E(X+Y) = E(X)+E(Y)</m>，<b>不需要独立</b></td></tr>
+<tr><td>乘积</td><td><m>E(XY) = E(X)E(Y)</m>，<b>需要独立</b></td></tr>
+<tr><td>方差</td><td><m>V(X) = E(X<sup>2</sup>) − (E(X))<sup>2</sup></m></td></tr>
+<tr><td>几何分布</td><td>首次成功的期望次数 <m>= 1/p</m></td></tr>
+<tr><td>帽子问题</td><td><m>n</m> 人随机拿帽，期望拿对人数恒为 1</td></tr>
+</tbody></table>
+<p class="kv" style="color:var(--muted)">贝叶斯算不准时用「假设 10000 人」：先按先验分病人/健康人，再按似然算各类阳性人数，最后真阳性 ÷ 全部阳性。</p>
+`},
+
+{ n:13, title:'计算模型', tag:'文法、DFA、图灵机、可计算性', html: `
+<h3 style="margin-top:0">★ 语言与文法</h3>
+<table class="tbl dense"><thead><tr><th style="width:110px">概念</th><th>内容</th></tr></thead><tbody>
+<tr><td>字母表 <m>Σ</m></td><td>非空有限符号集；<m>Σ<sup>*</sup></m> 是所有串（含空串 <m>λ</m>）</td></tr>
+<tr><td>语言</td><td><m>Σ<sup>*</sup></m> 的子集</td></tr>
+<tr><td>文法</td><td><m>G=(V,T,S,P)</m>，产生式 <m>A → w</m></td></tr>
+<tr><td>派生</td><td>从 <m>S</m> 反复替换，直到只剩终结符</td></tr>
+<tr><td>经典例子</td><td><m>S→0S1 | λ</m> 生成 <m>{0<sup>n</sup>1<sup>n</sup>}</m>（非正则）</td></tr>
+</tbody></table>
+
+<h3>有限状态自动机</h3>
+<table class="tbl dense"><thead><tr><th style="width:110px">项目</th><th>内容</th></tr></thead><tbody>
+<tr><td>DFA 五元组</td><td><m>(S, I, f, s<sub>0</sub>, F)</m>，<m>f: S×I→S</m> 每项唯一</td></tr>
+<tr><td>接受</td><td>读完串后停在 <m>F</m> 中</td></tr>
+<tr><td>能力边界</td><td>只能记常数信息；<b>无法</b>做无界计数（<m>0<sup>n</sup>1<sup>n</sup></m>、括号匹配、回文）</td></tr>
+<tr><td>Moore 机</td><td>输出由<b>状态</b>决定，<m>g: S→O</m></td></tr>
+<tr><td>Mealy 机</td><td>输出由<b>转移</b>决定，<m>g: S×I→O</m></td></tr>
+<tr><td>设计方法</td><td>问「读到一半必须记住什么」，记住的信息就是状态</td></tr>
+</tbody></table>
+
+<h3>图灵机</h3>
+<table class="tbl dense"><thead><tr><th style="width:110px">项目</th><th>内容</th></tr></thead><tbody>
+<tr><td>组成</td><td>有限状态 + <b>无限纸带</b> + 读写头</td></tr>
+<tr><td>一步动作</td><td>读符号 → 写新符号 → 左/右移 → 换状态</td></tr>
+<tr><td>与 DFA 的差别</td><td>记忆容量从常数变成无界，故能完成计数与配对</td></tr>
+<tr><td>丘奇-图灵论题</td><td>凡「有效可计算」的函数都能被图灵机计算（论题，非定理）</td></tr>
+</tbody></table>
+
+<h3>可计算性层级</h3>
+<table class="tbl dense"><thead><tr><th style="width:130px">类别</th><th>含义</th><th>例子</th></tr></thead><tbody>
+<tr><td>P</td><td>多项式时间可解</td><td>排序、最短路、素性判定</td></tr>
+<tr><td>NP</td><td>多项式时间可验证</td><td>SAT、数独、旅行商判定版</td></tr>
+<tr><td>NP 完全</td><td>NP 中最难，互相可归约</td><td>SAT、3-着色、背包判定</td></tr>
+<tr><td>不可判定</td><td><b>根本不存在算法</b></td><td>停机问题、程序等价性</td></tr>
+</tbody></table>
+<p class="kv" style="color:var(--muted)">停机问题用对角线法证明：假设判定器 <m>H</m> 存在 → 构造「反着做」的 <m>D</m> → 问 <m>H(D,D)</m> 无论怎么答都矛盾。</p>
 `}
 
 ];
@@ -5739,7 +7612,112 @@ var QUIZ = [
     s:'错。与门和或门都是单调的——输入全 0 时输出必为 0，造不出「输入 0 输出 1」的非门。必须有取反能力。'}
 ]},
 
-{ id:'m1', type:'mock', title:'模拟卷 A · 期末全真', mins:60, tag:'覆盖 8 章，难度贴近期末',
+
+{ id:'c9', n:9, title:'第 9 章 算法', mins:12, tag:'复杂度、查找、排序、设计策略',
+  qs:[
+  { id:'c9-1', q:'对长度 <m>1024</m> 的有序表做二分查找，最坏需要比较多少次？',
+    o:['10','11','12','1024'], a:1,
+    s:'<m>log<sub>2</sub>1024 = 10</m>，最坏还要多比较一次（区间缩到 1 时的那次），所以是 11。一般式 <m>⌊log<sub>2</sub>n⌋+1</m>。'},
+  { id:'c9-2', q:'<m>3n<sup>2</sup> + 5n + 2</m> 属于哪个复杂度类？',
+    o:['<m>O(n)</m>','<m>O(n<sup>2</sup>)</m>','<m>O(n<sup>3</sup>)</m>','<m>O(log n)</m>'], a:1,
+    s:'大 O 只保留最高阶项、去掉系数，所以是 <m>O(n<sup>2</sup>)</m>。注意它同时也是 <m>O(n<sup>3</sup>)</m>（上界不唯一），但紧的上界是 <m>n<sup>2</sup></m>。'},
+  { id:'c9-3', q:'<m>n = 50</m> 时，<m>2<sup>n</sup></m> 大约是多少？',
+    o:['10<sup>5</sup>','10<sup>10</sup>','10<sup>15</sup>','10<sup>50</sup>'], a:2,
+    s:'<m>2<sup>10</sup> ≈ 10<sup>3</sup></m>，所以 <m>2<sup>50</sup> = (2<sup>10</sup>)<sup>5</sup> ≈ 10<sup>15</sup></m>。按每秒十亿次算要跑十几天。'},
+  { id:'c9-4', q:'归并排序的时间复杂度是？',
+    o:['<m>O(n)</m>','<m>O(n log n)</m>','<m>O(n<sup>2</sup>)</m>','<m>O(log n)</m>'], a:1,
+    s:'递归式 <m>T(n)=2T(n/2)+n</m>。切了 <m>log<sub>2</sub>n</m> 层，每层合并总代价约 <m>n</m>，相乘得 <m>n log n</m>。'},
+  { id:'c9-5', q:'判断：贪心算法在 0-1 背包问题上总能得到最优解。', t:'tf', a:false,
+    s:'不能。按单位价值贪心可能选走「比值高但占地大」的物品，挡住更优组合。反例：容量 10，A(6,10)、B(5,9)、C(4,7)，贪心得 16，最优是 A+C=17。'},
+  { id:'c9-6', q:'判断：<m>f(n)=O(g(n))</m> 表示 <m>f</m> 的增长不快于 <m>g</m> 的某个常数倍。', t:'tf', a:true,
+    s:'这正是定义：存在 <m>C</m> 和 <m>n<sub>0</sub></m>，当 <m>n&gt;n<sub>0</sub></m> 时 <m>|f(n)| ≤ C|g(n)|</m>。它给出的是上界，不要求紧。'}
+]},
+
+{ id:'c10', n:10, title:'第 10 章 数论与密码学', mins:14, tag:'同余、gcd、CRT、RSA',
+  qs:[
+  { id:'c10-1', q:'<m>3<sup>100</sup> mod 7</m> 等于？',
+    o:['1','2','4','6'], a:2,
+    s:'<m>3<sup>6</sup> ≡ 1 (mod 7)</m>，<m>100 = 6×16+4</m>，所以 <m>3<sup>100</sup> ≡ 3<sup>4</sup> = 81 ≡ 4</m>。'},
+  { id:'c10-2', q:'<m>gcd(414, 662)</m> 等于？',
+    o:['1','2','6','82'], a:1,
+    s:'辗转相除：<m>662=1×414+248</m>，<m>414=1×248+166</m>，<m>248=1×166+82</m>，<m>166=2×82+2</m>，<m>82=41×2+0</m>，故 gcd 为 2。'},
+  { id:'c10-3', q:'<m>7</m> 在模 <m>26</m> 下的逆元是？',
+    o:['3','11','15','19'], a:2,
+    s:'<m>7×15 = 105 = 4×26+1</m>，所以逆元是 15。也可用扩展欧几里得：<m>3×26 − 11×7 = 1</m>，<m>−11 ≡ 15</m>。'},
+  { id:'c10-4', q:'满足 <m>x≡2 (mod 3)</m>、<m>x≡3 (mod 5)</m>、<m>x≡2 (mod 7)</m> 的最小正整数是？',
+    o:['17','23','38','53'], a:1,
+    s:'<m>M=105</m>，<m>M<sub>1</sub>=35</m>、<m>M<sub>2</sub>=21</m>、<m>M<sub>3</sub>=15</m>，逆元分别为 2、1、1，得 <m>x=2×35×2+3×21+2×15=233 ≡ 23</m>。'},
+  { id:'c10-5', q:'RSA 中 <m>p=5</m>、<m>q=11</m>、<m>e=3</m>，私钥 <m>d</m> 是？',
+    o:['7','17','27','37'], a:2,
+    s:'<m>φ(n)=4×10=40</m>，解 <m>3d≡1 (mod 40)</m>。<m>3×27=81=2×40+1</m>，所以 <m>d=27</m>。'},
+  { id:'c10-6', q:'判断：同余式两边可以随意约去同一个数。', t:'tf', a:false,
+    s:'不行。<m>2×3 ≡ 2×8 (mod 10)</m> 成立，约掉 2 得 <m>3≡8 (mod 10)</m> 不成立。只有当除数与模<b>互素</b>时才能约。'}
+]},
+
+{ id:'c11', n:11, title:'第 11 章 归纳与递归', mins:12, tag:'归纳法、递归定义、递归式、不变式',
+  qs:[
+  { id:'c11-1', q:'用归纳法证明 <m>1+3+…+(2n−1)=n<sup>2</sup></m>，归纳步的关键一步是？',
+    o:['代入 n=1 验证','把 <m>k<sup>2</sup></m> 加上 <m>2k+1</m> 得 <m>(k+1)<sup>2</sup></m>','假设结论对所有 n 成立','把 n 换成 2n'],
+    a:1,
+    s:'归纳假设是 <m>Σ<sub>i=1</sub><sup>k</sup>(2i−1)=k<sup>2</sup></m>，加上第 <m>k+1</m> 项 <m>2k+1</m>，得 <m>k<sup>2</sup>+2k+1=(k+1)<sup>2</sup></m>。'},
+  { id:'c11-2', q:'汉诺塔 5 个盘子最少要移动多少步？',
+    o:['15','16','31','63'], a:2,
+    s:'<m>2<sup>5</sup>−1=31</m>。递推式 <m>T(n)=2T(n−1)+1</m>，每多一个盘子，步数翻倍再加一。'},
+  { id:'c11-3', q:'强归纳法与普通归纳法的关系是？',
+    o:['强归纳能证更多命题','两者逻辑等价','普通归纳能证更多命题','强归纳不需要基础步'], a:1,
+    s:'两者等价，只是强归纳的归纳假设更多（假设前面全部成立），写起来方便。任何强归纳证明都能改写成普通归纳。'},
+  { id:'c11-4', q:'归并排序的递归式 <m>T(n)=2T(n/2)+n</m> 解出来是？',
+    o:['<m>O(n)</m>','<m>O(n log n)</m>','<m>O(n<sup>2</sup>)</m>','<m>O(2<sup>n</sup>)</m>'], a:1,
+    s:'展开得 <m>2<sup>k</sup>T(n/2<sup>k</sup>)+kn</m>，取 <m>k=log<sub>2</sub>n</m>，得 <m>n+ n log<sub>2</sub>n</m>，即 <m>O(n log n)</m>。'},
+  { id:'c11-5', q:'循环不变式的证明<b>不需要</b>下列哪一步？',
+    o:['初始化：进入循环前成立','保持：每轮结束后仍成立','终止：退出时能推出后置条件','统计：算出循环执行了几次'], a:3,
+    s:'三步是初始化、保持、终止。执行次数属于终止性分析，用「循环变式」单独证，不属于不变式的三步。'},
+  { id:'c11-6', q:'判断：归纳步里可以假设 <m>P(n)</m> 对所有正整数 <m>n</m> 成立。', t:'tf', a:false,
+    s:'那是循环论证。归纳步只能假设<b>某一个</b> <m>k</m> 成立（或强归纳下假设到 <m>k</m> 为止），再推出 <m>k+1</m>。'}
+]},
+
+{ id:'c12', n:12, title:'第 12 章 离散概率', mins:13, tag:'样本空间、条件概率、贝叶斯、期望',
+  qs:[
+  { id:'c12-1', q:'掷两个骰子，点数之和为 7 的概率是？',
+    o:['1/12','1/9','1/6','1/4'], a:2,
+    s:'样本空间是有序对共 36 种，和为 7 的有 6 种（1+6 到 6+1），<m>6/36=1/6</m>。不能按 21 种组合算，因为组合不等可能。'},
+  { id:'c12-2', q:'23 个人中至少两人生日相同的概率约为？',
+    o:['0.06','0.27','0.51','0.89'], a:2,
+    s:'约 50.7%。算法是算反面：<m>P(全不同)=365×364×…×343 / 365<sup>23</sup> ≈ 0.493</m>。直觉低估是因为只想到「和我在同一天」，忽略了 <m>C(23,2)=253</m> 对组合。'},
+  { id:'c12-3', q:'患病率 1%，灵敏度 99%，假阳性率 2%。某人阳性，真患病概率约为？',
+    o:['约 99%','约 50%','约 33%','约 2%'], a:2,
+    s:'设 10000 人：病人 100，真阳性 99；健康 9900，误报 198。全部阳性 297 人，<m>99/297 = 1/3</m>。健康人基数大是后验低的原因。'},
+  { id:'c12-4', q:'判断：使用 <m>E(X+Y)=E(X)+E(Y)</m> 需要 X 与 Y 独立。', t:'tf', a:false,
+    s:'不需要。期望的线性性对任意随机变量都成立。需要独立性的是乘积：<m>E(XY)=E(X)E(Y)</m>。'},
+  { id:'c12-5', q:'掷一枚均匀骰子，<m>E(X<sup>2</sup>)</m> 等于？',
+    o:['<m>91/6</m>','<m>49/4</m>','<m>7/2</m>','<m>35/12</m>'], a:0,
+    s:'<m>(1+4+9+16+25+36)/6 = 91/6 ≈ 15.17</m>。注意 <m>35/12</m> 是方差，<m>49/4</m> 是 <m>(EX)<sup>2</sup></m>。'},
+  { id:'c12-6', q:'判断：两个概率非零的互斥事件一定不独立。', t:'tf', a:true,
+    s:'互斥意味着 <m>P(E∩F)=0</m>，而独立要求 <m>P(E∩F)=P(E)P(F)&gt;0</m>，矛盾。互斥是极强的相关，恰好与独立相反。'}
+]},
+
+{ id:'c13', n:13, title:'第 13 章 计算模型', mins:12, tag:'文法、DFA、图灵机、可计算性',
+  qs:[
+  { id:'c13-1', q:'识别「含有偶数个 1」的 DFA 最少需要几个状态？',
+    o:['1','2','3','4'], a:1,
+    s:'只需记住当前 1 的个数是奇还是偶，两个状态；读 1 翻转，读 0 保持。起始状态是接受状态（空串有 0 个 1）。'},
+  { id:'c13-2', q:'下列哪个语言<b>不能</b>被有限状态自动机识别？',
+    o:['以 01 结尾的串','1 的个数为偶数的串','<m>{0<sup>n</sup>1<sup>n</sup> | n≥0}</m>','含子串 00 的串'], a:2,
+    s:'<m>0<sup>n</sup>1<sup>n</sup></m> 需要记住读了几个 0，n 无上界，超出有限状态的记忆能力。其余三个都只需常数信息。'},
+  { id:'c13-3', q:'图灵机与有限状态自动机的本质区别是？',
+    o:['状态数更多','有无限纸带可读写','转移函数更复杂','能处理二进制输入'], a:1,
+    s:'关键在记忆容量：DFA 只能记住当前状态（信息量固定），图灵机的纸带可以存任意多符号，因此能完成计数、配对这类任务。'},
+  { id:'c13-4', q:'停机问题的判定性如何？',
+    o:['可在多项式时间判定','可在指数时间判定','不可判定','只对大程序不可判定'], a:2,
+    s:'不存在通用算法判断任意程序是否停机。用对角线法证明：假设判定器存在，构造一个「反着做」的程序喂给自己，无论怎么答都矛盾。'},
+  { id:'c13-5', q:'Moore 机与 Mealy 机的区别在于？',
+    o:['Moore 输出取决于状态，Mealy 取决于转移','Moore 没有状态','Mealy 不能识别语言','Moore 只能处理二进制'], a:0,
+    s:'Moore 的输出挂在状态上（<m>g:S→O</m>），Mealy 挂在转移上（<m>g:S×I→O</m>）。两者表达能力相同，可互相转换。'},
+  { id:'c13-6', q:'判断：停机问题不可判定，是因为目前的计算机还不够快。', t:'tf', a:false,
+    s:'与速度无关。证明只用到「程序可以读自己的代码」这一点，任何能表达程序的计算模型都会遇到同样的对角线矛盾。'}
+]},
+
+{ id:'m1', type:'mock', title:'模拟卷 A · 期末全真', mins:60, tag:'覆盖本科教学版 8 章，难度贴近期末',
   qs:[
   { id:'m1-1', q:'与 <m>¬(p → q)</m> 等价的是？',
     o:['¬p ∧ q','p ∧ ¬q','¬p ∨ q','p ∨ ¬q'], a:1,
@@ -5779,7 +7757,7 @@ var QUIZ = [
     s:'<m>NAND(x,x) = <span style="text-decoration:overline">x·x</span> = x̄</m>。把同一信号接到两个输入端，就退化成非门。'}
 ]},
 
-{ id:'m2', type:'mock', title:'模拟卷 B · 期末全真', mins:60, tag:'覆盖 8 章，侧重概念辨析',
+{ id:'m2', type:'mock', title:'模拟卷 B · 期末全真', mins:60, tag:'覆盖本科教学版 8 章，侧重概念辨析',
   qs:[
   { id:'m2-1', q:'<m>p ↔ q</m> 等价于？',
     o:['(p→q) ∧ (q→p)','(p→q) ∨ (q→p)','p ∧ q','¬p ∨ ¬q'], a:0,
@@ -5817,7 +7795,7 @@ var QUIZ = [
   { id:'m2-12', q:'布尔表达式 <m>x · (x + y)</m> 化简后是？',
     o:['x','y','x + y','xy'], a:0,
     s:'吸收律：<m>x·(x+y) = x</m>。从真值看也直观——x 为 0 时整个式子必为 0，x 为 1 时括号里至少 1，结果就是 x。'}
-]}
+]},
 
 ];
 
@@ -5955,7 +7933,40 @@ var FLAW = [
     '所以 <m>n<sup>2</sup></m> 是偶数蕴含 n 是偶数。'
   ],
   bad:0,
-  why:'方向反了。这里证的是「n 偶 ⟹ n² 偶」，也就是原命题的<b>逆命题</b>，而逆命题与原命题不等价。正确做法是证<b>逆否</b>：假设 n 是奇数（<m>n=2k+1</m>），推出 <m>n<sup>2</sup></m> 是奇数。'}
+  why:'方向反了。这里证的是「n 偶 ⟹ n² 偶」，也就是原命题的<b>逆命题</b>，而逆命题与原命题不等价。正确做法是证<b>逆否</b>：假设 n 是奇数（<m>n=2k+1</m>），推出 <m>n<sup>2</sup></m> 是奇数。'},
+
+{ id:'f13', tag:'概率', title:'连开五次红，下一次该黑了吧',
+  given:'轮盘红黑各半，且每次转动相互独立。已经连续开了 5 次红。',
+  claim:'所以第 6 次开黑的概率大于 1/2。',
+  steps:[
+    '单次开红的概率是 <m>1/2</m>，开黑也是 <m>1/2</m>。',
+    '连续 6 次都开红的概率是 <m>(1/2)<sup>6</sup> = 1/64</m>，非常小。',
+    '既然连开 6 次红这么难，那么第 6 次更可能是黑。'
+  ],
+  bad:2,
+  why:'这是<b>赌徒谬误</b>。把「整段 6 次的概率」当成了「已知前 5 次红之后，第 6 次的条件概率」。实际上 <m>P(第6次红 | 前5次红) = 1/2</m>，轮盘没有记忆。<m>1/64</m> 是<b>事前</b>算「连续 6 次红」的概率，不是第六次的条件概率。'},
+
+{ id:'f14', tag:'数论', title:'同余式能随便约分吗',
+  given:'要证：<m>3 ≡ 8 (mod 10)</m>。',
+  claim:'证明如下。',
+  steps:[
+    '<m>2×3 = 6</m>，<m>2×8 = 16</m>，两者除以 10 的余数都是 6，所以 <m>2×3 ≡ 2×8 (mod 10)</m>。',
+    '同余式两边可以同时约去相同的因子 2，得 <m>3 ≡ 8 (mod 10)</m>。',
+    '所以 3 和 8 除以 10 的余数相同。'
+  ],
+  bad:1,
+  why:'<b>同余式不能随便约分</b>。除法成立要求除数与模互素，而 <m>gcd(2,10)=2 ≠ 1</m>。正确的做法是连模一起除：由 <m>2×3 ≡ 2×8 (mod 10)</m> 只能得到 <m>3 ≡ 8 (mod 5)</m>。3 和 8 模 5 确实同余，但模 10 不同余（余 3 和余 8）。'},
+
+{ id:'f15', tag:'计算模型', title:'用状态记住 n',
+  given:'要设计一个有限状态自动机，识别 <m>{0<sup>n</sup>1<sup>n</sup> | n ≥ 0}</m>。',
+  claim:'设计如下，所以它是正则语言。',
+  steps:[
+    '为每个 <m>n</m> 设一个状态 <m>q<sub>n</sub></m>，表示「已经读了 <m>n</m> 个 0」。',
+    '每读一个 0 就从 <m>q<sub>n</sub></m> 转到 <m>q<sub>n+1</sub></m>；每读一个 1 就转回 <m>q<sub>n−1</sub></m>。',
+    '读完整个串后停在 <m>q<sub>0</sub></m> 就接受，否则拒绝。所以 DFA 能识别这个语言。'
+  ],
+  bad:0,
+  why:'第一步就违反了定义：<b>有限</b>状态自动机的状态集必须有限，而这里 <m>n</m> 无上界，需要无限多个状态 <m>q<sub>0</sub>, q<sub>1</sub>, q<sub>2</sub>, …</m>。这实际上是一个「带计数器的机器」，不是 DFA。<m>{0<sup>n</sup>1<sup>n</sup>}</m> 确实不是正则语言，需要下推自动机（有栈）才能识别。'}
 ];
 
 </script>
