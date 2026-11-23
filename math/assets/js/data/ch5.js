@@ -371,7 +371,7 @@ CS=\int_0^{20}(80-2Q-40)\mathrm{d}Q=\int_0^{20}(40-2Q)\mathrm{d}Q=800-400=400.
     { name: '面积', tex: String.raw`S=\int_a^b[f(x)-g(x)]\mathrm{d}x`, note: '上减下。' },
     { name: '旋转体体积', tex: String.raw`V=\pi\int_a^b f^{2}(x)\mathrm{d}x`, note: '绕 x 轴。' },
     { name: '消费者剩余', tex: String.raw`CS=\int_0^{Q_0}[P(Q)-P_0]\mathrm{d}Q`, note: '需求曲线下、价格线上。' },
-    { name: '经济应用', tex: String.raw`R(Q)=\int_0^Q P(q)\mathrm{d}q`, note: '收益是需求曲线下的面积。' }
+    { name: '收益与剩余', tex: String.raw`R(Q)=P(Q)\cdot Q,\qquad CS=\int_0^{Q_0}[P(Q)-P_0]\mathrm{d}Q`, note: '收益不是需求曲线下的面积。' }
   ]
 });
 
