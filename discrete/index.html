@@ -14,6 +14,7 @@
   --teal:#2C5F6E; --teal-soft:#E9F1F3;
   --green:#3E7550; --green-soft:#EBF3EC;
   --amber:#9A6D16; --amber-soft:#FBF1DC;
+  --bad:#B4442F; --bad-soft:#FBEAE6;
   --shadow:0 1px 2px rgba(40,32,20,.05),0 8px 24px -12px rgba(40,32,20,.12);
   --serif:"Songti SC","Noto Serif SC","Source Han Serif SC",Georgia,"Times New Roman",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
@@ -28,6 +29,7 @@
   --teal:#7FB4C2; --teal-soft:#1D282C;
   --green:#7FB48C; --green-soft:#1C2620;
   --amber:#D6A94E; --amber-soft:#2A2418;
+  --bad:#E0795F; --bad-soft:#2E1E1B;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.6);
 }
 html{scroll-behavior:smooth}
@@ -65,17 +67,23 @@ body{
 .bar>i{display:block;height:100%;background:var(--accent);border-radius:2px;transition:width .45s cubic-bezier(.4,0,.2,1)}
 .gauge-sub{font-size:11px;color:var(--muted);margin-top:8px;display:flex;justify-content:space-between}
 
-#sumBtn{
-  margin:10px 12px 2px;padding:9px 12px;border-radius:8px;border:1px dashed var(--line2);
+.navbtn{
+  margin:8px 12px 0;padding:9px 12px;border-radius:8px;border:1px dashed var(--line2);
   background:var(--surface-2);cursor:pointer;display:flex;align-items:center;gap:9px;
   transition:.15s;flex:0 0 auto;
 }
-#sumBtn:hover{border-color:var(--accent);color:var(--accent)}
-#sumBtn.on{border-style:solid;border-color:var(--accent);background:var(--accent-soft)}
-#sumBtn b{display:block;font-size:12.5px;font-weight:500;color:var(--ink2);line-height:1.4;letter-spacing:.01em}
-#sumBtn span{display:block;font-size:10.5px;color:var(--muted);letter-spacing:.02em;line-height:1.4}
-#sumBtn.on b{color:var(--accent)}
-#sumBtn svg{flex:0 0 auto;opacity:.55}
+.navbtn:last-of-type{margin-bottom:2px}
+.navbtn:hover{border-color:var(--accent);color:var(--accent)}
+.navbtn.on{border-style:solid;border-color:var(--accent);background:var(--accent-soft)}
+.navbtn b{display:block;font-size:12.5px;font-weight:500;color:var(--ink2);line-height:1.4;letter-spacing:.01em}
+.navbtn span{display:block;font-size:10.5px;color:var(--muted);letter-spacing:.02em;line-height:1.4}
+.navbtn.on b{color:var(--accent)}
+.navbtn svg{flex:0 0 auto;opacity:.55}
+.navbtn .bdg{
+  margin-left:auto;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);
+  color:#fff;font-size:10.5px;display:None;place-items:center;font-family:var(--sans);line-height:18px;
+}
+.navbtn .bdg.show{display:grid}
 
 #tree{overflow-y:auto;flex:1 1 auto;padding:12px 10px 28px}
 #tree::-webkit-scrollbar{width:6px}
@@ -369,6 +377,83 @@ svg.wsvg{display:block;width:100%;height:auto;overflow:visible}
 .sheet .f{margin:8px 0;padding:11px;font-size:16px}
 @media print{.pills{display:none}}
 
+/* ---------- 自测卷 ---------- */
+.qz-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0 12px}
+@media (max-width:700px){.qz-grid{grid-template-columns:1fr}}
+.qz-card{
+  position:relative;border:1px solid var(--line);border-radius:11px;padding:16px 18px;
+  background:var(--surface);cursor:pointer;transition:.18s;
+}
+.qz-card:hover{border-color:var(--accent-line);box-shadow:var(--shadow);transform:translateY(-1px)}
+.qz-card.done{border-color:var(--green)}
+.qz-card .no{font-size:10.5px;letter-spacing:.14em;color:var(--accent);font-weight:600}
+.qz-card h3{font-family:var(--serif);font-size:15.5px;font-weight:600;margin:5px 0 0;letter-spacing:.01em}
+.qz-card h3::before{content:none}
+.qz-card .meta{font-size:11.5px;color:var(--muted);display:flex;gap:14px;margin-top:9px;letter-spacing:.02em}
+.qz-card .sc{position:absolute;top:14px;right:16px;font-family:var(--serif);font-size:21px;color:var(--accent);line-height:1}
+.qz-card .sc em{font-style:normal;font-size:11px;color:var(--muted)}
+
+.qz-bar{
+  position:sticky;top:52px;z-index:20;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding:10px 15px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);
+  margin:0 0 24px;font-size:12.5px;color:var(--ink2);
+}
+.qz-bar .sp{flex:1}
+.qz-bar b{color:var(--accent);font-family:var(--serif);font-size:14px}
+
+.q{padding:18px 0;border-bottom:1px solid var(--line)}
+.q:last-of-type{border-bottom:0}
+.q-stem{display:flex;gap:11px;font-size:14.5px;line-height:1.85;margin-bottom:12px}
+.q-stem>div{flex:1;min-width:0}
+.q-no{
+  width:23px;height:23px;flex:0 0 23px;border-radius:50%;background:var(--surface-2);
+  border:1px solid var(--line2);display:grid;place-items:center;font-size:11.5px;
+  color:var(--muted);margin-top:3px;font-family:var(--serif);
+}
+.q-opt{
+  display:flex;gap:10px;align-items:flex-start;padding:9px 13px;border:1px solid var(--line);
+  border-radius:8px;margin-bottom:7px;cursor:pointer;font-size:13.6px;line-height:1.75;
+  background:var(--surface);transition:.14s;
+}
+.q-opt:hover{border-color:var(--accent-line);background:var(--surface-2)}
+.q-opt .k{
+  width:20px;height:20px;flex:0 0 20px;border-radius:50%;border:1px solid var(--line2);
+  display:grid;place-items:center;font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--serif);
+}
+.q-opt.sel{border-color:var(--teal);background:var(--teal-soft)}
+.q-opt.sel .k{background:var(--teal);border-color:var(--teal);color:#fff}
+.q-opt.ok{border-color:var(--green);background:var(--green-soft)}
+.q-opt.ok .k{background:var(--green);border-color:var(--green);color:#fff}
+.q-opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.q-opt.bad .k{background:var(--bad);border-color:var(--bad);color:#fff}
+.q.locked .q-opt{cursor:default}
+.q.locked .q-opt:hover{border-color:var(--line);background:var(--surface)}
+.q.locked .q-opt.ok:hover{border-color:var(--green);background:var(--green-soft)}
+.q.locked .q-opt.bad:hover{border-color:var(--bad);background:var(--bad-soft)}
+
+.q-sol{
+  display:none;margin-top:10px;padding:12px 15px;border-radius:8px;background:var(--surface-2);
+  border:1px solid var(--line2);font-size:13.2px;line-height:1.85;
+}
+.q-sol.show{display:block}
+.q-sol .lb{color:var(--teal);font-size:10.5px;letter-spacing:.12em;font-weight:600;display:block;margin-bottom:6px}
+
+.qz-result{
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:18px 20px;margin:0 0 20px;
+  border:1px solid var(--line);border-radius:11px;background:var(--surface-2);
+}
+.qz-result .big{font-family:var(--serif);font-size:42px;line-height:1;color:var(--accent)}
+.qz-result .big em{font-style:normal;font-size:15px;color:var(--muted)}
+.qz-result .txt{font-size:13px;color:var(--ink2);line-height:1.95;flex:1;min-width:200px}
+.qz-act{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap;align-items:center}
+.qz-act button{
+  font-family:var(--sans);font-size:13px;padding:9px 22px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;transition:.15s;
+}
+.qz-act button:hover{filter:brightness(1.08)}
+.qz-act button.ghost{background:transparent;color:var(--ink2);border-color:var(--line2)}
+.qz-act button.ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
+
 /* mobile */
 #mask{display:none;position:fixed;inset:0;background:rgba(30,24,16,.35);z-index:35;backdrop-filter:blur(2px)}
 @media (max-width:900px){
@@ -408,9 +493,14 @@ svg.wsvg{display:block;width:100%;height:auto;overflow:visible}
       <div class="bar"><i id="pbar" style="width:0%"></i></div>
       <div class="gauge-sub"><span id="psec">0 / 0 节</span><span id="pex">0 题掌握</span></div>
     </div>
-    <div id="sumBtn">
+    <div class="navbtn" id="sumBtn">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2.5h6.5L13 5v8.5H4z"/><path d="M10 2.5V5h3"/><path d="M6 8h5M6 10.5h5"/></svg>
       <div><b>速查手册</b><span>全章知识点与公式</span></div>
+    </div>
+    <div class="navbtn" id="quizBtn">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M5.2 6.2l1.3 1.3 2.4-2.4"/><path d="M5.2 10.6h5.4"/></svg>
+      <div><b>自测卷</b><span>8 套章测 + 2 套模拟</span></div>
+      <span class="bdg" id="qzBadge">0</span>
     </div>
     <nav id="tree"></nav>
   </aside>
@@ -498,8 +588,10 @@ function buildTree(){
     out += '</div></div>';
   });
   box.innerHTML = out;
-  var sb = document.getElementById('sumBtn');
+  var sb = document.getElementById('sumBtn'), qb = document.getElementById('quizBtn');
   if(sb) sb.classList.toggle('on', ST.cur === 'sum');
+  if(qb) qb.classList.toggle('on', ST.cur === 'quiz');
+  updateBadge();
   updateGauge();
 }
 
@@ -688,6 +780,192 @@ function goSum(anchor){
   }
 }
 
+/* ---------- 自测卷 ---------- */
+var QZSTATE = { pid:null, ans:{}, done:false };
+
+function qzById(id){
+  for(var i=0;i<QUIZ.length;i++) if(QUIZ[i].id===id) return QUIZ[i];
+  return null;
+}
+function qzCorrect(q){ return q.t==='tf' ? (q.a?0:1) : q.a; }
+function wrongCount(){ return Object.keys(ST.wrong||{}).length; }
+function updateBadge(){
+  var b = document.getElementById('qzBadge'); if(!b) return;
+  var n = wrongCount();
+  b.textContent = n;
+  b.classList.toggle('show', n > 0);
+}
+function qHTML(q, i){
+  var body = '';
+  if(q.t==='tf'){
+    body += '<div class="q-opt" data-opt="0"><span class="k">√</span><span>正确</span></div>';
+    body += '<div class="q-opt" data-opt="1"><span class="k">×</span><span>错误</span></div>';
+  } else {
+    q.o.forEach(function(txt, k){
+      body += '<div class="q-opt" data-opt="'+k+'"><span class="k">'+'ABCD'[k]+'</span><span>'+txt+'</span></div>';
+    });
+  }
+  return '<div class="q" data-q="'+q.id+'">'+
+    '<div class="q-stem"><span class="q-no">'+(i+1)+'</span><div>'+q.q+'</div></div>'+
+    '<div class="q-opts">'+body+'</div>'+
+    '<div class="q-sol"><span class="lb">解析</span>'+q.s+'</div></div>';
+}
+
+function goQuizList(){
+  ST.cur = 'quiz'; save();
+  var rec = ST.qz || {}, wn = wrongCount();
+  var html = '<div class="ch-head">'+
+    '<div class="ch-kicker">期末复习 · Final Review</div>'+
+    '<h1>自测<em>卷</em></h1>'+
+    '<div class="ch-desc">八套章测打底，两套模拟卷收口。全部自动判分，交卷后逐题给解析；做错的自动进错题本，考前只刷那几十道就够。</div></div>';
+  html += '<div class="qz-grid">';
+  QUIZ.forEach(function(p){
+    var r = rec[p.id];
+    html += '<div class="qz-card'+(r?' done':'')+'" data-quiz="'+p.id+'">'+
+      '<div class="no">'+(p.type==='mock'?'模拟卷':'章测')+'</div>'+
+      (r?'<div class="sc">'+r.s+'<em>/'+r.t+'</em></div>':'')+
+      '<h3>'+p.title+'</h3>'+
+      '<div style="font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:6px">'+p.tag+'</div>'+
+      '<div class="meta"><span>'+p.qs.length+' 题</span><span>建议 '+p.mins+' 分钟</span></div>'+
+    '</div>';
+  });
+  html += '</div>';
+  html += '<div class="qz-card" data-wrong="1" style="margin-top:12px;border-style:dashed">'+
+    '<div class="no">错题本</div>'+
+    '<h3>我的错题 · '+wn+' 题</h3>'+
+    '<div style="font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.7">'+
+      (wn?'做错的题都在这里。考前把这块清空，比重新翻一遍书快得多。':'还没做过卷子，先挑一套章测试试。')+
+    '</div></div>';
+
+  document.getElementById('doc').innerHTML = html;
+  document.getElementById('crumb').innerHTML = '自测卷 <span style="opacity:.4">/</span> 期末复习';
+  document.getElementById('pager').innerHTML =
+    '<a class="pg prev" data-jumpsum="0"><span>← 复习资料</span><b>速查手册</b></a>'+
+    '<a class="pg next" data-go="'+ORDER[0].sid+'"><span>回到正文 →</span><b>'+ORDER[0].sid+' '+ORDER[0].t+'</b></a>';
+  buildTree();
+  document.body.classList.remove('nav');
+  try{ history.replaceState(null,'','#quiz'); }catch(err){}
+  window.scrollTo(0,0);
+}
+
+function goQuiz(id){
+  var p = qzById(id); if(!p) return;
+  ST.cur = 'quiz'; save();
+  QZSTATE = { pid:id, ans:{}, done:false };
+  var html = '<div class="ch-head">'+
+    '<div class="ch-kicker">'+(p.type==='mock'?'模拟卷 · Mock Exam':'章测 · Chapter Quiz')+'</div>'+
+    '<h1>'+p.title+'</h1>'+
+    '<div class="ch-desc">'+p.tag+'。共 '+p.qs.length+' 题，建议 '+p.mins+' 分钟。选完可以改，交卷后统一判分。</div></div>';
+  html += '<div class="qz-bar"><span>共 <b>'+p.qs.length+'</b> 题</span><span>已答 <b id="qzDone">0</b></span>'+
+    '<span class="sp"></span><span id="qzHint" style="color:var(--muted)">点击选项作答</span></div>';
+  html += '<div id="qzBody">'+p.qs.map(qHTML).join('')+'</div>';
+  html += '<div class="qz-act"><button data-submit="1">交卷判分</button>'+
+    '<button class="ghost" data-quizlist="1">返回列表</button></div>';
+
+  document.getElementById('doc').innerHTML = html;
+  document.getElementById('crumb').innerHTML = '自测卷 <span style="opacity:.4">/</span> '+p.title;
+  document.getElementById('pager').innerHTML =
+    '<a class="pg prev" data-quizlist="1"><span>← 返回</span><b>全部自测卷</b></a>'+
+    '<a class="pg next" data-go="'+ORDER[0].sid+'"><span>回到正文 →</span><b>'+ORDER[0].sid+' '+ORDER[0].t+'</b></a>';
+  buildTree();
+  document.body.classList.remove('nav');
+  try{ history.replaceState(null,'','#quiz-'+id); }catch(err){}
+  window.scrollTo(0,0);
+}
+
+function submitQuiz(){
+  var p = qzById(QZSTATE.pid);
+  if(!p || QZSTATE.done) return;
+  QZSTATE.done = true;
+  var right = 0, wrongIds = [];
+  p.qs.forEach(function(q){
+    var el = document.querySelector('.q[data-q="'+q.id+'"]');
+    if(!el) return;
+    var sel = QZSTATE.ans[q.id], ci = qzCorrect(q);
+    var ok = (sel === ci);
+    if(ok) right++; else wrongIds.push(q.id);
+    el.classList.add('locked');
+    Array.prototype.forEach.call(el.querySelectorAll('.q-opt'), function(o,k){
+      o.classList.remove('sel');
+      if(k === ci) o.classList.add('ok');
+      else if(k === sel) o.classList.add('bad');
+    });
+    var sol = el.querySelector('.q-sol'); if(sol) sol.classList.add('show');
+  });
+
+  ST.qz = ST.qz || {};
+  ST.qz[p.id] = { s:right, t:p.qs.length, d:Date.now() };
+  ST.wrong = ST.wrong || {};
+  wrongIds.forEach(function(id){ ST.wrong[id] = (ST.wrong[id]||0) + 1; });
+  save(); updateBadge();
+
+  var rate = Math.round(right / p.qs.length * 100);
+  var msg = rate>=90 ? '很稳，接下来只刷错题就行。'
+          : rate>=75 ? '基本过关，把错的几道吃透。'
+          : rate>=60 ? '刚过及格线，建议回对应小节重读一遍。'
+          : '这块还虚，先看速查手册再回来做第二遍。';
+  var banner = document.createElement('div');
+  banner.className = 'qz-result';
+  banner.innerHTML = '<div class="big">'+right+'<em>/'+p.qs.length+'</em></div>'+
+    '<div class="txt">得分 <b style="color:var(--accent);font-size:16px">'+rate+'</b> 分　'+
+    (wrongIds.length ? ('错了 '+wrongIds.length+' 题，已收进错题本。') : '全部答对。') +
+    '<br>'+msg+'</div>'+
+    '<button class="ghost" data-redo="'+p.id+'">再做一次</button>';
+  var bar = document.querySelector('.qz-bar');
+  bar.parentNode.insertBefore(banner, bar.nextSibling);
+  var hint = document.getElementById('qzHint');
+  if(hint) hint.textContent = '已交卷 · 向下可看逐题解析';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function goWrong(){
+  ST.cur = 'quiz'; save();
+  var list = [];
+  QUIZ.forEach(function(p){
+    p.qs.forEach(function(q){ if(ST.wrong && ST.wrong[q.id]) list.push({q:q, p:p}); });
+  });
+  var html = '<div class="ch-head">'+
+    '<div class="ch-kicker">错题本 · Review Book</div>'+
+    '<h1>我的<em>错题</em></h1>'+
+    '<div class="ch-desc">'+(list.length?('共 '+list.length+' 道。答案已标出，解析全展开，看懂了就点「移出」。'):'还是空的。')+'</div></div>';
+
+  if(!list.length){
+    html += '<div class="qz-card" style="border-style:dashed;text-align:center;padding:34px 20px">'+
+      '<div style="font-size:13px;color:var(--muted)">去 <b>自测卷</b> 挑一套做做，错的会自动出现在这里。</div></div>';
+  } else {
+    list.forEach(function(it, i){
+      var q = it.q, ci = qzCorrect(q);
+      var body = '';
+      if(q.t==='tf'){
+        body += '<div class="q-opt'+(ci===0?' ok':'')+'"><span class="k">√</span><span>正确</span></div>';
+        body += '<div class="q-opt'+(ci===1?' ok':'')+'"><span class="k">×</span><span>错误</span></div>';
+      } else {
+        q.o.forEach(function(txt, k){
+          body += '<div class="q-opt'+(k===ci?' ok':'')+'"><span class="k">'+'ABCD'[k]+'</span><span>'+txt+'</span></div>';
+        });
+      }
+      html += '<div class="q locked" data-q="'+q.id+'">'+
+        '<div class="q-stem"><span class="q-no">'+(i+1)+'</span><div>'+q.q+
+          '<div style="font-size:11.5px;color:var(--muted);margin-top:5px;letter-spacing:.02em">来自 '+it.p.title+
+          '　错 '+(ST.wrong[q.id]||1)+' 次</div></div></div>'+
+        '<div class="q-opts">'+body+'</div>'+
+        '<div class="q-sol show"><span class="lb">解析</span>'+q.s+'</div>'+
+        '<div style="margin-top:8px"><button class="ghost" data-unwrong="'+q.id+'" '+
+          'style="font-size:11.5px;padding:4px 12px;border-radius:16px;border:1px solid var(--line2);background:transparent;color:var(--ink2);cursor:pointer">移出错题本</button></div>'+
+      '</div>';
+    });
+  }
+  document.getElementById('doc').innerHTML = html;
+  document.getElementById('crumb').innerHTML = '自测卷 <span style="opacity:.4">/</span> 错题本';
+  document.getElementById('pager').innerHTML =
+    '<a class="pg prev" data-quizlist="1"><span>← 返回</span><b>全部自测卷</b></a>'+
+    '<a class="pg next" data-go="'+ORDER[0].sid+'"><span>回到正文 →</span><b>'+ORDER[0].sid+' '+ORDER[0].t+'</b></a>';
+  buildTree();
+  document.body.classList.remove('nav');
+  try{ history.replaceState(null,'','#wrong'); }catch(err){}
+  window.scrollTo(0,0);
+}
+
 function buildPager(sid){
   var i = ORDER.map(function(x){return x.sid;}).indexOf(sid);
   var p = ORDER[i-1], n = ORDER[i+1];
@@ -701,6 +979,30 @@ function buildPager(sid){
 document.addEventListener('click', function(e){
   var el;
   if(e.target.closest('#sumBtn')){ goSum(null); return; }
+  if(e.target.closest('#quizBtn')){ goQuizList(); return; }
+  if(e.target.closest('[data-quizlist]')){ goQuizList(); return; }
+  if(e.target.closest('[data-wrong]')){ goWrong(); return; }
+  if(e.target.closest('[data-submit]')){ submitQuiz(); return; }
+  if((el = e.target.closest('[data-quiz]'))){ goQuiz(el.getAttribute('data-quiz')); return; }
+  if((el = e.target.closest('[data-redo]'))){ goQuiz(el.getAttribute('data-redo')); return; }
+  if((el = e.target.closest('[data-unwrong]'))){
+    delete ST.wrong[el.getAttribute('data-unwrong')];
+    save(); updateBadge(); goWrong(); return;
+  }
+  var qopt = e.target.closest('.q-opt');
+  if(qopt){
+    var qbox = qopt.closest('.q');
+    var qid = qbox ? qbox.getAttribute('data-q') : null;
+    if(qid && !qbox.classList.contains('locked')){
+      QZSTATE.ans[qid] = +qopt.getAttribute('data-opt');
+      Array.prototype.forEach.call(qbox.querySelectorAll('.q-opt'), function(o,k){
+        o.classList.toggle('sel', k === QZSTATE.ans[qid]);
+      });
+      var dEl = document.getElementById('qzDone');
+      if(dEl) dEl.textContent = Object.keys(QZSTATE.ans).length;
+      return;
+    }
+  }
   if((el = e.target.closest('[data-jumpsum]'))){ goSum(+el.getAttribute('data-jumpsum')); return; }
   if(e.target.closest('[data-print]')){ window.print(); return; }
   if((el = e.target.closest('[data-jump]'))){
@@ -763,6 +1065,7 @@ document.getElementById('theme').onclick = function(){
 document.addEventListener('keydown', function(e){
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
   if(ST.cur==='sum'){ if(e.key==='ArrowRight'&&ORDER[0]) go(ORDER[0].sid,true); return; }
+  if(ST.cur==='quiz'){ return; }
   var i = ORDER.map(function(x){return x.sid;}).indexOf(ST.cur);
   if(e.key==='ArrowRight'&&ORDER[i+1]) go(ORDER[i+1].sid,true);
   if(e.key==='ArrowLeft'&&ORDER[i-1])  go(ORDER[i-1].sid,true);
@@ -776,6 +1079,9 @@ function boot(){
   buildTree();
   var start = location.hash.replace('#','') || ST.cur || '3.5.1';
   if(start === 'sum'){ goSum(null); return; }
+  if(start === 'quiz'){ goQuizList(); return; }
+  if(start === 'wrong'){ goWrong(); return; }
+  if(start.indexOf('quiz-') === 0){ goQuiz(start.slice(5)); return; }
   if(!ORDER.filter(function(x){return x.sid===start;}).length) start = ORDER[0].sid;
   go(start, true);
 }
@@ -4564,6 +4870,259 @@ var SUM = [
 </tbody></table>
 <p class="kv" style="color:var(--muted)">步骤：格雷码排表 → 填 1 → 圈尽可能大的 2 的幂方块（可重叠）→ 每圈写一项 → 相加。</p>
 `}
+
+];
+
+/* ===== 期末复习包：章测 + 模拟卷 ===== */
+var QUIZ = [
+{ id:'c1', n:1, title:'第 1 章 逻辑和证明', mins:12, tag:'命题、量词、推理、证明',
+  qs:[
+  { id:'c1-1', q:'下列句子中，哪一个是命题？',
+    o:['x + 1 = 5','请把门关上','2 是偶数','你今天吃饭了吗'], a:2,
+    s:'命题必须能判断真假。<code>x+1=5</code> 含自由变量，真假取决于 x；<code>请把门关上</code> 是祈使句；<code>你今天吃饭了吗</code> 是疑问句。只有「2 是偶数」能判定为真。'},
+  { id:'c1-2', q:'设 <m>p</m> 为真、<m>q</m> 为假，则 <m>p → q</m> 的真值是？',
+    o:['真','假','无法确定','取决于论域'], a:1,
+    s:'蕴含式只有一个情况为假：前件真而后件假。现在 p 真 q 假，正好落在这个情况，所以是<b>假</b>。'},
+  { id:'c1-3', q:'与 <m>¬(p ∧ q)</m> 等价的是？',
+    o:['¬p ∧ ¬q','¬p ∨ ¬q','p ∨ q','p ∧ q'], a:1,
+    s:'德摩根律：<m>¬(p∧q) ≡ ¬p∨¬q</m>。<b>注意不要写成 ¬p∧¬q</b>，那是 <m>¬(p∨q)</m> 的结果。'},
+  { id:'c1-4', q:'论域为实数，<m>∀x (x² ≥ x)</m> 的真值是？',
+    o:['真','假'], a:1,
+    s:'取 <m>x = 0.5</m>，<m>0.25 ≥ 0.5</m> 不成立，找到一个反例就足以否定全称命题，所以为<b>假</b>。'},
+  { id:'c1-5', q:'「你及格<b>仅当</b>分数不低于 60」翻译成逻辑式是？',
+    o:['q → p（分数够则及格）','p → q（及格则分数够）','p ∧ q','¬p → q'], a:1,
+    s:'「p 仅当 q」表示 q 是 p 的必要条件：要及格就必须分数够，即 <m>p→q</m>。反过来不成立——分数够了也可能因缺考不及格。'},
+  { id:'c1-6', q:'判断：「如果 p 蕴含 q，且 q 为真，那么 p 为真」是有效推理。', t:'tf', a:false,
+    s:'这是<b>肯定后件谬误</b>。形式为 <m>q, p→q ⊬ p</m>。反例：下雨则地湿，地湿了，但可能是洒水车。'}
+]},
+
+{ id:'c2', n:2, title:'第 2 章 基本结构', mins:12, tag:'集合、函数、求和、基数',
+  qs:[
+  { id:'c2-1', q:'集合 <m>A</m> 有 5 个元素，则 <m>|P(A)|</m> 等于？',
+    o:['5','10','25','32'], a:3,
+    s:'幂集元素个数为 <m>2<sup>n</sup></m>。每个元素「选或不选」两种状态，5 个元素共 <m>2<sup>5</sup> = 32</m>。'},
+  { id:'c2-2', q:'<m>A = {1,2,3}</m>，<m>B = {3,4}</m>，则 <m>A ⊕ B</m>（对称差）等于？',
+    o:['{3}','{1,2,4}','{1,2,3,4}','∅'], a:1,
+    s:'对称差是「恰好属于其中一个」的元素：<m>A−B = {1,2}</m>，<m>B−A = {4}</m>，合起来 <m>{1,2,4}</m>。公共的 3 被排除。'},
+  { id:'c2-3', q:'<m>f: ℤ → ℤ</m>，<m>f(n) = 2n</m>，它是什么类型的映射？',
+    o:['单射但不满射','满射但不单射','双射','既非单射也非满射'], a:0,
+    s:'单射：<m>2a=2b ⟹ a=b</m>；不满射：3 是整数但没有整数 n 使 <m>2n=3</m>。所以是单射不满射。'},
+  { id:'c2-4', q:'<m>Σ<sub>k=1</sub><sup>10</sup> k²</m> 等于？',
+    o:['55','285','385','1023'], a:2,
+    s:'平方和公式 <m>n(n+1)(2n+1)/6 = 10×11×21/6 = 385</m>。<b>55 是 Σk，不是 Σk²</b>，这是最常见的看错。'},
+  { id:'c2-5', q:'下列哪个集合是<b>不可数</b>的？',
+    o:['整数集 ℤ','有理数集 ℚ','正偶数集','实数集 ℝ'], a:3,
+    s:'ℤ、ℚ、偶数集都能排成队列（可数）。实数集由康托对角线法证明不可数——这是本章最反直觉的结论。'},
+  { id:'c2-6', q:'判断：若 <m>A ⊆ B</m> 且 <m>B ⊆ A</m>，则 <m>A = B</m>。', t:'tf', a:true,
+    s:'对。这是证明集合相等最常用的方法：互相包含即相等。'}
+]},
+
+{ id:'c3', n:3, title:'第 3 章 计数', mins:18, tag:'四大公式、鸽巢、隔板法、盒子模型',
+  qs:[
+  { id:'c3-1', q:'8 个人里选 3 人分别担任班长、学委、体委，有多少种选法？',
+    o:['56','168','336','512'], a:2,
+    s:'职务不同，顺序要紧，用排列：<m>P(8,3) = 8×7×6 = 336</m>。<b>56 是 C(8,3)</b>，那是「选 3 人组成小组」的答案。'},
+  { id:'c3-2', q:'5 种糖果中买 3 颗（只关心种类和数量），有多少种买法？',
+    o:['10','15','35','125'], a:2,
+    s:'允许重复、不计顺序 → 重复组合：<m>C(5+3−1, 3) = C(7,3) = 35</m>。<b>125 是 5³</b>，那是把顺序也当不同的答案。'},
+  { id:'c3-3', q:'6 个<b>相同</b>的球放进 4 个<b>不同</b>的盒子，允许空盒，有多少种放法？',
+    o:['24','84','210','4096'], a:1,
+    s:'球不可区分、盒可区分、允许空 → 隔板法：<m>C(4+6−1, 6) = C(9,6) = 84</m>。<b>4096 是 4⁶</b>，那是球可区分时的答案。'},
+  { id:'c3-4', q:'5 个<b>不同</b>的球放进 3 个<b>不同</b>的盒子，每盒至少一个，有多少种放法？',
+    o:['150','243','25','60'], a:0,
+    s:'满射计数，用容斥：<m>3<sup>5</sup> − 3·2<sup>5</sup> + 3·1<sup>5</sup> = 243 − 96 + 3 = 150</m>。<b>243 是允许空盒</b>的答案，<b>25 是盒子不可区分</b>（S(5,3)）的答案。'},
+  { id:'c3-5', q:'一个班 40 人，至少有多少人出生在同一个月？',
+    o:['3','4','5','12'], a:1,
+    s:'鸽巢原理：<m>⌈40/12⌉ = ⌈3.33⌉ = 4</m>。<b>注意要向上取整</b>，取 3 就错了。'},
+  { id:'c3-6', q:'单词 MISSISSIPPI 的字母全部重排，能得到多少个不同的字符串？',
+    o:['39 916 800','34 650','11 880','1 663 200'], a:1,
+    s:'M1、I4、S4、P2，共 11 个字母：<m>11!/(1!·4!·4!·2!) = 34 650</m>。39 916 800 是 11!，忘了除掉重复。'},
+  { id:'c3-7', q:'判断：「5 个人分成 3 个小组」和「5 个人住进 3 个房间」的答案相同。', t:'tf', a:false,
+    s:'错。分组时组没有编号（盒子不可区分），答案是 <m>S(5,3)=25</m>；住房间时房间有编号，答案是 150。两者差 <m>3! = 6</m> 倍。'},
+  { id:'c3-8', q:'从 1 到 100 中取一个数，是 2 的倍数或 3 的倍数的有多少个？',
+    o:['83','67','50','33'], a:1,
+    s:'容斥：<m>50 + 33 − 16 = 67</m>。<b>83 是直接相加</b>，把 6 的倍数算了两遍；16 就是 <m>⌊100/6⌋</m>。'}
+]},
+
+{ id:'c4', n:4, title:'第 4 章 高级计数技术', mins:15, tag:'递推、生成函数、容斥',
+  qs:[
+  { id:'c4-1', q:'递推关系 <m>a<sub>n</sub> = 5a<sub>n−1</sub> − 6a<sub>n−2</sub></m> 的特征根是？',
+    o:['2 和 3','−2 和 −3','1 和 6','5 和 6'], a:0,
+    s:'特征方程 <m>r² − 5r + 6 = 0</m>，即 <m>(r−2)(r−3)=0</m>，根为 2 和 3。通解形如 <m>α·2<sup>n</sup> + β·3<sup>n</sup></m>。'},
+  { id:'c4-2', q:'汉诺塔 <m>H(n) = 2H(n−1) + 1</m>，<m>H(1)=1</m>，则 <m>H(10)</m> 等于？',
+    o:['511','1023','1024','2047'], a:1,
+    s:'闭式 <m>H(n) = 2<sup>n</sup> − 1</m>，所以 <m>2<sup>10</sup> − 1 = 1023</m>。<b>1024 是 2 的 10 次方</b>，少了那个 −1。'},
+  { id:'c4-3', q:'1 到 1000 中能被 2、3、5 中至少一个整除的数有多少个？',
+    o:['734','500','266','900'], a:0,
+    s:'三集合容斥：<m>500+333+200−166−100−66+33 = 734</m>。<b>266 是补集</b>，即一个都不能整除的个数。'},
+  { id:'c4-4', q:'4 封信全部装错信封（错排 <m>D<sub>4</sub></m>）有多少种？',
+    o:['6','9','12','24'], a:1,
+    s:'<m>D<sub>4</sub> = 4!(1 − 1 + 1/2 − 1/6 + 1/24) = 9</m>。数一下：D₁=0, D₂=1, D₃=2, D₄=9, D₅=44。'},
+  { id:'c4-5', q:'归并排序把 n 个数分两半各自排序再合并，其递推 <m>f(n)=2f(n/2)+n</m> 的解是？',
+    o:['O(n)','O(n log n)','O(n²)','O(log n)'], a:1,
+    s:'这里 <m>a=2, b=2, d=1</m>，<m>a = b<sup>d</sup></m>，按主定理得 <m>O(n log n)</m>，多出一个对数因子。'},
+  { id:'c4-6', q:'三集合容斥公式中，三三交集 <m>|A∩B∩C|</m> 前面的符号是？',
+    o:['加号','减号','视情况而定','不出现'], a:0,
+    s:'规律是「奇数个交集取正、偶数个取负」。单个集合 +，两两交集 −，三三交集 +。'}
+]},
+
+{ id:'c5', n:5, title:'第 5 章 关系', mins:15, tag:'性质、闭包、等价、偏序',
+  qs:[
+  { id:'c5-1', q:'「≤」在实数集上满足哪些性质？',
+    o:['自反、对称、传递','自反、反对称、传递','反自反、对称、传递','只满足传递性'], a:1,
+    s:'<m>a≤a</m> 自反；<m>a≤b</m> 且 <m>b≤a</m> 推出 <m>a=b</m>，反对称；传递显然。所以是偏序，而且是全序。'},
+  { id:'c5-2', q:'<m>R = {(1,2),(2,3)}</m> 的传递闭包是？',
+    o:['{(1,2),(2,3)}','{(1,2),(2,3),(1,3)}','{(1,3)}','{(1,2),(2,3),(3,1)}'], a:1,
+    s:'有 <m>1→2</m> 和 <m>2→3</m>，就必须补上 <m>1→3</m>。<b>原关系本身不传递</b>，因为缺少这条边。'},
+  { id:'c5-3', q:'整数集上「模 4 同余」这个等价关系，共有几个等价类？',
+    o:['2','3','4','无限多个'], a:2,
+    s:'按除以 4 的余数分组：余 0、1、2、3，共 4 类。一般地，模 n 同余有 n 个等价类。'},
+  { id:'c5-4', q:'偏序集 <m>({2,3,6,12}, |)</m> 中，极大元是？',
+    o:['2 和 3','6 和 12','12','没有极大元'], a:2,
+    s:'6 能被 12 整除，所以 6 上面还有人，不是极大元。只有 12 上面没人。<b>这题里极大元恰好也是最大元</b>，但两个概念不同。'},
+  { id:'c5-5', q:'判断：集合上的等价关系与集合的划分一一对应。', t:'tf', a:true,
+    s:'对。每个等价类就是一个划分块；反之给定划分，定义「在同一块即等价」就得到一个等价关系。这是本章的核心定理。'},
+  { id:'c5-6', q:'一个关系是自反的，它的关系矩阵必须满足？',
+    o:['主对角线全为 1','主对角线全为 0','矩阵关于对角线对称','每行至少一个 1'], a:0,
+    s:'<m>aRa</m> 对每个 a 成立，对应矩阵第 i 行第 i 列全为 1。<b>「矩阵对称」是对称关系的特征</b>，别混。'}
+]},
+
+{ id:'c6', n:6, title:'第 6 章 图', mins:18, tag:'握手、欧拉、最短路、平面、着色',
+  qs:[
+  { id:'c6-1', q:'一个图有 6 个顶点、9 条边，所有顶点度数之和是？',
+    o:['9','12','18','无法确定'], a:2,
+    s:'握手定理：<m>Σdeg(v) = 2|E| = 18</m>。不管图长什么样，这个和是定值。'},
+  { id:'c6-2', q:'完全图 <m>K<sub>6</sub></m> 有多少条边？',
+    o:['6','15','30','36'], a:1,
+    s:'<m>C(6,2) = 15</m>。每个顶点度数为 5，度数总和 30，边数 <m>30/2 = 15</m>。'},
+  { id:'c6-3', q:'连通无向图存在<b>欧拉回路</b>的充要条件是？',
+    o:['所有顶点度数为偶','恰好两个顶点度数为奇','图是二分图','图不含三角形'], a:0,
+    s:'欧拉回路要「走进去还得走出来」，每经过一个顶点用掉两条边，所以所有度数必须成对。「恰好两个奇度」对应的是欧拉<b>通路</b>（不要求回到起点）。'},
+  { id:'c6-4', q:'一个连通平面图有 8 个顶点、12 条边，面数（含外部面）是？',
+    o:['4','5','6','7'], a:2,
+    s:'欧拉公式 <m>V − E + F = 2</m>：<m>8 − 12 + F = 2</m>，得 <m>F = 6</m>。<b>别忘了外部那个无限面也要算</b>。'},
+  { id:'c6-5', q:'五边形 <m>C<sub>5</sub></m> 的色数是多少？',
+    o:['2','3','4','5'], a:1,
+    s:'用两色沿圈交替染，走到第 5 个点时它同时邻接红和蓝，两种都用不了，必须引入第 3 色。所以奇圈色数为 3。'},
+  { id:'c6-6', q:'判断：Dijkstra 算法可以正确处理带负权边的图。', t:'tf', a:false,
+    s:'错。Dijkstra 的贪心前提是「当前距离最小的点已最终确定」，有负权时绕远路可能更短，前提崩塌。负权要用 Bellman-Ford。'}
+]},
+
+{ id:'c7', n:7, title:'第 7 章 树', mins:12, tag:'等价刻画、遍历、生成树',
+  qs:[
+  { id:'c7-1', q:'一棵树有 10 个顶点，它有多少条边？',
+    o:['9','10','11','不确定'], a:0,
+    s:'树恒有 <m>n−1</m> 条边，所以是 9。这条性质反过来也能用来判定：连通且 <m>n−1</m> 条边就是树。'},
+  { id:'c7-2', q:'一棵满二叉树有 5 个内部顶点，它有多少个叶子？',
+    o:['5','6','10','11'], a:1,
+    s:'<m>l = (m−1)i + 1 = (2−1)×5 + 1 = 6</m>。<b>别直接用 2i</b>，那是加上根的节点总数减一，容易错。'},
+  { id:'c7-3', q:'树的结构：根 A，左子树 B（左 D、右 E），右子树 C（左 F、右 G）。中序遍历是？',
+    o:['A B D E C F G','D B E A F C G','D E B F G C A','A B C D E F G'], a:1,
+    s:'中序是「左 → 根 → 右」：左子树 <m>D B E</m>，根 <m>A</m>，右子树 <m>F C G</m>，合起来 DBEAFCG。<b>第一个选项是前序，第三个是后序</b>。'},
+  { id:'c7-4', q:'完全图 <m>K<sub>4</sub></m> 有多少棵不同的生成树？',
+    o:['4','8','12','16'], a:3,
+    s:'凯莱公式 <m>n<sup>n−2</sup> = 4<sup>2</sup> = 16</m>。'},
+  { id:'c7-5', q:'判断：已知一棵二叉树的前序和后序遍历，就能唯一确定这棵树。', t:'tf', a:false,
+    s:'错。前序和后序都区分不出「左孩子」还是「右孩子」。例如前序 AB、后序 BA，B 可能是 A 的左孩子也可能是右孩子。必须有中序才能定。'}
+]},
+
+{ id:'c8', n:8, title:'第 8 章 布尔代数', mins:10, tag:'恒等式、范式、门电路、卡诺图',
+  qs:[
+  { id:'c8-1', q:'2 个变量的布尔函数一共有多少个？',
+    o:['4','8','16','256'], a:2,
+    s:'<m>2<sup>2<sup>n</sup></sup></m>，<m>n=2</m> 时为 <m>2<sup>4</sup> = 16</m>。3 个变量是 256，注意是双指数增长。'},
+  { id:'c8-2', q:'化简 <m>x + x̄y</m> 的结果是？',
+    o:['x','y','x + y','xy'], a:2,
+    s:'<m>x + x̄y = (x + x̄)(x + y) = 1·(x + y) = x + y</m>。这一步用的是分配律，不是吸收律。'},
+  { id:'c8-3', q:'下列哪个门单独就构成功能完备集？',
+    o:['与门 AND','或门 OR','异或门 XOR','与非门 NAND'], a:3,
+    s:'NAND 自带取反能力：<m>x̄ = x↑x</m>，<m>xy = (x↑y)↑(x↑y)</m>，<m>x+y = x̄↑ȳ</m>。AND 和 OR 是单调的，造不出非门。'},
+  { id:'c8-4', q:'卡诺图中圈住 4 个相邻的 1（2×2 方块），可以消去几个变量？',
+    o:['1 个','2 个','3 个','4 个'], a:1,
+    s:'圈 <m>2<sup>k</sup></m> 个格就消去 k 个变量。2 格消 1 个，4 格消 2 个，8 格消 3 个。'},
+  { id:'c8-5', q:'判断：只用与门和或门就能表示所有布尔函数。', t:'tf', a:false,
+    s:'错。与门和或门都是单调的——输入全 0 时输出必为 0，造不出「输入 0 输出 1」的非门。必须有取反能力。'}
+]},
+
+{ id:'m1', type:'mock', title:'模拟卷 A · 期末全真', mins:60, tag:'覆盖 8 章，难度贴近期末',
+  qs:[
+  { id:'m1-1', q:'与 <m>¬(p → q)</m> 等价的是？',
+    o:['¬p ∧ q','p ∧ ¬q','¬p ∨ q','p ∨ ¬q'], a:1,
+    s:'<m>¬(p→q) ≡ ¬(¬p∨q) ≡ p ∧ ¬q</m>。直观理解：「p 蕴含 q」不成立，就是「p 成立但 q 不成立」。'},
+  { id:'m1-2', q:'<m>|A| = 3</m>，<m>|B| = 4</m>，则 <m>|A × B|</m> 等于？',
+    o:['7','12','16','64'], a:1,
+    s:'笛卡尔积的元素个数是两者之积：<m>3 × 4 = 12</m>。每个 A 的元素配一个 B 的元素。'},
+  { id:'m1-3', q:'5 个人排成一排，甲、乙必须相邻，有多少种排法？',
+    o:['24','48','72','120'], a:1,
+    s:'捆绑法：甲乙捆成一个整体，与其余 3 人共 4 个元素排列 <m>4! = 24</m>，内部甲乙可互换 <m>2! = 2</m>，共 48。'},
+  { id:'m1-4', q:'<m>(x+y)<sup>6</sup></m> 展开式中 <m>x²y⁴</m> 的系数是？',
+    o:['6','15','20','30'], a:1,
+    s:'要出现 <m>x²y⁴</m>，需在 6 个括号里选 4 个取 y：<m>C(6,4) = C(6,2) = 15</m>。'},
+  { id:'m1-5', q:'递推 <m>a<sub>n</sub> = 3a<sub>n−1</sub> − 2a<sub>n−2</sub></m> 的特征根是？',
+    o:['1 和 2','−1 和 −2','2 和 3','1 和 3'], a:0,
+    s:'<m>r² − 3r + 2 = (r−1)(r−2) = 0</m>，根为 1 和 2。通解 <m>α·1<sup>n</sup> + β·2<sup>n</sup></m>。'},
+  { id:'m1-6', q:'100 以内与 30 互素的整数有多少个？',
+    o:['26','34','40','66'], a:0,
+    s:'<m>30 = 2×3×5</m>。不互素即被 2、3、5 之一整除，容斥得 <m>50+33+20−16−10−6+3 = 74</m>，所以互素有 <m>100−74 = 26</m> 个。'},
+  { id:'m1-7', q:'3 元集合上共有多少个不同的等价关系？',
+    o:['3','5','6','8'], a:1,
+    s:'等价关系个数 = 划分数 = Bell 数 <m>B<sub>3</sub> = 1 + 3 + 1 = 5</m>（1 块 1 种，2 块 3 种，3 块 1 种）。'},
+  { id:'m1-8', q:'一个<b>连通</b>图有 7 个顶点，最少需要多少条边？',
+    o:['5','6','7','21'], a:1,
+    s:'连通图下界是 <m>n−1 = 6</m>，此时正好是一棵树（无回路）。少于 6 条必然分成多个连通分量。'},
+  { id:'m1-9', q:'<m>K<sub>3,3</sub></m> 是平面图吗？',
+    o:['是，可以画平','不是，无法不交叉地画出','取决于画法','含三角形所以不是'], a:1,
+    s:'<m>K<sub>3,3</sub></m> 是二分图，没有三角形，若为平面图需满足 <m>E ≤ 2V−4 = 8</m>，但实际 <m>E = 9</m>，矛盾，故非平面。'},
+  { id:'m1-10', q:'5 个不同的球放进 2 个<b>相同</b>的盒子，每盒至少一个，有多少种放法？',
+    o:['16','30','15','32'], a:2,
+    s:'这是第二类 Stirling 数 <m>S(5,2) = 2<sup>4</sup> − 1 = 15</m>。理解为：每球选 A 或 B 有 32 种，去掉全 A、全 B 两种，再除以盒子互换的 2，得 15。'},
+  { id:'m1-11', q:'8 个顶点的树，顶点最大度数最大可以是多少？',
+    o:['3','5','7','8'], a:2,
+    s:'星形树：1 个中心点连接其余 7 个点，中心度数为 7。树不可能有 8 度顶点（那需要自环或重边）。'},
+  { id:'m1-12', q:'只用 NAND 门实现非门 <m>x̄</m>，应该怎么接？',
+    o:['x 接一个输入端，另一个接 1','两输入端都接 x','两输入端都接 0','x 接一个，另一个接 x̄'], a:1,
+    s:'<m>NAND(x,x) = <span style="text-decoration:overline">x·x</span> = x̄</m>。把同一信号接到两个输入端，就退化成非门。'}
+]},
+
+{ id:'m2', type:'mock', title:'模拟卷 B · 期末全真', mins:60, tag:'覆盖 8 章，侧重概念辨析',
+  qs:[
+  { id:'m2-1', q:'<m>p ↔ q</m> 等价于？',
+    o:['(p→q) ∧ (q→p)','(p→q) ∨ (q→p)','p ∧ q','¬p ∨ ¬q'], a:0,
+    s:'双条件就是「两个方向都成立」。注意不能用 ∨——那几乎总是真，太弱了。'},
+  { id:'m2-2', q:'全集 <m>U</m> 有 10 个元素，<m>|A| = 6</m>，则 <m>|Ā|</m> 等于？',
+    o:['4','5','6','16'], a:0,
+    s:'补集大小 <m>= |U| − |A| = 10 − 6 = 4</m>。'},
+  { id:'m2-3', q:'6 个人围一张圆桌而坐，有多少种不同的坐法（旋转视为相同）？',
+    o:['720','120','60','24'], a:1,
+    s:'圆排列 <m>(n−1)! = 5! = 120</m>。因为整体旋转不算新方案，要固定一个人的位置来消除重复。'},
+  { id:'m2-4', q:'10 人中有 4 女 6 男，选 3 人且至少有 1 名女生，有多少种选法？',
+    o:['60','80','100','120'], a:2,
+    s:'用补集：<m>C(10,3) − C(6,3) = 120 − 20 = 100</m>。直接分「1 女 2 男 / 2 女 1 男 / 3 女」三类也行，但要小心别算漏。'},
+  { id:'m2-5', q:'汉诺塔 5 个盘子需要多少步？',
+    o:['15','31','32','62'], a:1,
+    s:'<m>2<sup>5</sup> − 1 = 31</m>。递推 <m>H(n)=2H(n−1)+1</m>，每多一个盘子步数翻倍再加一。'},
+  { id:'m2-6', q:'5 个元素的错排数 <m>D<sub>5</sub></m> 是？',
+    o:['24','44','56','120'], a:1,
+    s:'<m>D<sub>5</sub> = 4(D<sub>4</sub> + D<sub>3</sub>) = 4(9+2) = 44</m>。也可以用 <m>5!(1−1+1/2−1/6+1/24−1/120) = 44</m>。'},
+  { id:'m2-7', q:'关系矩阵的主对角线全为 1，说明这个关系是？',
+    o:['自反的','对称的','传递的','反对称的'], a:0,
+    s:'<m>aRa</m> 对应 <m>m<sub>ii</sub>=1</m>，即自反。对称看的是「关于对角线互为镜像」，传递看的是 <m>M²≤M</m>。'},
+  { id:'m2-8', q:'完全二分图 <m>K<sub>3,4</sub></m> 有多少条边？',
+    o:['7','12','16','24'], a:1,
+    s:'<m>m×n = 3×4 = 12</m>。两部分之间所有边都存在，同部内部没有边。'},
+  { id:'m2-9', q:'连通图存在<b>欧拉通路但不存在欧拉回路</b>的条件是？',
+    o:['所有顶点度数为偶','恰好两个顶点度数为奇','恰好一个顶点度数为奇','所有顶点度数为奇'], a:1,
+    s:'必须从其中一个奇度点出发、在另一个奇度点结束，所以恰好两个奇点。「所有度数为偶」是回路，「奇点个数为奇」根本不可能（握手定理）。'},
+  { id:'m2-10', q:'四色定理说的是哪一类图的色数不超过 4？',
+    o:['所有二分图','所有平面图','所有完全图','所有树'], a:1,
+    s:'平面图。二分图色数 ≤2、树色数 ≤2、<m>K<sub>n</sub></m> 色数为 n，都不需要四色定理。'},
+  { id:'m2-11', q:'下列哪一条<b>不是</b>树的等价刻画？',
+    o:['连通且无回路','连通且恰有 n−1 条边','任意两点恰有一条简单通路','每个顶点度数都不超过 2'], a:3,
+    s:'「度数都不超过 2」描述的是路径图，不是树。星形树的中心度数可以很大（如 8 个点的星形，中心度为 7）。'},
+  { id:'m2-12', q:'布尔表达式 <m>x · (x + y)</m> 化简后是？',
+    o:['x','y','x + y','xy'], a:0,
+    s:'吸收律：<m>x·(x+y) = x</m>。从真值看也直观——x 为 0 时整个式子必为 0，x 为 1 时括号里至少 1，结果就是 x。'}
+]}
 
 ];
 
