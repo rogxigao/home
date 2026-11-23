@@ -762,6 +762,7 @@ function go(sid, push){
 
   byId('doc').innerHTML = html;
   byId('crumb').innerHTML = 'Ch'+o.c+' · '+c.short+' <span style="opacity:.35">/</span> '+sid+' '+o.t;
+  document.title = sid+' '+o.t+' · 计算机科学概论';
 
   document.querySelectorAll('#doc [data-w]').forEach(function(el){
     var id = el.getAttribute('data-w'), fn = W[id];
@@ -842,6 +843,7 @@ function goMap(push){
 
   byId('doc').innerHTML = h;
   byId('crumb').innerHTML = '学习地图 <span style="opacity:.35">/</span> 全书结构';
+  document.title = '学习地图 · 计算机科学概论';
   document.querySelectorAll('#doc [data-fig]').forEach(function(el){
     var fn = FIG[el.getAttribute('data-fig')];
     if(fn) el.innerHTML = fn();
@@ -866,6 +868,7 @@ function goGloss(push){
   h += '<div class="gcount" id="gcount"></div><div id="gbody"></div>';
   byId('doc').innerHTML = h;
   byId('crumb').innerHTML = '英文术语表 <span style="opacity:.35">/</span> '+GLOSS.length+' terms';
+  document.title = '英文术语表 · 计算机科学概论';
 
   var fl = byId('gfl');
   var opts = [['all','全部']];
@@ -962,6 +965,7 @@ function goExam(push){
 
   byId('doc').innerHTML = h;
   byId('crumb').innerHTML = '考点与背诵 <span style="opacity:.35">/</span> Final review';
+  document.title = '考点与背诵 · 计算机科学概论';
   byId('pager').innerHTML = '<div class="pg empty"></div><a class="pg next" data-go="quiz"><span>NEXT →</span><b>自测卷</b></a>';
   buildTree();
   try{ if(push!==false) history.replaceState(null,'','#/exam'); }catch(err){}
@@ -1000,6 +1004,7 @@ function goQuizList(push){
     (wrongCount()?'做错的题都收在这里。考前把这块清空，比重新翻书快。':'还没做过卷子。先挑一套章测试试。')+'</div></div>';
   byId('doc').innerHTML = h;
   byId('crumb').innerHTML = '自测卷 <span style="opacity:.35">/</span> '+QUIZ.length+' sets';
+  document.title = '自测卷 · 计算机科学概论';
   byId('pager').innerHTML = '<div class="pg empty"></div><div class="pg empty"></div>';
   buildTree();
   try{ if(push!==false) history.replaceState(null,'','#/quiz'); }catch(err){}
@@ -1026,6 +1031,7 @@ function goQuiz(id, push){
   h += '</div><div class="qz-act"><button data-act="submit">交卷 · Submit</button><button class="ghost" data-go="quiz">返回列表</button></div>';
   byId('doc').innerHTML = h;
   byId('crumb').innerHTML = '自测卷 <span style="opacity:.35">/</span> '+p.title;
+  document.title = p.title+' · 计算机科学概论';
   byId('pager').innerHTML = '<div class="pg empty"></div><div class="pg empty"></div>';
   buildTree();
   try{ if(push!==false) history.replaceState(null,'','#/quiz/'+id); }catch(err){}
@@ -1085,6 +1091,7 @@ function goWrong(push){
   }
   byId('doc').innerHTML = h;
   byId('crumb').innerHTML = '自测卷 <span style="opacity:.35">/</span> 错题本';
+  document.title = '错题本 · 计算机科学概论';
   byId('pager').innerHTML = '<div class="pg empty"></div><div class="pg empty"></div>';
   buildTree();
   try{ if(push!==false) history.replaceState(null,'','#/wrong'); }catch(err){}
