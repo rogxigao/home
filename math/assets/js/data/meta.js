@@ -2,18 +2,18 @@
 window.CHAPTERS = [
   { n: 1, title: '函数与极限', note: '极限的语言、无穷小、连续——后面全建在这上面', sections: ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9', 'ch1-drill'] },
   { n: 2, title: '导数与微分', note: '从切线斜率到边际，再到“局部看成直线”', sections: ['2-1', '2-2', '2-3', '2-4', '2-5', 'ch2-drill'] },
-  { n: 3, title: '微分中值定理及其应用', note: '待补充', sections: [] },
-  { n: 4, title: '不定积分', note: '待补充', sections: [] },
-  { n: 5, title: '定积分及其应用', note: '待补充', sections: [] },
-  { n: 6, title: '空间解析几何初步', note: '待补充', sections: [] },
-  { n: 7, title: '多元函数微分学', note: '待补充', sections: [] },
-  { n: 8, title: '二重积分', note: '待补充', sections: [] },
-  { n: 9, title: '无穷级数', note: '待补充', sections: [] },
-  { n: 10, title: '微分方程与差分方程', note: '待补充', sections: [] }
+  { n: 3, title: '微分中值定理及其应用', note: '中值定理、洛必达、单调与极值、凹凸性、经济应用', sections: ['3-1', '3-2', '3-3', '3-4', '3-5', 'ch3-drill'] },
+  { n: 4, title: '不定积分', note: '原函数、换元、分部、有理函数，四套工具', sections: ['4-1', '4-2', '4-3', '4-4', 'ch4-drill'] },
+  { n: 5, title: '定积分及其应用', note: '从黎曼和到牛顿–莱布尼茨，再到面积与体积', sections: ['5-1', '5-2', '5-3', '5-4', '5-5', 'ch5-drill'] },
+  { n: 6, title: '空间解析几何初步', note: '向量、平面与直线、曲面，先建立空间感', sections: ['6-1', '6-2', '6-3', 'ch6-drill'] },
+  { n: 7, title: '多元函数微分学', note: '偏导、全微分、链式法则、无条件与条件极值', sections: ['7-1', '7-2', '7-3', '7-4', 'ch7-drill'] },
+  { n: 8, title: '二重积分', note: '直角坐标与极坐标，先画区域再定限', sections: ['8-1', '8-2', '8-3', 'ch8-drill'] },
+  { n: 9, title: '无穷级数', note: '正项判别、交错级数、幂级数与函数展开', sections: ['9-1', '9-2', '9-3', '9-4', '9-5', 'ch9-drill'] },
+  { n: 10, title: '微分方程与差分方程', note: '可分离变量、一阶线性、二阶常系数、差分', sections: ['10-1', '10-2', '10-3', '10-4', '10-5', 'ch10-drill'] }
 ];
 
 /* 打开首页时，指给你看的位置 */
-window.CURRENT = { id: '2-3' };
+window.CURRENT = null;
 
 window.COMMON_FORMULAS = [
   {

@@ -63,7 +63,7 @@
       html += '</div>';
     });
     if (q && !html) html = '<p class="nav-empty">没有匹配的章节。试试“极限”“导数”“微分”。</p>';
-    html += '<p class="nav-note">第 3 章起（中值定理、积分、多元、级数、微分方程）陆续补充。</p>';
+    html += '<p class="nav-note">全 10 章已备齐：48 节正文 + 10 套章末自测。侧栏搜“极限”“级数”“差分”可直接跳。</p>';
     nav.innerHTML = html;
     markActive();
   }
@@ -73,6 +73,14 @@
     nav.querySelectorAll('.nav-item').forEach(a => {
       a.classList.toggle('active', a.dataset.id === id);
     });
+    const active = nav.querySelector('.nav-item.active');
+    if (active) {
+      const nr = nav.getBoundingClientRect();
+      const ar = active.getBoundingClientRect();
+      if (ar.top < nr.top + 8 || ar.bottom > nr.bottom - 8) {
+        nav.scrollTop += ar.top - nr.top - 72;
+      }
+    }
   }
 
   function currentSectionId() {
@@ -101,7 +109,8 @@
     const cur = window.CURRENT ? byId(window.CURRENT.id) : null;
     const totalQ = SECTIONS.reduce((n, s) => n + ((s.body.match(/class="quiz-item"/g) || []).length), 0);
     const totalF = SECTIONS.reduce((n, s) => n + ((s.formulas || []).length), 0);
-    const done = SECTIONS.filter(s => store[s.id] === 'done').length;
+    const drills = SECTIONS.filter(s => s.kind === 'drill').length;
+    const bodyCount = SECTIONS.length - drills;
 
     let cards = '';
     CHAPTERS.filter(c => sectionsOf(c).length).forEach(ch => {
@@ -123,6 +132,14 @@
         '<a href="#/s/1-5">1.5 极限运算法则</a><i>→</i><a href="#/s/1-6">1.6 两个重要极限</a><i>→</i>' +
         '<a href="#/s/1-7">1.7 无穷小比较</a><i>→</i><a href="#/s/2-1">2.1 导数概念</a><i>→</i>' +
         '<a href="#/s/2-2">2.2 求导法则</a><i>→</i><a href="#/s/2-3">2.3 高阶导数</a></div></div>';
+    } else {
+      where = '<div class="where"><h3><b>全 10 章</b>结课之后，把散点连成网</h3>' +
+        '<p>课上完了，接下来不是再从头看一遍，而是按“极限 → 导数 → 中值定理 → 积分 → 多元 → 级数 → 微分方程”串一条线。每章先做章末自测，错哪题回哪节。</p>' +
+        '<div class="path"><span>复习主线</span>' +
+        '<a href="#/s/1-1">1.1 函数</a><i>→</i><a href="#/s/2-1">2.1 导数</a><i>→</i>' +
+        '<a href="#/s/3-1">3.1 中值定理</a><i>→</i><a href="#/s/4-1">4.1 不定积分</a><i>→</i>' +
+        '<a href="#/s/5-2">5.2 基本公式</a><i>→</i><a href="#/s/7-1">7.1 多元函数</a><i>→</i>' +
+        '<a href="#/s/9-1">9.1 级数</a><i>→</i><a href="#/s/10-1">10.1 微分方程</a></div></div>';
     }
 
     view.innerHTML =
@@ -130,17 +147,21 @@
         '<div class="overline">A slower way to learn calculus</div>' +
         '<h1>课上讲得快，<br>那就<em>一格一格</em>补回来。</h1>' +
         '<p class="lede">按郭军、房少梅《高等数学（经、管类）》（科学出版社）的章节编排。每一节先给一张能动手拖的图，再给定义、例题、易错点和几道自测；公式单独汇总，随时能查。</p>' +
-        '<div class="chips"><span class="chip">' + (SECTIONS.length - 2) + ' 节正文</span><span class="chip">2 套章末自测</span><span class="chip">12 个可拖动的图</span>' +
+        '<div class="chips"><span class="chip">' + bodyCount + ' 节正文</span><span class="chip">' + drills + ' 套章末自测</span><span class="chip">16 个可拖动的图</span>' +
         '<span class="chip">' + totalQ + ' 道自测</span><span class="chip">' + totalF + ' 条公式</span>' +
         '<span class="chip">进度自动记录</span></div>' +
         '<div class="hero-actions"><a class="btn" href="#/s/1-1">从第 1 章开始</a>' +
-        '<a class="btn ghost" href="' + (cur ? '#/s/' + cur.id : '#/s/2-1') + '">接着上次的地方</a>' +
+        '<a class="btn ghost" href="' + (cur ? '#/s/' + cur.id : '#/s/3-1') + '">' + (cur ? '接着上次的地方' : '从第 3 章接着看') + '</a>' +
         '<a class="btn ghost" href="#/formulas">公式速查</a></div>' +
       '</div>' +
 
       '<section class="block">' +
-        '<div class="block-title"><h2>你现在的位置</h2><span>where you are</span></div>' + where +
-        '<p style="margin:16px 0 0;font-size:13.5px;color:var(--ink-3)">2.3 高阶导数的“糊”，多半不在这一节本身，而在前面：极限的四则运算没熟、复合函数求导的链条没接顺。本站把第 1 章和第 2 章拆成 14 节正文，外加两套章末自测，缺哪块补哪块。</p>' +
+        '<div class="block-title"><h2>' + (cur ? '你现在的位置' : '结课之后') + '</h2><span>' + (cur ? 'where you are' : 'after the course') + '</span></div>' + where +
+        '<p style="margin:16px 0 0;font-size:13.5px;color:var(--ink-3)">' +
+          (cur
+            ? '2.3 高阶导数的“糊”，多半不在这一节本身，而在前面：极限的四则运算没熟、复合函数求导的链条没接顺。'
+            : '十章 48 节已经全部备齐，每节仍是“一张图 + 定义 + 例题 + 易错点 + 三道自测”。期末复习建议先做章末自测定位漏洞，再回小节补，不必平均用力。') +
+          '公式在「公式速查」里按章归档，考前可以只看那一页。</p>' +
       '</section>' +
 
       '<section class="block">' +

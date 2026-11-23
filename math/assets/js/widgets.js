@@ -820,6 +820,180 @@
     return dispose;
   }
 
+
+  /* ===================================================
+     3.3 单调性与极值
+     =================================================== */
+  function wMonotone(root) {
+    let a = 1;
+    const f = x => x * x * x - 3 * a * x;
+    const { render, dispose } = stage(root, 250, (ctx, w, h) => {
+      const F = frame(ctx, w, h, [-3, 3], [-8, 8]);
+      plot(ctx, F, f, { color: C.accent, width: 2.2 });
+      if (a > 1e-6) {
+        const s = Math.sqrt(a);
+        [s, -s].forEach((x, i) => {
+          const y = f(x);
+          const y0 = 0;
+          line(ctx, F, x, y0, x, y, '#c9b99f', [3, 3], 1);
+          dot(ctx, F, x, y, i === 0 ? C.green : C.blue, 4.2);
+          text(ctx, F, x + 0.12, y + (i === 0 ? -0.5 : 0.8), i === 0 ? '极小' : '极大', i === 0 ? C.green : C.blue);
+        });
+      }
+      text(ctx, F, -2.85, 7.2, 'y = x³ − 3ax', C.ink);
+    });
+
+    slider(root, {
+      label: 'a =', min: 0, max: 3, step: 0.05, value: a,
+      fmt: v => v.toFixed(2),
+      on: v => { a = v; render(); upd(); }
+    });
+
+    const out = readout(root);
+    function upd() {
+      if (a < 1e-6) {
+        out.innerHTML = 'a = 0：f(x)=x³，导数 3x² ≥ 0，整个区间单调递增，没有极值。驻点处的切线是水平的，但不变号。';
+      } else {
+        const s = Math.sqrt(a);
+        out.innerHTML = 'a = <b>' + a.toFixed(2) + '</b>：增区间 (−∞, −√a) 与 (√a, +∞)，减区间 (−√a, √a)。' +
+          '极大值 f(−√a) = <b>' + (2 * a * s).toFixed(2) + '</b>，极小值 f(√a) = <b>' + (-2 * a * s).toFixed(2) + '</b>。';
+      }
+    }
+    upd();
+    return dispose;
+  }
+
+  /* ===================================================
+     5.1 黎曼和
+     =================================================== */
+  function wArea(root) {
+    let n = 8;
+    const f = x => x * x;
+    const { render, dispose } = stage(root, 260, (ctx, w, h) => {
+      const F = frame(ctx, w, h, [0, 1], [0, 1.2]);
+      for (let i = 0; i < n; i++) {
+        const x0 = i / n, x1 = (i + 1) / n;
+        const y = f(x1);
+        ctx.save();
+        ctx.fillStyle = 'rgba(156,47,36,.10)';
+        ctx.strokeStyle = 'rgba(156,47,36,.35)';
+        ctx.lineWidth = 1;
+        ctx.fillRect(F.X(x0), F.Y(y), F.X(x1) - F.X(x0), F.Y(0) - F.Y(y));
+        ctx.strokeRect(F.X(x0), F.Y(y), F.X(x1) - F.X(x0), F.Y(0) - F.Y(y));
+        ctx.restore();
+      }
+      plot(ctx, F, f, { color: C.accent, width: 2.4 });
+      text(ctx, F, 0.03, 1.12, 'y = x²', C.accent);
+    });
+
+    slider(root, {
+      label: 'n =', min: 2, max: 80, step: 1, value: n,
+      fmt: v => v.toFixed(0),
+      on: v => { n = v; render(); upd(); }
+    });
+
+    const out = readout(root);
+    function upd() {
+      const sum = (n + 1) * (2 * n + 1) / (6 * n * n);
+      out.innerHTML = 'n = <b>' + n + '</b>，黎曼和 Sₙ = <b>' + sum.toFixed(5) +
+        '</b>，精确值 1/3 ≈ 0.33333，差 ' + (sum - 1 / 3).toExponential(2) +
+        '。n 越大，矩形越细，和越贴近曲边梯形。';
+    }
+    upd();
+    return dispose;
+  }
+
+  /* ===================================================
+     9.1 几何级数的部分和
+     =================================================== */
+  function wSeries(root) {
+    let q = 0.6;
+    const { render, dispose } = stage(root, 240, (ctx, w, h) => {
+      const F = frame(ctx, w, h, [0, 20], [0, 5.5]);
+      const lim = 1 / (1 - q);
+      if (lim > 0 && lim < 5.5) line(ctx, F, 0, lim, 20, lim, C.muted, [5, 4], 1.2);
+      let prev = null;
+      for (let k = 0; k <= 20; k++) {
+        const s = (1 - Math.pow(q, k + 1)) / (1 - q);
+        if (s > 0 && s < 5.5) dot(ctx, F, k, s, k > 12 ? C.green : C.accent, 3);
+        if (prev !== null) {
+          ctx.save();
+          ctx.strokeStyle = 'rgba(156,47,36,.25)';
+          ctx.beginPath();
+          ctx.moveTo(F.X(k - 1), F.Y(prev));
+          ctx.lineTo(F.X(k), F.Y(s));
+          ctx.stroke();
+          ctx.restore();
+        }
+        prev = s;
+      }
+      text(ctx, F, 1, lim + 0.25, '1/(1−q) = ' + lim.toFixed(2), C.muted);
+    });
+
+    slider(root, {
+      label: 'q =', min: -0.6, max: 0.8, step: 0.02, value: q,
+      fmt: v => v.toFixed(2),
+      on: v => { q = v; render(); upd(); }
+    });
+
+    const out = readout(root);
+    function upd() {
+      const lim = 1 / (1 - q);
+      const s10 = (1 - Math.pow(q, 11)) / (1 - q);
+      out.innerHTML = 'q = <b>' + q.toFixed(2) + '</b>，第 10 个部分和 S₁₀ = ' + s10.toFixed(4) +
+        '，极限 <b>' + lim.toFixed(4) + '</b>。|q| &lt; 1，所以级数收敛；q 越接近 1，和越大、收敛越慢。';
+    }
+    upd();
+    return dispose;
+  }
+
+  /* ===================================================
+     10.1 斜率场
+     =================================================== */
+  function wSlope(root) {
+    let k = 0.6;
+    const { render, dispose } = stage(root, 250, (ctx, w, h) => {
+      const F = frame(ctx, w, h, [-2, 2], [0, 6]);
+      const sx = F.iw / 4, sy = F.ih / 6;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(51,85,122,.38)';
+      ctx.lineWidth = 1.2;
+      for (let xv = -2; xv <= 2.01; xv += 0.4) {
+        for (let yv = 0.5; yv <= 5.6; yv += 0.7) {
+          const slope = k * yv;
+          const px = F.X(xv), py = F.Y(yv);
+          const dx = 8, dy = -slope * (sy / sx) * dx;
+          const len = Math.sqrt(dx * dx + dy * dy) || 1;
+          const ux = dx / len * 7, uy = dy / len * 7;
+          ctx.beginPath();
+          ctx.moveTo(px - ux, py - uy);
+          ctx.lineTo(px + ux, py + uy);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+      plot(ctx, F, x => Math.exp(k * x), { color: C.accent, width: 2.2 });
+      plot(ctx, F, x => 2 * Math.exp(k * x), { color: 'rgba(156,47,36,.35)', width: 1.6 });
+      dot(ctx, F, 0, 1, C.accent, 4.2);
+      text(ctx, F, 0.08, 1.35, 'y = e^(kx)', C.accent);
+    });
+
+    slider(root, {
+      label: 'k =', min: -0.8, max: 1.2, step: 0.05, value: k,
+      fmt: v => v.toFixed(2),
+      on: v => { k = v; render(); upd(); }
+    });
+
+    const out = readout(root);
+    function upd() {
+      out.innerHTML = 'k = <b>' + k.toFixed(2) + '</b>：方程 y′ = ky 的通解是 y = Ce^(kx)。' +
+        (k > 0 ? 'k &gt; 0，越往右增长越快。' : k < 0 ? 'k &lt; 0，指数衰减，趋于 0。' : 'k = 0，解是水平直线。') +
+        ' 图中两条曲线对应 C = 1 与 C = 2。';
+    }
+    upd();
+    return dispose;
+  }
+
   /* ---------- 注册 ---------- */
   const registry = {
     func: wFunc,
@@ -833,7 +1007,11 @@
     deriv: wDeriv,
     higher: wHigher,
     implicit: wImplicit,
-    diff: wDiff
+    diff: wDiff,
+    monotone: wMonotone,
+    area: wArea,
+    series: wSeries,
+    slope: wSlope
   };
 
   window.Widgets = {
