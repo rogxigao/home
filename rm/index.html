@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#faf9f6">
+<title>RoboMaster 资料查询 | 高荣信</title>
+<meta name="description" content="RoboMaster 资料检索入口：机械百科全文检索、大符专题资料、2027 赛季操作手题库、文件总目录。">
+<link rel="canonical" href="https://gahaga.eu.cc/rm/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f6e66'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='38' font-weight='700' fill='%23ffffff' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#FAF9F6;--surface:#FFFFFF;--surface-2:#F4F1EA;
+  --ink:#17181A;--ink-2:#4B4D52;--ink-3:#8B8C90;
+  --line:#E6E1D6;--accent:#0F6E66;--accent-soft:#E2F0ED;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#141416;--surface:#1C1D20;--surface-2:#232428;--ink:#EDEBE6;--ink-2:#B4B2AC;
+        --ink-3:#82807B;--line:#2E2F33;--accent:#5EC8BA;--accent-soft:#1E3330;}
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:860px;margin:0 auto;padding:56px 24px 88px;}
+a{color:var(--accent);}
+.back{display:inline-block;margin-bottom:32px;font-size:12.5px;color:var(--ink-3);text-decoration:none;}
+.back:hover{color:var(--accent);}
+.kicker{margin:0 0 16px;font-size:11px;letter-spacing:.24em;color:var(--accent);font-weight:600;}
+h1{font-family:var(--serif);font-size:clamp(28px,5vw,40px);line-height:1.2;margin:0 0 12px;font-weight:600;}
+.lede{margin:0 0 40px;font-size:15.5px;color:var(--ink-2);max-width:50ch;}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
+.card{
+  display:flex;flex-direction:column;padding:20px 20px 16px;
+  background:var(--surface);border:1px solid var(--line);border-radius:13px;
+  text-decoration:none;color:inherit;
+  transition:transform .35s var(--ease),border-color .25s,box-shadow .35s var(--ease);
+}
+.card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 14px 30px -18px rgba(20,18,12,.35);}
+.card .t{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px;}
+.card h2{font-family:var(--serif);font-size:19px;margin:0;font-weight:600;line-height:1.35;}
+.card .size{font-size:11px;color:var(--ink-3);white-space:nowrap;}
+.card p{margin:0 0 14px;font-size:13.5px;color:var(--ink-2);line-height:1.7;flex:1;}
+.card .go{font-size:12px;color:var(--accent);}
+.note{margin-top:36px;padding:14px 18px;background:var(--surface-2);border-radius:10px;font-size:13px;color:var(--ink-3);line-height:1.7;}
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="../">← 返回首页</a>
+
+<p class="kicker">ROBOMASTER · TOOLBOX</p>
+<h1>资料查询</h1>
+<p class="lede">四个离线检索工具：机械知识库、大符专题、整份资料目录，以及 2027 赛季操作手题库。全部是纯前端页面，数据打包在页面里。</p>
+
+<div class="grid">
+
+  <a class="card" href="./RM机械百科检索.html">
+    <div class="t"><h2>机械百科检索</h2><span class="size">753 KB</span></div>
+    <p>机械结构、加工工艺、材料选型的全文检索。官方论坛精华帖整理而成，支持关键词过滤与分类浏览。</p>
+    <span class="go">打开 →</span>
+  </a>
+
+  <a class="card" href="./大符资料检索.html">
+    <div class="t"><h2>大符资料检索</h2><span class="size">专题</span></div>
+    <p>大符（能量机关）相关资料的汇总检索。从识别方案到打符策略，按主题归档。</p>
+    <span class="go">打开 →</span>
+  </a>
+
+  <a class="card" href="./RM2027操作手题库.html">
+    <div class="t"><h2>2027 操作手题库</h2><span class="size">66 KB</span></div>
+    <p>操作手考核题目与答案，按规则条款和实战场景分组，适合赛前刷题。</p>
+    <span class="go">打开 →</span>
+  </a>
+
+  <a class="card" href="./文件总目录.html">
+    <div class="t"><h2>文件总目录</h2><span class="size">索引</span></div>
+    <p>整个 robomaster 资料库的目录索引：规则规范、队伍制度、往年图纸与代码、群聊记录。</p>
+    <span class="go">打开 →</span>
+  </a>
+
+</div>
+
+<p class="note">
+  「文件总目录」里指向图纸、PDF、群聊记录的链接只在本机有效——那部分有 7 GB 以上，不适合放到公网上。这个页面上能点开的，只有页面本身。
+</p>
+
+<footer>
+  <span>RoboMaster · 资料查询</span>
+</footer>
+
+</div>
+</body>
+</html>

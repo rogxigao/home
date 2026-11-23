@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RM2027 操作手规则题库 · 考前突击</title>
+<style>
+:root{
+  --ink:#14161a; --sub:#616a78; --mute:#98a1ae;
+  --line:#e7e9ee; --bg:#f4f5f7; --card:#fff;
+  --red:#d81e28; --red-2:#b3161f; --red-soft:#fdeceb; --red-line:#f3c3c0;
+  --green:#0e8a5f; --green-soft:#e9f7f0; --green-line:#a9dfc6;
+  --amber:#a76a00; --amber-soft:#fdf4e3;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 10px 26px -18px rgba(16,24,40,.28);
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font:15px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:60px;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 18px}
+button{font-family:inherit}
+
+/* ---------- header ---------- */
+header{
+  position:sticky;top:0;z-index:40;
+  background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.hd{display:flex;align-items:center;gap:14px;height:62px}
+.brand{display:flex;align-items:baseline;gap:9px;min-width:0}
+.brand b{font-size:16px;letter-spacing:.2px;white-space:nowrap}
+.brand span{font-size:12.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.count{
+  margin-left:auto;display:flex;align-items:center;gap:7px;
+  background:var(--red-soft);color:var(--red-2);
+  border:1px solid var(--red-line);border-radius:999px;
+  padding:5px 12px;font-size:12.5px;font-weight:600;white-space:nowrap;
+}
+.count i{width:6px;height:6px;border-radius:50%;background:var(--red);display:block;
+  animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ---------- tabs ---------- */
+nav.tabs{display:flex;gap:4px;padding:10px 0 0}
+nav.tabs button{
+  flex:1;border:0;background:transparent;color:var(--sub);
+  padding:9px 4px 12px;font-size:14px;cursor:pointer;position:relative;
+  border-radius:10px 10px 0 0;transition:color .15s;
+}
+nav.tabs button:hover{color:var(--ink)}
+nav.tabs button.on{color:var(--red);font-weight:600}
+nav.tabs button.on::after{
+  content:"";position:absolute;left:50%;transform:translateX(-50%);
+  bottom:2px;width:22px;height:2.5px;border-radius:2px;background:var(--red);
+}
+
+main{padding-top:20px}
+.view{display:none;animation:fade .22s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--shadow);padding:20px;
+}
+.card+.card{margin-top:14px}
+.eyebrow{font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mute);font-weight:600}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:26px 24px}
+.hero::before{
+  content:"";position:absolute;right:-70px;top:-70px;width:230px;height:230px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#fdeceb,rgba(253,236,235,0) 70%);
+}
+.hero .big{font-size:42px;font-weight:800;letter-spacing:-1.2px;margin:8px 0 2px;
+  font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:10px}
+.hero .big small{font-size:15px;font-weight:500;color:var(--sub);letter-spacing:0}
+.hero p{margin:6px 0 0;color:var(--sub);font-size:14px;max-width:46ch}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;position:relative}
+.chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#f7f8fa;border:1px solid var(--line);border-radius:8px;
+  padding:5px 10px;font-size:12.5px;color:var(--sub);
+}
+.chip b{color:var(--ink);font-weight:600}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px;box-shadow:var(--shadow)}
+.stat .n{font-size:23px;font-weight:750;letter-spacing:-.5px;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat .l{font-size:11.5px;color:var(--mute);margin-top:3px}
+.stat.hl .n{color:var(--red)}
+
+/* actions */
+.acts{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.btn{
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  padding:10px 16px;border-radius:11px;font-size:14px;cursor:pointer;
+  transition:.15s;display:inline-flex;align-items:center;gap:7px;
+}
+.btn:hover{border-color:#cfd4dd;transform:translateY(-1px)}
+.btn:active{transform:none}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff;font-weight:600;
+  box-shadow:0 6px 18px -8px rgba(216,30,40,.7)}
+.btn.primary:hover{background:var(--red-2);border-color:var(--red-2)}
+.btn.ghost{background:#fafbfc}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* juan grid */
+.sec-title{display:flex;align-items:baseline;gap:10px;margin:26px 0 12px}
+.sec-title h2{font-size:15.5px;margin:0;font-weight:700}
+.sec-title span{font-size:12.5px;color:var(--mute)}
+
+.jgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.jcard{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 16px;
+  cursor:pointer;transition:.16s;box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.jcard:hover{border-color:#d9cccb;transform:translateY(-2px);box-shadow:0 12px 28px -20px rgba(16,24,40,.5)}
+.jcard .top{display:flex;align-items:center;gap:8px}
+.jcard .tag{
+  font-size:11px;font-weight:700;color:var(--red);background:var(--red-soft);
+  border-radius:6px;padding:2px 7px;letter-spacing:.3px;
+}
+.jcard .qm{font-size:11.5px;color:var(--mute);margin-left:auto;font-variant-numeric:tabular-nums}
+.jcard h3{font-size:14.5px;margin:9px 0 3px;font-weight:650;line-height:1.4}
+.jcard p{font-size:12.5px;color:var(--sub);margin:0;line-height:1.5}
+.bar{height:4px;background:#eef0f3;border-radius:3px;margin-top:12px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--red);border-radius:3px;transition:width .4s}
+.pct{font-size:11px;color:var(--mute);margin-top:5px;font-variant-numeric:tabular-nums}
+
+/* ---------- quiz ---------- */
+.qhead{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.qhead .prog{flex:1;min-width:120px;height:5px;background:#e9ebf0;border-radius:3px;overflow:hidden}
+.qhead .prog i{display:block;height:100%;background:var(--red);border-radius:3px;transition:width .3s}
+.qhead .num{font-size:12.5px;color:var(--sub);font-variant-numeric:tabular-nums;font-weight:600}
+.qhead .x{border:0;background:none;color:var(--mute);font-size:19px;cursor:pointer;padding:0 4px;line-height:1}
+.qhead .x:hover{color:var(--ink)}
+.qmeta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.badge{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:600;letter-spacing:.2px}
+.b-base{background:#eef4ff;color:#2b5fbf}
+.b-adv{background:var(--amber-soft);color:var(--amber)}
+.b-comp{background:#f3ecff;color:#6b39c4}
+.b-juan{background:#f5f6f8;color:var(--sub)}
+.b-id{background:#f5f6f8;color:var(--mute);font-variant-numeric:tabular-nums}
+
+.stem{font-size:16.5px;line-height:1.7;margin:2px 0 18px;font-weight:550;letter-spacing:.1px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{
+  display:flex;gap:11px;align-items:flex-start;text-align:left;
+  border:1.5px solid var(--line);background:#fff;border-radius:12px;
+  padding:13px 15px;cursor:pointer;transition:.14s;font-size:14.5px;line-height:1.55;color:var(--ink);
+}
+.opt:hover:not(:disabled){border-color:#cfd4dd;background:#fcfcfd}
+.opt:disabled{cursor:default}
+.opt .k{
+  flex:0 0 22px;height:22px;border-radius:6px;background:#f2f4f7;color:var(--sub);
+  font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;
+}
+.opt.ok{border-color:var(--green-line);background:var(--green-soft)}
+.opt.ok .k{background:var(--green);color:#fff}
+.opt.bad{border-color:var(--red-line);background:var(--red-soft)}
+.opt.bad .k{background:var(--red);color:#fff}
+.opt.dim{opacity:.55}
+
+.expl{margin-top:16px;border-radius:12px;background:#fafbfc;border:1px solid var(--line);overflow:hidden;
+  animation:slide .25s ease}
+@keyframes slide{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.expl .hd2{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.expl .hd2 .v{font-size:12.5px;font-weight:700;padding:2px 9px;border-radius:6px}
+.expl .hd2 .v.ok{background:var(--green-soft);color:var(--green)}
+.expl .hd2 .v.bad{background:var(--red-soft);color:var(--red)}
+.expl .hd2 .ans{font-size:12.5px;color:var(--sub);margin-left:auto}
+.expl .bd{padding:14px 16px 16px}
+.expl .rule{font-size:14px;line-height:1.7;margin:0 0 13px}
+.dl{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.dl li{display:flex;gap:9px;font-size:13px;line-height:1.6;color:var(--sub)}
+.dl li b{flex:0 0 17px;height:17px;border-radius:5px;font-size:11px;display:flex;align-items:center;
+  justify-content:center;margin-top:2px;font-weight:700}
+.dl li b.y{background:var(--green-soft);color:var(--green)}
+.dl li b.n{background:#eff1f4;color:var(--mute)}
+.dl li span{flex:1}
+.src{margin-top:13px;padding-top:11px;border-top:1px dashed var(--line);
+  font-size:11.5px;color:var(--mute);line-height:1.6}
+
+.qnav{display:flex;gap:10px;margin-top:18px}
+.qnav .btn{flex:1;justify-content:center}
+.hint{text-align:center;font-size:11.5px;color:var(--mute);margin-top:12px}
+kbd{font-family:inherit;font-size:11px;background:#eef0f4;border-radius:4px;padding:1px 5px;color:var(--sub)}
+
+/* result */
+.result{text-align:center;padding:34px 24px}
+.ring{width:132px;height:132px;border-radius:50%;margin:0 auto 18px;display:grid;place-items:center;
+  position:relative}
+.ring .in{width:104px;height:104px;border-radius:50%;background:#fff;display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1px var(--line)}
+.ring .in b{font-size:30px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums;display:block;line-height:1}
+.ring .in small{font-size:11px;color:var(--mute);display:block;margin-top:3px}
+.verdict{font-size:19px;font-weight:700;margin:0 0 6px}
+.verdict-sub{color:var(--sub);font-size:13.5px;margin:0}
+.rstat{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:22px 0 0}
+.rstat div{background:#fafbfc;border:1px solid var(--line);border-radius:10px;padding:11px}
+.rstat b{display:block;font-size:19px;font-weight:750;font-variant-numeric:tabular-nums}
+.rstat span{font-size:11.5px;color:var(--mute)}
+
+/* review list */
+.rlist{margin-top:8px;display:flex;flex-direction:column;gap:10px}
+.ritem{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+.ritem .rh{padding:13px 15px;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.ritem .rh:hover{background:#fcfcfd}
+.ritem .rh .t{flex:1;font-size:13.8px;line-height:1.55}
+.ritem .rh .t i{font-style:normal;color:var(--mute);font-size:11.5px;display:block;margin-bottom:2px;
+  font-variant-numeric:tabular-nums}
+.ritem .rh .arw{color:var(--mute);font-size:12px;transition:.2s;margin-top:2px}
+.ritem.open .rh .arw{transform:rotate(90deg)}
+.ritem .rb{display:none;padding:0 15px 15px;border-top:1px dashed var(--line);margin-top:-1px;padding-top:13px}
+.ritem.open .rb{display:block}
+.ritem .rb .o{font-size:13px;color:var(--sub);display:flex;gap:8px;padding:3px 0}
+.ritem .rb .o em{font-style:normal;font-weight:700;flex:0 0 14px}
+.ritem .rb .o.good{color:var(--green);font-weight:600}
+.ritem .rb .o.bad{color:var(--red);text-decoration:line-through;text-decoration-color:rgba(216,30,40,.4)}
+.ritem .rb .ex{margin-top:10px;font-size:13px;line-height:1.65;background:#fafbfc;border-radius:8px;padding:11px 13px;color:var(--sub)}
+
+/* ---------- mindmap ---------- */
+.mm-node{position:relative}
+.mm-head{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 12px;border-radius:10px;
+  transition:background .16s;position:relative;
+}
+.mm-node.has-kids > .mm-head{cursor:pointer;user-select:none}
+.mm-node.has-kids > .mm-head:hover{background:#f6f7f9}
+.mm-dot{width:7px;height:7px;border-radius:50%;background:var(--c,#c9ced8);flex:0 0 auto}
+.mm-label{font-size:13.8px;line-height:1.5;color:var(--ink);flex:1}
+.mm-n{font-size:11px;color:var(--mute);font-variant-numeric:tabular-nums;
+  background:#f2f4f7;border-radius:5px;padding:1px 6px;flex:0 0 auto}
+.mm-arrow{font-size:12px;color:var(--mute);transition:transform .28s cubic-bezier(.4,0,.2,1);
+  display:inline-block;flex:0 0 auto}
+.mm-node.open > .mm-head > .mm-arrow{transform:rotate(90deg)}
+
+.mm-node.lv0 > .mm-head{
+  background:var(--ink);border-radius:14px;padding:14px 18px;
+  box-shadow:0 10px 26px -16px rgba(16,24,40,.7);
+}
+.mm-node.lv0 > .mm-head:hover{background:var(--ink)}
+.mm-node.lv0 > .mm-head .mm-label{font-size:17px;font-weight:750;color:#fff;letter-spacing:-.2px}
+.mm-node.lv0 > .mm-head .mm-n{background:rgba(255,255,255,.16);color:#fff}
+.mm-node.lv0 > .mm-head .mm-arrow{color:rgba(255,255,255,.75)}
+.mm-node.lv0 > .mm-head .mm-dot{background:#fff}
+
+.mm-node.lv1 > .mm-head{
+  background:#fff;border:1px solid var(--line);border-left:3px solid var(--c,#c9ced8);
+  border-radius:11px;padding:11px 13px;box-shadow:var(--shadow);
+}
+.mm-node.lv1 > .mm-head:hover{background:#fcfcfd}
+.mm-node.lv1 > .mm-head .mm-label{font-size:14.5px;font-weight:650}
+.mm-node.lv1 > .mm-head .mm-dot{background:var(--c,#c9ced8)}
+
+.mm-node.lv2 > .mm-head{
+  background:#fafbfc;border:1px solid #f0f2f5;border-radius:9px;padding:7px 11px;
+}
+.mm-node.lv2 > .mm-head .mm-label{font-size:13.5px;font-weight:550}
+.mm-node.lv2 > .mm-head .mm-dot{width:5px;height:5px;background:var(--c,#c9ced8);opacity:.7}
+
+.mm-node.lv3 > .mm-head{padding:5px 0 5px 2px;gap:8px}
+.mm-node.lv3 > .mm-head:hover{background:transparent}
+.mm-node.lv3 > .mm-head .mm-label{font-size:13px;color:var(--sub);line-height:1.65}
+.mm-node.lv3 > .mm-head .mm-dot{width:4px;height:4px;background:var(--c,#c9ced8);opacity:.55}
+
+.mm-kids{overflow:hidden;height:0;transition:height .34s cubic-bezier(.36,.1,.25,1)}
+.mm-inner{position:relative;padding:2px 0 4px 22px}
+.mm-inner::before{content:"";position:absolute;left:8px;top:4px;bottom:10px;width:1.5px;
+  background:#e9ebf0;border-radius:2px}
+.mm-node.open > .mm-kids > .mm-inner > .mm-node{animation:mmIn .3s ease both}
+@keyframes mmIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+@media(max-width:640px){
+  nav.tabs button{font-size:13px;padding:9px 2px 12px}
+  .mm-node.lv0 > .mm-head .mm-label{font-size:15.5px}
+  .mm-inner{padding-left:16px}
+  .mm-inner::before{left:5px}
+}
+
+/* knowledge */
+.kcard{padding:0;overflow:hidden}
+.kcard .kh{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
+.kcard .kh h3{margin:0;font-size:14.5px;font-weight:700}
+.kcard .kh .n{font-size:11px;color:var(--mute);margin-left:auto}
+.kcard .kb{padding:6px 20px 16px}
+.kitem{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid #f2f3f6}
+.kitem:last-child{border-bottom:0}
+.kitem .idx{flex:0 0 20px;height:20px;border-radius:6px;background:var(--red-soft);color:var(--red);
+  font-size:11px;font-weight:700;display:grid;place-items:center;margin-top:2px}
+.kitem .tx{font-size:13.8px;line-height:1.68}
+.kitem .tx b{font-weight:650}
+.kitem .tx code{background:#f4f5f7;border-radius:4px;padding:1px 5px;font-size:12.5px;color:var(--red-2);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.acc{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:9px;overflow:hidden}
+.acc .ah{padding:12px 15px;display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13.5px;font-weight:600}
+.acc .ah:hover{background:#fcfcfd}
+.acc .ah .c{margin-left:auto;font-size:11.5px;color:var(--mute);font-weight:500;font-variant-numeric:tabular-nums}
+.acc .ab{display:none;padding:0 15px 14px}
+.acc.open .ab{display:block}
+.acc .ab li{font-size:13px;line-height:1.65;color:var(--sub);margin:6px 0;padding-left:14px;position:relative}
+.acc .ab li::before{content:"";position:absolute;left:2px;top:9px;width:4px;height:4px;border-radius:50%;background:#c9ced8}
+
+/* empty */
+.empty{text-align:center;padding:52px 20px;color:var(--mute)}
+.empty .ic{font-size:34px;margin-bottom:10px;opacity:.5}
+.empty p{margin:0;font-size:13.5px}
+
+/* resume & toast */
+.resume{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);
+  border-left:3px solid var(--red);border-radius:12px;padding:13px 15px;margin-top:14px;
+  box-shadow:var(--shadow);flex-wrap:wrap}
+.resume .rt{flex:1;min-width:160px}
+.resume .rt b{display:block;font-size:13.5px;font-weight:650;line-height:1.5}
+.resume .rt span{font-size:11.5px;color:var(--mute)}
+.resume .ra{display:flex;gap:7px}
+.resume .ra .btn{padding:7px 13px;font-size:13px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(8px);
+  background:#1a1d23;color:#fff;padding:9px 17px;border-radius:999px;font-size:13px;
+  z-index:99;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;max-width:90vw;
+  overflow:hidden;text-overflow:ellipsis}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* misc */
+.note{font-size:12.5px;color:var(--sub);background:var(--amber-soft);border:1px solid #f0e0bd;
+  border-radius:11px;padding:12px 14px;line-height:1.65}
+.note b{color:var(--amber)}
+.diag{text-align:center;font-size:11.5px;color:var(--mute);padding:26px 10px 0;line-height:1.7}
+.diag b{font-weight:600}
+.diag b.ok{color:var(--green)}
+.diag b.bad{color:var(--red)}
+footer{text-align:center;font-size:11.5px;color:var(--mute);padding:34px 20px 10px;line-height:1.8}
+.seg{display:inline-flex;background:#eef0f3;border-radius:9px;padding:3px;gap:2px;margin-bottom:14px}
+.seg button{border:0;background:transparent;padding:6px 13px;border-radius:7px;font-size:12.5px;
+  color:var(--sub);cursor:pointer;transition:.15s}
+.seg button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(16,24,40,.08)}
+
+@media(max-width:640px){
+  .wrap{padding:0 14px}
+  .hero{padding:22px 18px}
+  .hero .big{font-size:34px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .jgrid{grid-template-columns:1fr}
+  .card{padding:17px}
+  .stem{font-size:15.5px}
+  .opt{font-size:14px;padding:12px 13px}
+  .hd{height:56px}
+  .brand b{font-size:15px}
+  .brand span{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hd">
+    <div class="brand"><b>操作手规则题库</b><span>RMUC / RMUL 2027 · 200 题</span></div>
+    <div class="count" id="countdown"><i></i><span>—</span></div>
+  </div>
+  <div class="wrap">
+    <nav class="tabs">
+      <button data-v="home" class="on">概览</button>
+      <button data-v="quiz">刷题</button>
+      <button data-v="mind">导图</button>
+      <button data-v="know">速记</button>
+      <button data-v="wrong">错题</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ========== HOME ========== -->
+  <section class="view on" id="v-home">
+    <div class="card hero">
+      <div class="eyebrow">Taurus 操作手选拔 · 规则笔试</div>
+      <div class="big" id="cd-big">—<small>后开考</small></div>
+      <p>11 月 8 日线下闭卷，试卷从这 200 题里随机抽 30 道选择。题库全部出自《比赛规则手册》，所以刷完就是刷完了。</p>
+      <div class="meta">
+        <span class="chip">形式 <b>随机 30 题 · 四选一</b></span>
+        <span class="chip">依据 <b>规则手册 V1.0.0</b></span>
+        <span class="chip">重点 <b>胜负判断 / 机制 / 违规边界</b></span>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n" id="st-done">0</div><div class="l">已刷题数</div></div>
+      <div class="stat hl"><div class="n" id="st-acc">—</div><div class="l">总正确率</div></div>
+      <div class="stat"><div class="n" id="st-wrong">0</div><div class="l">错题待清</div></div>
+      <div class="stat"><div class="n" id="st-best">—</div><div class="l">模考最高</div></div>
+    </div>
+
+    <div id="resume-wrap"></div>
+
+    <div class="acts">
+      <button class="btn primary" id="btn-mock">开始 30 题模拟考</button>
+      <button class="btn" id="btn-all">顺序通刷 200 题</button>
+      <button class="btn ghost" id="btn-wrong-quick">错题重练</button>
+    </div>
+    <div id="diag" class="diag"></div>
+
+    <div class="sec-title"><h2>六卷分练</h2><span>按考点分卷，建议按顺序过</span></div>
+    <div class="jgrid" id="jgrid"></div>
+
+    <div class="sec-title"><h2>怎么用最快</h2></div>
+    <div class="card">
+      <div class="kitem"><div class="idx">1</div><div class="tx"><b>先通刷一遍，不要背题。</b>每道题只看「规则解析」那一行，把它当成一条规则来讲，而不是记住 A 还是 B。</div></div>
+      <div class="kitem"><div class="idx">2</div><div class="tx"><b>错题会自动进错题本。</b>当晚把错题重练到全对，第二天再回来过一遍——遗忘曲线的拐点在 24 小时。</div></div>
+      <div class="kitem"><div class="idx">3</div><div class="tx"><b>考前只做两件事：</b>模考连打三次稳定 28/30 以上，然后把「速记」页的判胜顺序和红黄牌条款默一遍。</div></div>
+    </div>
+  </section>
+
+  <!-- ========== QUIZ ========== -->
+  <section class="view" id="v-quiz">
+    <div id="quiz-body"></div>
+  </section>
+
+  <!-- ========== MINDMAP ========== -->
+  <section class="view" id="v-mind">
+    <div class="card" style="margin-bottom:16px">
+      <div class="eyebrow">规则全图</div>
+      <h2 style="font-size:19px;margin:7px 0 4px;letter-spacing:-.3px">整本手册压成一张图</h2>
+      <p style="margin:0;color:var(--sub);font-size:13.5px">点任意分支展开下一层，再点收起。先看骨架，再往里钻。</p>
+      <div class="acts">
+        <button class="btn" id="mm-expand">全部展开</button>
+        <button class="btn ghost" id="mm-collapse">收回到一级</button>
+      </div>
+    </div>
+    <div id="mind-root"></div>
+  </section>
+
+  <!-- ========== KNOWLEDGE ========== -->
+  <section class="view" id="v-know">
+    <div class="card" style="margin-bottom:14px">
+      <div class="eyebrow">考前必背</div>
+      <h2 id="hand-title" style="font-size:19px;margin:7px 0 4px;letter-spacing:-.3px">高频判断骨架</h2>
+      <p style="margin:0;color:var(--sub);font-size:13.5px">都是从题库解析里挑出来的高频判断骨架。背结论，别背题。</p>
+    </div>
+    <div id="k-hand"></div>
+    <div class="sec-title"><h2>章节速记</h2><span>按手册条目聚合，等于把 200 题的解析压成清单</span></div>
+    <div id="k-sec"></div>
+  </section>
+
+  <!-- ========== WRONG ========== -->
+  <section class="view" id="v-wrong">
+    <div class="card" style="margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="flex:1;min-width:180px">
+        <div class="eyebrow">错题本</div>
+        <h2 style="font-size:18px;margin:6px 0 3px" id="wrong-title">还没有错题</h2>
+        <p style="margin:0;color:var(--sub);font-size:13px">答错自动收录；在错题重练中答对会自动移出。</p>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn primary" id="btn-redo-wrong">重练全部</button>
+        <button class="btn ghost" id="btn-clear-wrong">清空</button>
+      </div>
+    </div>
+    <div id="wrong-list"></div>
+  </section>
+
+  <footer>
+    题库来自飞书「操作手选拔题库」共享文件夹，共 200 题 · 六卷<br>
+    答案与解析为题库原文，出处标注到手册章节与页码，可回查核对
+  </footer>
+</main>
+
+<script id="qdata" type="application/json">[{"id":"Q001","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"基地被击毁的胜负优先级","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方基地被击毁，蓝方基地仍存活，但红方累计控制度更高。应如何判定本局？","options":["蓝方获胜","红方因控制度更高获胜","必须等比赛时间耗尽","必须继续比较攻击伤害"],"answer":"A","exp":"基地被击毁已经触发胜负判定，基地剩余血量较高的蓝方获胜","detail":[{"k":"A","ok":true,"t":"基地被击毁已经触发胜负判定，基地剩余血量较高的蓝方获胜"},{"k":"B","ok":false,"t":"基地被击毁时，控制度不是优先比较项"},{"k":"C","ok":false,"t":"触发即时胜负条件后无需等待时间耗尽"},{"k":"D","ok":false,"t":"此时不用越过基地被击毁条件再比较伤害"}],"sec":"§5.8","page":"114"},{"id":"Q002","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"时间耗尽时控制度优先","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，时间耗尽且双方基地均未被击毁，红方累计控制度较高，蓝方基地血量较高。应判谁获胜？","options":["先比较全队攻击伤害","把控制度与基地血量相加后再比","蓝方","红方"],"answer":"D","exp":"基地均存活且时间耗尽时，首先比较累计控制度，红方较高即获胜","detail":[{"k":"A","ok":false,"t":"控制度已经分出高低，不进入攻击伤害比较"},{"k":"B","ok":false,"t":"手册没有把控制度和基地血量相加的结算方法"},{"k":"C","ok":false,"t":"基地血量较高不能越过本条件下的控制度比较"},{"k":"D","ok":true,"t":"基地均存活且时间耗尽时，首先比较累计控制度，红方较高即获胜"}],"sec":"§5.8","page":"114"},{"id":"Q003","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"伤害与剩余血量的比较顺序","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，时间耗尽，双方基地均存活且累计控制度一致。红方全队攻击伤害较高，蓝方机器人总剩余血量较高，应判谁获胜？","options":["红方","蓝方","直接平局","比较哪方先获得控制度"],"answer":"A","exp":"此前提下先比较全队攻击伤害，红方较高即获胜","detail":[{"k":"A","ok":true,"t":"此前提下先比较全队攻击伤害，红方较高即获胜"},{"k":"B","ok":false,"t":"机器人剩余血量只在攻击伤害也相同后比较"},{"k":"C","ok":false,"t":"攻击伤害已不同，不应判平局"},{"k":"D","ok":false,"t":"先获得控制度的时间不是该胜负比较项"}],"sec":"§5.8","page":"114"},{"id":"Q004","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"最终比较存活机器人血量","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，时间耗尽，双方基地均存活，控制度和全队攻击伤害都一致，但红方存活机器人的总剩余血量较高。应如何判定？","options":["直接判平局","判红方获胜","按先开火的一方获胜","比较基地历史最低血量"],"answer":"B","exp":"前置比较项均相同时，全队总剩余血量较高的一方获胜","detail":[{"k":"A","ok":false,"t":"总剩余血量已经分出高低，不能直接判平局"},{"k":"B","ok":true,"t":"前置比较项均相同时，全队总剩余血量较高的一方获胜"},{"k":"C","ok":false,"t":"首次开火时间不是RMUC该项胜负指标"},{"k":"D","ok":false,"t":"基地历史最低血量不是此项胜负比较指标"}],"sec":"§5.8","page":"114"},{"id":"Q005","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"总剩余血量口径","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，胜负判定中的“总剩余血量”统计哪些对象？","options":["前哨站和全部机器人","己方所有存活机器人","本局曾经上场机器人的历史最高血量","基地和全部机器人"],"answer":"B","exp":"统计每局结束时己方所有存活机器人的剩余血量总值","detail":[{"k":"A","ok":false,"t":"前哨站不计入此定义"},{"k":"B","ok":true,"t":"统计每局结束时己方所有存活机器人的剩余血量总值"},{"k":"C","ok":false,"t":"统计的是终局存活机器人的剩余血量，不是历史峰值"},{"k":"D","ok":false,"t":"定义不把基地血量加进机器人总剩余血量"}],"sec":"§2","page":"19"},{"id":"Q006","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"判罚扣血与攻击伤害","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，下列哪项被手册明确计入对方攻击伤害？","options":["机器人因自身射击热量超限扣血","基地因违规判罚扣血","机器人因普通撞击扣血","机器人因裁判系统模块离线扣血"],"answer":"B","exp":"机器人、基地、前哨站因违规判罚扣血，明确计入对方攻击伤害","detail":[{"k":"A","ok":false,"t":"热量超限惩罚不是该项明确计入对方攻击伤害的来源"},{"k":"B","ok":true,"t":"机器人、基地、前哨站因违规判罚扣血，明确计入对方攻击伤害"},{"k":"C","ok":false,"t":"普通装甲撞击扣血属于非攻击伤害"},{"k":"D","ok":false,"t":"模块离线扣血属于非攻击伤害"}],"sec":"§2","page":"19"},{"id":"Q007","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"无法分出胜负后的处理","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，某局全部胜负比较条件均无法区分双方，且本场采用手册规定遇平局需加赛的赛制，应如何处理？","options":["直接按队伍颜色判胜","按先造成伤害者获胜","停止比赛并由队伍自行协商胜者","该局为平局，并按规则立即加赛直至分出胜负"],"answer":"D","exp":"全部比较项无法判定时该局为平局；题设所述赛制应立即加赛直至分出胜负","detail":[{"k":"A","ok":false,"t":"队伍颜色不是胜负比较依据"},{"k":"B","ok":false,"t":"手册未列先造成伤害为额外决胜项"},{"k":"C","ok":false,"t":"题设已有加赛规定，不能用协商替代"},{"k":"D","ok":true,"t":"全部比较项无法判定时该局为平局；题设所述赛制应立即加赛直至分出胜负"}],"sec":"§5.8","page":"115"},{"id":"Q008","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"己方前哨控制与基地保护","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方完全控制蓝方前哨阵地，但红方自己的前哨阵地仅由红方临时控制。红方是否满足5.6.1规定的基地保护条件？","options":["满足，完全控制任意一处前哨阵地即可","满足，临时控制等同完全控制","不满足，因为基地从不能获得防御增益","不满足，需要红方完全控制本方前哨阵地"],"answer":"D","exp":"本方前哨阵地由本方完全控制，才满足此条规定的基地保护条件","detail":[{"k":"A","ok":false,"t":"该基地保护条件对应本方原前哨阵地，不是任意一处"},{"k":"B","ok":false,"t":"临时控制不能替代规则明确要求的完全控制"},{"k":"C","ok":false,"t":"基地可以在满足条件时获得相应防御增益"},{"k":"D","ok":true,"t":"本方前哨阵地由本方完全控制，才满足此条规定的基地保护条件"}],"sec":"§5.6.1","page":"94"},{"id":"Q009","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"防御增益的适用范围","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方基地因本方前哨阵地完全控制条件而获得防御增益。能否仅凭这一防御增益，认定飞镖命中不会扣血？","options":["能，只要基地仍存活","不能，防御增益不适用于飞镖造成的扣血","能，只要飞镖选择固定目标","能，防御增益阻止所有来源扣血"],"answer":"B","exp":"手册明确防御增益不适用于飞镖、违规判罚等导致的扣血","detail":[{"k":"A","ok":false,"t":"基地存活不改变防御增益的适用范围"},{"k":"B","ok":true,"t":"手册明确防御增益不适用于飞镖、违规判罚等导致的扣血"},{"k":"C","ok":false,"t":"该适用范围没有固定目标例外"},{"k":"D","ok":false,"t":"防御增益有适用范围，不能扩大到所有扣血来源"}],"sec":"§5.6.4.1","page":"103"},{"id":"Q010","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"前哨站重建与拥有方","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，前哨阵地通过前哨站被击毁的方式，由一方完全控制转为另一方完全控制时，前哨站会如何变化？","options":["仍归原拥有方且不能重建","作为新拥有方的前哨站重建并恢复存活","永久保持战亡","变为双方共同拥有的前哨站"],"answer":"B","exp":"控制权按题设方式转变时，前哨站重建为新拥有方所有并恢复存活","detail":[{"k":"A","ok":false,"t":"重建后的拥有方随题设控制权转移而改变"},{"k":"B","ok":true,"t":"控制权按题设方式转变时，前哨站重建为新拥有方所有并恢复存活"},{"k":"C","ok":false,"t":"规则规定满足该条件后会重建，不是永久战亡"},{"k":"D","ok":false,"t":"规则没有双方共同拥有前哨站的状态"}],"sec":"§5.6.1","page":"94"},{"id":"Q011","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"前哨阵地的构成","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，判断前哨阵地的激活与争夺时，应将哪组增益点视为同一阵地的组成部分？","options":["制高点增益点与堡垒增益点","基地增益点与中央高地增益点","前哨站增益点与补给区增益点","前哨站增益点与中央高地增益点"],"answer":"D","exp":"前哨阵地由前哨站增益点和中央高地增益点构成","detail":[{"k":"A","ok":false,"t":"这不是手册规定的前哨阵地组合"},{"k":"B","ok":false,"t":"基地增益点属于基地阵地，不属于前哨阵地"},{"k":"C","ok":false,"t":"补给区增益点不在该阵地的构成中"},{"k":"D","ok":true,"t":"前哨阵地由前哨站增益点和中央高地增益点构成"}],"sec":"§5.6.2","page":"96"},{"id":"Q012","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"基地阵地的控制权限","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，关于基地阵地，下列哪项正确？","options":["由基地和补给区增益点组成，双方均可完全控制","由基地和堡垒增益点组成，支持临时控制，只有初始拥有方可完全控制","由基地和制高点增益点组成，任何一方都不能完全控制","由堡垒和装配区增益点组成，双方均可完全控制"],"answer":"B","exp":"基地阵地由基地增益点和堡垒增益点构成，完全控制权限只属于初始拥有方","detail":[{"k":"A","ok":false,"t":"补给区不属于该阵地，且完全控制只限初始拥有方"},{"k":"B","ok":true,"t":"基地阵地由基地增益点和堡垒增益点构成，完全控制权限只属于初始拥有方"},{"k":"C","ok":false,"t":"制高点不在此构成内，初始拥有方可以完全控制"},{"k":"D","ok":false,"t":"装配区不在此构成内，非初始拥有方也不能完全控制该基地阵地"}],"sec":"§5.6.2","page":"96"},{"id":"Q013","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"比赛开始时的控制状态","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，比赛开始时，双方各自的基地阵地和前哨阵地是什么状态？","options":["各自临时控制己方阵地","各自完全控制己方阵地","只控制基地阵地，前哨阵地中立","均为中立"],"answer":"B","exp":"双方开局均完全控制己方基地阵地与前哨阵地","detail":[{"k":"A","ok":false,"t":"开局是完全控制，不是临时控制"},{"k":"B","ok":true,"t":"双方开局均完全控制己方基地阵地与前哨阵地"},{"k":"C","ok":false,"t":"己方前哨阵地开局也已被完全控制"},{"k":"D","ok":false,"t":"开局不是中立状态"}],"sec":"§5.6.2","page":"96"},{"id":"Q014","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"夺取临时控制的方式","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，要把对方完全控制的阵地转为己方临时控制，下列哪种方式符合占领机制？","options":["连续有效激活构成该阵地的任一增益点，达到规定占领时长","只要击中前哨站一次","必须同时激活全场所有增益点","仅在阵地附近停留，不激活增益点"],"answer":"A","exp":"规则要求连续激活该阵地任一构成增益点达到规定时长，不要求同时激活全部构成点","detail":[{"k":"A","ok":true,"t":"规则要求连续激活该阵地任一构成增益点达到规定时长，不要求同时激活全部构成点"},{"k":"B","ok":false,"t":"一次命中不等于击毁，也不符合此项连续激活转换方式"},{"k":"C","ok":false,"t":"不需要激活全场所有增益点"},{"k":"D","ok":false,"t":"该转换要求有效激活，靠近停留不能代替"}],"sec":"§5.6.2","page":"96"},{"id":"Q015","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"未完成占领后的进度变化","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方占领对方完全控制阵地的进度尚未计满便停止激活，期间双方均无有效激活。关于尚未完成的占领进度，哪项正确？","options":["按规则逐渐倒退，不是立刻归零","立即清零","永远停在原处","自动继续增长直到完成"],"answer":"A","exp":"未满规定时长中断激活时，占领进度按规则倒退，不立即归零","detail":[{"k":"A","ok":true,"t":"未满规定时长中断激活时，占领进度按规则倒退，不立即归零"},{"k":"B","ok":false,"t":"手册明确进度均匀倒退，而非立即清零"},{"k":"C","ok":false,"t":"在题设情况下进度会倒退，不是永久冻结"},{"k":"D","ok":false,"t":"停止激活不能自动继续推进占领"}],"sec":"§5.6.2","page":"96"},{"id":"Q016","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"同阵地争夺导致暂停","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方有效激活某前哨阵地的前哨站增益点，蓝方同时有效激活该阵地的中央高地增益点。占领进度如何变化？","options":["暂停变化，因为双方激活的是同一阵地内的增益点","蓝方继续增长，因为它是初始拥有方","立即清零","红方继续增长，因为双方不在同一个增益点"],"answer":"A","exp":"两个点属于同一前哨阵地，双方有效激活使占领进度暂停","detail":[{"k":"A","ok":true,"t":"两个点属于同一前哨阵地，双方有效激活使占领进度暂停"},{"k":"B","ok":false,"t":"双方争夺时没有初始拥有方仍增长的例外"},{"k":"C","ok":false,"t":"规则规定暂停，不是清零"},{"k":"D","ok":false,"t":"暂停条件针对同一阵地，不要求双方在同一个增益点上"}],"sec":"§5.6.2","page":"96"},{"id":"Q017","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"收回被临时控制的己方阵地","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方原有基地阵地已被蓝方临时控制。蓝方连续停止激活该阵地全部构成增益点，已达到规则所需时长，且无其他干扰。该阵地如何转变？","options":["蓝方完全控制","永久中立","红方完全控制","红方临时控制"],"answer":"C","exp":"蓝方在规定时长内不再激活任一构成增益点，阵地恢复为初始拥有方红方完全控制","detail":[{"k":"A","ok":false,"t":"蓝方不是该基地阵地初始拥有方，不能完全控制"},{"k":"B","ok":false,"t":"规则没有因此进入永久中立的机制"},{"k":"C","ok":true,"t":"蓝方在规定时长内不再激活任一构成增益点，阵地恢复为初始拥有方红方完全控制"},{"k":"D","ok":false,"t":"表5-21此项转化结果是完全控制，不是临时控制"}],"sec":"§5.6.2","page":"96"},{"id":"Q018","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"击毁对方完全控制的前哨站","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，某前哨阵地由蓝方完全控制，红方击毁该阵地上的前哨站。仅按表5-21这一行的直接转化，结果是什么？","options":["蓝方临时控制","红方立即完全控制","仍由蓝方完全控制","红方临时控制"],"answer":"A","exp":"表5-21规定，击毁使对方完全控制的前哨阵地转为对方临时控制","detail":[{"k":"A","ok":true,"t":"表5-21规定，击毁使对方完全控制的前哨阵地转为对方临时控制"},{"k":"B","ok":false,"t":"这一转化行并不直接给出红方完全控制"},{"k":"C","ok":false,"t":"前哨站被击毁会改变该控制状态"},{"k":"D","ok":false,"t":"这一击毁行的直接结果是对方临时控制，不是己方临时控制"}],"sec":"§5.6.2","page":"96"},{"id":"Q019","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"临时控制后击毁前哨站","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方已临时控制某前哨阵地，随后红方击毁该阵地上的前哨站。按对应转换规则，结果是什么？","options":["红方完全控制","蓝方完全控制","仍为红方临时控制","双方共同完全控制"],"answer":"A","exp":"己方临时控制前哨阵地后，击毁其上的前哨站可转为己方完全控制","detail":[{"k":"A","ok":true,"t":"己方临时控制前哨阵地后，击毁其上的前哨站可转为己方完全控制"},{"k":"B","ok":false,"t":"该行是己方临时控制转为己方完全控制，不是归还对方"},{"k":"C","ok":false,"t":"该击毁条件满足后，控制状态不再停留在临时控制"},{"k":"D","ok":false,"t":"手册没有双方共同完全控制这一状态"}],"sec":"§5.6.2","page":"96"},{"id":"Q020","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"控制度增长的完整控制条件","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方只控制一处前哨阵地和一处基地阵地，未控制各自同类的另一处。仅按阵地控制度增长机制，应如何判断？","options":["控制任意阵地都会逐个获得控制度","只要控制基地阵地就自动获得该组增长","两组增长条件都未满足，因为都要求控制同类全部阵地","只看控制的阵地总数，不区分类型"],"answer":"C","exp":"前哨和基地两组分别要求控制同类全部阵地，题设两组都未满足","detail":[{"k":"A","ok":false,"t":"规则按同类阵地全部控制触发，不是逐个固定增长"},{"k":"B","ok":false,"t":"基地这一组也要求控制全部基地阵地"},{"k":"C","ok":true,"t":"前哨和基地两组分别要求控制同类全部阵地，题设两组都未满足"},{"k":"D","ok":false,"t":"两组条件各自判断，不能只看阵地总数"}],"sec":"§5.6.2","page":"97"},{"id":"Q021","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"基地增益点激活对象","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，关于基地增益点的激活对象，下列哪项正确？","options":["只可由本方单台地面机器人激活","只有完全控制该点的一方才能检测到它","双方地面机器人均可激活，同方多台也可同时激活","只可由步兵激活"],"answer":"C","exp":"规则允许双方地面机器人激活，也允许同方多台同时激活","detail":[{"k":"A","ok":false,"t":"基地点可由双方地面机器人激活，且同方不限单台"},{"k":"B","ok":false,"t":"能够激活增益点与取得相关阵地完全控制不是同一概念"},{"k":"C","ok":true,"t":"规则允许双方地面机器人激活，也允许同方多台同时激活"},{"k":"D","ok":false,"t":"适用地面机器人，不只步兵"}],"sec":"§5.6.4.2","page":"105"},{"id":"Q022","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"己方基地增益点的功能","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，关于己方基地增益点的功能，下列哪组符合手册？","options":["使基地永久不受所有来源伤害","让机器人无须条件立即完全控制敌方阵地","提供防御增益、兑换允许发弹量、解除虚弱","直接恢复全部血量并免费立即复活"],"answer":"C","exp":"己方基地点具备防御、兑换允许发弹量和解除虚弱等功能","detail":[{"k":"A","ok":false,"t":"机器人激活基地点的效果不能扩大为基地永久免疫全部伤害"},{"k":"B","ok":false,"t":"阵地控制转换仍需满足相应占领条件"},{"k":"C","ok":true,"t":"己方基地点具备防御、兑换允许发弹量和解除虚弱等功能"},{"k":"D","ok":false,"t":"手册未规定该点立即满血或免费立即复活"}],"sec":"§5.6.4.2","page":"105"},{"id":"Q023","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"中央高地激活互斥","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方机器人已有效激活某一处中央高地增益点，蓝方能否同时激活同一处增益点？","options":["可以，只需支付金币","不可以，该点具有双方互斥激活限制","可以，双方一定同时获得该点防御","只有蓝方哨兵可以"],"answer":"B","exp":"一方激活该中央高地增益点时，另一方无法同时激活同一处点","detail":[{"k":"A","ok":false,"t":"规则没有花金币绕过互斥的机制"},{"k":"B","ok":true,"t":"一方激活该中央高地增益点时，另一方无法同时激活同一处点"},{"k":"C","ok":false,"t":"中央高地增益点对双方激活具有互斥限制"},{"k":"D","ok":false,"t":"规则没有哨兵可以突破该互斥限制的例外"}],"sec":"§5.6.4.4","page":"105"},{"id":"Q024","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"不相连中央高地点相互独立","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，关于不相连的中央高地增益点，下列哪项正确？","options":["不相连各点的激活关系相互独立","必须等前哨站战亡后才允许激活","必须同一台机器人同时激活全部点才有效","任一处被红方激活后，所有中央高地点自动由红方激活"],"answer":"A","exp":"规则明确不相连中央高地增益点的激活关系相互独立","detail":[{"k":"A","ok":true,"t":"规则明确不相连中央高地增益点的激活关系相互独立"},{"k":"B","ok":false,"t":"该点机制未以前哨站战亡为激活前提"},{"k":"C","ok":false,"t":"规则没有单机同时激活全部点的要求"},{"k":"D","ok":false,"t":"一处点的激活不等于绑定全场不相连的点"}],"sec":"§5.6.4.4","page":"105"},{"id":"Q025","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"前哨站补给功能依赖完全控制","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方仅临时控制某前哨阵地，红方机器人有效激活对应前哨站增益点。是否已满足该点兑换弹量、回血等功能的控制状态前提？","options":["满足，只要前哨站仍存活","满足，能激活就自动拥有全部功能","不满足，因为地面机器人不能激活前哨站点","不满足，这些功能要求己方完全控制该前哨阵地"],"answer":"D","exp":"前哨站点所列补给等功能限定在己方完全控制的前哨阵地","detail":[{"k":"A","ok":false,"t":"该条要求完全控制，而非仅看前哨站存活"},{"k":"B","ok":false,"t":"能够激活不等于满足全部功能条件"},{"k":"C","ok":false,"t":"地面机器人可以激活该点，只是题设尚未满足功能前提"},{"k":"D","ok":true,"t":"前哨站点所列补给等功能限定在己方完全控制的前哨阵地"}],"sec":"§5.6.4.6","page":"106"},{"id":"Q026","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"己方堡垒的生效条件","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，己方前哨阵地仍由己方完全控制，机器人已到达己方堡垒增益点。仅按堡垒生效条件，如何判断？","options":["只要到达己方堡垒就生效","堡垒从不向己方提供增益","尚不生效，须己方前哨阵地不被己方控制","只要基地受过伤就生效"],"answer":"C","exp":"规则规定己方前哨阵地不被己方控制时堡垒点生效","detail":[{"k":"A","ok":false,"t":"所属位置本身不能替代堡垒的生效条件"},{"k":"B","ok":false,"t":"堡垒有己方激活效果，并非只供对方使用"},{"k":"C","ok":true,"t":"规则规定己方前哨阵地不被己方控制时堡垒点生效"},{"k":"D","ok":false,"t":"基地受伤不是替代前哨阵地控制条件的依据"}],"sec":"§5.6.4.9","page":"107"},{"id":"Q027","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"激活对方堡垒的控制前提","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，比赛已满足激活对方堡垒的时间门槛。红方还须满足哪项阵地条件，才可激活蓝方堡垒？","options":["红方基地已经被击毁","红方控制蓝方前哨阵地","红方必须完全控制蓝方基地阵地","蓝方控制红方前哨阵地"],"answer":"B","exp":"对方堡垒的门槛同时要求对方前哨阵地被己方控制","detail":[{"k":"A","ok":false,"t":"基地被击毁会触发胜负判定，不是此门槛"},{"k":"B","ok":true,"t":"对方堡垒的门槛同时要求对方前哨阵地被己方控制"},{"k":"C","ok":false,"t":"非初始拥有方不能完全控制对方基地阵地，该条也不要求它"},{"k":"D","ok":false,"t":"这把控制对象和双方关系颠倒了"}],"sec":"§5.6.4.9","page":"107"},{"id":"Q028","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"对方堡垒与基地护甲的关系","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，满足对方堡垒激活门槛后，持续有效激活并计满规定时长，会触发什么关键结果？","options":["对方基地护甲展开","对方前哨阵地自动变为中立","己方所有机器人立即满血复活","对方基地自动恢复全部血量"],"answer":"A","exp":"对方堡垒的有效激活达到规定时长，会触发对方基地护甲展开","detail":[{"k":"A","ok":true,"t":"对方堡垒的有效激活达到规定时长，会触发对方基地护甲展开"},{"k":"B","ok":false,"t":"这一触发结果是基地护甲展开，不是阵地自动中立"},{"k":"C","ok":false,"t":"该机制没有全队满血复活效果"},{"k":"D","ok":false,"t":"该机制不用于替对方基地回血"}],"sec":"§5.6.4.9","page":"107"},{"id":"Q029","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"护甲展开后的堡垒易伤","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，红方有效激活蓝方堡垒，已使蓝方基地护甲展开，之后继续激活该堡垒。该堡垒来源的易伤如何处理？","options":["必然翻倍","不再获得该堡垒来源的易伤","转为无敌状态","永久保留到比赛结束"],"answer":"B","exp":"对方基地护甲展开后，激活对方堡垒的机器人不再获得该来源易伤","detail":[{"k":"A","ok":false,"t":"规则没有护甲展开后易伤翻倍的机制"},{"k":"B","ok":true,"t":"对方基地护甲展开后，激活对方堡垒的机器人不再获得该来源易伤"},{"k":"C","ok":false,"t":"不再获得某来源易伤不等于进入无敌"},{"k":"D","ok":false,"t":"护甲展开后不再获得此来源易伤，不能说永久保留"}],"sec":"§5.6.4.9","page":"107"},{"id":"Q030","juan":"卷一","juanName":"RMUC 胜负与战场控制","title":"后勤削减的方向","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，其他条件相同，基地损血使后勤系数降低时，关于己方回血和复活后勤能力，哪项正确？","options":["回血能力被削减，所需复活读条增加","只有攻击伤害会变化","回血更快且所需复活读条更短","回血与复活均完全不受影响"],"answer":"A","exp":"表5-19中回血参数随后勤系数降低而下降，复活所需读条随之增加","detail":[{"k":"A","ok":true,"t":"表5-19中回血参数随后勤系数降低而下降，复活所需读条随之增加"},{"k":"B","ok":false,"t":"此处影响的是后勤参数，不能用攻击伤害变化替代"},{"k":"C","ok":false,"t":"后勤削减不会使回血和复活都变快"},{"k":"D","ok":false,"t":"基地后勤系数影响回血与复活相关参数"}],"sec":"§5.6.1","page":"95"},{"id":"Q031","juan":"卷二","juanName":"RMUC 伤害与生存","title":"有效装甲命中的条件","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】操作手看到弹丸打中了对方地面机器人，就能认定一定会产生装甲伤害吗？","options":["能，只要图传看起来命中，就一定按装甲伤害扣血","不一定，装甲命中仍须满足裁判系统规定的有效检测条件","能，命中机器人任意位置都等同于有效装甲命中","能，只要口径正确，检测速度和检测间隔就不再影响判定"],"answer":"B","exp":"应区分视觉命中与有效装甲命中；装甲检测有对应条件，不能仅凭看到弹丸接触便认定必然扣血。","detail":[{"k":"A","ok":false,"t":"图传中的视觉判断不能替代裁判系统检测。"},{"k":"B","ok":true,"t":"视觉上的命中不等于裁判系统判定的有效命中，还须满足装甲检测条件。"},{"k":"C","ok":false,"t":"命中其他结构不必然等同于装甲模块的有效受击。"},{"k":"D","ok":false,"t":"口径正确也不能豁免有效检测速度和检测间隔要求。"}],"sec":"§5.1.1 攻击伤害或撞击","page":""},{"id":"Q032","juan":"卷二","juanName":"RMUC 伤害与生存","title":"伤害结算延迟","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】装甲已检测到42mm弹丸打击，但伤害未立即结算。哪种解释符合规则？","options":["42mm弹丸只显示灯效，不造成伤害","没有立即扣血就必然是装甲故障","部分情况下系统需等待发射信息匹配，结算可能略有延迟","所有42mm命中都等比赛结束才结算"],"answer":"C","exp":"检测到打击与完成结算可能有时间差，不能据短暂延迟直接认定规则无效。","detail":[{"k":"A","ok":false,"t":"有效42mm攻击可以造成伤害。"},{"k":"B","ok":false,"t":"原文允许等待匹配造成短暂延迟，不能据此必然判故障。"},{"k":"C","ok":true,"t":"为提高检测精度、减少误检，可能等待42mm发射信息匹配。"},{"k":"D","ok":false,"t":"并非等到整局结束才结算。"}],"sec":"§5.1.1 攻击伤害或撞击","page":"65"},{"id":"Q033","juan":"卷二","juanName":"RMUC 伤害与生存","title":"撞击与伤害识别","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】队伍发现撞击装甲有时也会被判为弹丸伤害，便计划用地面机器人主动冲撞对方造成扣血。哪项正确？","options":["允许，能被系统判扣血就代表规则允许","不发射弹丸时就可以主动冲撞造成伤害","不允许，可能被识别为弹丸伤害不等于允许主动撞击造成伤害","只要系统记录为弹丸伤害，撞击规则便不再适用"],"answer":"C","exp":"伤害如何识别与行为能否实施是两个问题。除规则允许的空中机器人冲击外，不允许以撞击造成对方伤害。","detail":[{"k":"A","ok":false,"t":"检测结果不能替代行为合法性要求。"},{"k":"B","ok":false,"t":"不发弹不豁免主动撞击造成伤害的禁令。"},{"k":"C","ok":true,"t":"原文同时说明撞击可能被判弹丸伤害和撞击攻击的禁令。"},{"k":"D","ok":false,"t":"系统记录分类不会把被禁止的撞击变成合法行为。"}],"sec":"§5.1.1 攻击伤害或撞击","page":"65"},{"id":"Q034","juan":"卷二","juanName":"RMUC 伤害与生存","title":"42mm伤害屏蔽解除","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】红方重装长时间未发射42mm弹丸，已触发蓝方装甲屏蔽42mm伤害的规则。什么行为是该项屏蔽的解除条件？","options":["蓝方操作手切换观察界面","红方重装再次发射42mm弹丸","红方步兵发射17mm弹丸","蓝方机器人战亡"],"answer":"B","exp":"该项屏蔽与重装的42mm发射行为关联，已触发的屏蔽并非永久无效。","detail":[{"k":"A","ok":false,"t":"界面切换不影响该项伤害屏蔽。"},{"k":"B","ok":true,"t":"规则规定屏蔽持续到重装再次发射42mm弹丸。"},{"k":"C","ok":false,"t":"步兵17mm发弹不解除该项屏蔽。"},{"k":"D","ok":false,"t":"战亡不是这一条的解除条件。"}],"sec":"§5.1.1 攻击伤害或撞击","page":"65"},{"id":"Q035","juan":"卷二","juanName":"RMUC 伤害与生存","title":"发射机构锁定","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】某机器人同时受到初速度超限锁定和测速模块离线锁定。测速模块重连时，初速度超限的锁定时间尚未结束。哪项判断正确？","options":["只能解除测速离线这一原因的锁定，初速度超限锁定仍独立存在","两种锁定时间相加重新计时","测速重连会清除全部锁定","必须整局重启后才可解除测速离线锁定"],"answer":"A","exp":"初速度超限与测速离线各自独立锁定、解锁，因此一种原因解除不会自动解除另一种原因。","detail":[{"k":"A","ok":true,"t":"重连解除对应离线锁定，不消除仍有效的超速锁定。"},{"k":"B","ok":false,"t":"规则没有将两种锁定累计计时。"},{"k":"C","ok":false,"t":"不同原因的锁定和解锁相互独立。"},{"k":"D","ok":false,"t":"测速重连即可解除该原因的锁定，不要求重启。"}],"sec":"§5.1.2 射击初速度超限","page":""},{"id":"Q036","juan":"卷二","juanName":"RMUC 伤害与生存","title":"发弹与热量关系","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】在系统正常检测弹丸时，关于每发增加的射击热量，哪项正确？","options":["按口径有固定增加量，不随该发弹丸的射击初速度变化","只有能获得经验的发弹才增加","只有命中对方装甲才增加","随同口径弹丸的实际初速度同步变化"],"answer":"A","exp":"热量约束发射行为本身，降低同口径弹丸初速度不能免除热量累计。","detail":[{"k":"A","ok":true,"t":"热量按口径规定每发固定增加值。"},{"k":"B","ok":false,"t":"热量累计不以经验收益为前提。"},{"k":"C","ok":false,"t":"热量累计不以命中为前提。"},{"k":"D","ok":false,"t":"规则明确与该发射击初速度无关。"}],"sec":"§5.1.3 射击热量超限和冷却","page":"66"},{"id":"Q037","juan":"卷二","juanName":"RMUC 伤害与生存","title":"暂时过热恢复","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】发射机构已因暂时过热锁定并断开第一视角图传，尚未达到永久锁定阈值，且没有其他锁定原因。停止发弹后，何时恢复？","options":["切换到小地图后立即恢复","热量刚降回上限时","离开原射击位置后立即恢复","当前热量冷却至零时"],"answer":"D","exp":"暂时过热后的恢复条件是热量清零。此题不涉及永久锁定阈值的等号争议。","detail":[{"k":"A","ok":false,"t":"小地图可用不代表发射机构解锁。"},{"k":"B","ok":false,"t":"暂时过热需要冷却至零，不是仅降到上限。"},{"k":"C","ok":false,"t":"移动位置不是该项恢复条件。"},{"k":"D","ok":true,"t":"此类锁定及第一视角图传需等待热量归零才恢复。"}],"sec":"§5.1.3 射击热量超限和冷却","page":""},{"id":"Q038","juan":"卷二","juanName":"RMUC 伤害与生存","title":"过热界面可用性","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】机器人第一视角图传因射击热量超限断开。仅考虑这一原因，哪些界面仍可使用？","options":["只有自定义UI，小地图不可使用","图传、小地图、自定义UI都不可使用","必须复活后才能使用任何界面","小地图和自定义UI"],"answer":"D","exp":"限制界面的原因不同，范围也可能不同；过热断图传并不禁用小地图和自定义UI。","detail":[{"k":"A","ok":false,"t":"小地图也可使用。"},{"k":"B","ok":false,"t":"不能混同其他机制的界面遮挡后果。"},{"k":"C","ok":false,"t":"此条没有通过复活才能使用界面的条件。"},{"k":"D","ok":true,"t":"规则明确小地图和自定义UI仍可正常使用。"}],"sec":"§5.1.3 射击热量超限和冷却","page":"67"},{"id":"Q039","juan":"卷二","juanName":"RMUC 伤害与生存","title":"功率超限先消耗缓冲","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】地面机器人底盘功率超限，但缓冲能量尚未耗尽。按该机制，首先发生什么？","options":["清空机器人血量","永久锁定发射机构","使全队机器人断电","扣除缓冲能量"],"answer":"D","exp":"缓冲能量承担底盘短时超功率消耗，不能将功率缓冲与血量混为同一资源。","detail":[{"k":"A","ok":false,"t":"并非首先清空血量。"},{"k":"B","ok":false,"t":"该条件不是发射机构永久锁定条件。"},{"k":"C","ok":false,"t":"单台超功率不直接造成全队断电。"},{"k":"D","ok":true,"t":"规则先通过缓冲能量承担超限消耗。"}],"sec":"§5.1.4 底盘功率超限","page":"67"},{"id":"Q040","juan":"卷二","juanName":"RMUC 伤害与生存","title":"缓冲耗尽限制运动","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】某地面机器人底盘缓冲能量耗尽，底盘功率仍超限。直接后果是什么？","options":["只暂停获取经验","底盘会被暂时断电","只禁止回血，不影响运动","只清除雷达标记"],"answer":"B","exp":"缓冲能量不能无限透支，继续超功率会造成底盘供电中断。","detail":[{"k":"A","ok":false,"t":"直接后果不只是经验变化。"},{"k":"B","ok":true,"t":"缓冲耗尽且仍超功率会触发底盘断电。"},{"k":"C","ok":false,"t":"本条限制底盘供电，会影响运动。"},{"k":"D","ok":false,"t":"定位标记不是本条处理对象。"}],"sec":"§5.1.4 底盘功率超限","page":"67"},{"id":"Q041","juan":"卷二","juanName":"RMUC 伤害与生存","title":"异常离线","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】某地面机器人主控模块离线，进入异常离线状态。关于其离线期间，哪项正确？","options":["场地交互模块仍有效，只停止多机通信","继续检测弹丸伤害，停止结算经验","只断发射机构电源，底盘与云台仍正常供电","继续结算经验和等级，但复活读条不再增加"],"answer":"D","exp":"异常离线可重连，经验等级继续结算；地面机器人失去交互能力且复活读条暂停。","detail":[{"k":"A","ok":false,"t":"场地交互模块失效。"},{"k":"B","ok":false,"t":"离线时不再检测撞击和弹丸击打伤害，经验等级仍结算。"},{"k":"C","ok":false,"t":"发射机构、云台和底盘均断电。"},{"k":"D","ok":true,"t":"正文保留经验等级结算，表5-4暂停复活读条。"}],"sec":"§5.1.5.1 异常离线","page":"69"},{"id":"Q042","juan":"卷二","juanName":"RMUC 伤害与生存","title":"局部模块离线","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】主控保持在线，但因机器人自身设计问题，装甲模块或超级电容管理模块持续离线。能否认定不会因此扣血？","options":["能，只要没有发射弹丸","不能，这些模块离线有独立扣血机制","只有攻击命中对方后才会因此扣血","能，只有主控离线才扣血"],"answer":"B","exp":"异常离线与局部模块离线不同，主控在线并不意味着其他模块离线没有代价。","detail":[{"k":"A","ok":false,"t":"模块离线扣血不依赖发弹。"},{"k":"B","ok":true,"t":"主控在线不豁免这些模块自身离线的扣血。"},{"k":"C","ok":false,"t":"扣血不以攻击命中为条件。"},{"k":"D","ok":false,"t":"局部模块离线有规定的扣血机制。"}],"sec":"§5.1.5.2 装甲模块或超级电容管理模块离线","page":"70"},{"id":"Q043","juan":"卷二","juanName":"RMUC 伤害与生存","title":"定位模块离线","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】某地面机器人定位模块离线后，双方雷达对该机器人的标记按何种状态处理？","options":["对方始终错误，己方始终准确","双方都始终错误","对方始终准确，己方始终错误","双方都始终准确"],"answer":"C","exp":"定位模块离线会使对方雷达标记始终准确，己方始终错误。","detail":[{"k":"A","ok":false,"t":"与规则规定正好相反。"},{"k":"B","ok":false,"t":"对方标记始终视为准确。"},{"k":"C","ok":true,"t":"对方准确、己方错误是定位离线的明确处理。"},{"k":"D","ok":false,"t":"己方标记始终视为错误。"}],"sec":"§5.1.5.4 定位模块离线","page":"71"},{"id":"Q044","juan":"卷二","juanName":"RMUC 伤害与生存","title":"自适应装甲的取舍","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】一方选择了自适应装甲加固区域。相对默认状态，该机制带来什么取舍？","options":["只有机器人变化，基地装甲全部失效","加固区域减伤，未加固区域反而增加弹丸伤害","加固区域减伤，其他区域完全不变","所有区域都减少弹丸伤害"],"answer":"B","exp":"自适应装甲在重点保护与暴露区域之间作取舍，不能理解为没有代价的统一减伤。","detail":[{"k":"A","ok":false,"t":"规则没有使基地装甲全部失效。"},{"k":"B","ok":true,"t":"已加固和未加固区域的弹丸伤害呈相反变化。"},{"k":"C","ok":false,"t":"未加固区域的伤害也会变化。"},{"k":"D","ok":false,"t":"加固不是无代价的全区域减伤。"}],"sec":"§5.2 自适应装甲机制","page":"72"},{"id":"Q045","juan":"卷二","juanName":"RMUC 伤害与生存","title":"自适应装甲作用范围","scope":"RMUC","kind":"概念理解","diff":"进阶","stem":"【RMUC 2027】一方雷达消耗一次自适应装甲加固机会选择中心点后，哪些装甲模块按该中心点划分加固区域？","options":["该方所有机器人、前哨站和基地的装甲","只包括机器人装甲，不包括场地道具","仅该方存活地面机器人的装甲","仅雷达指定的一台步兵的装甲"],"answer":"A","exp":"统一中心点和面积A定义该方所有机器人、前哨站、基地装甲的加固圆形区域。","detail":[{"k":"A","ok":true,"t":"规则指定该方所有机器人、前哨站、基地装甲模块。"},{"k":"B","ok":false,"t":"前哨站和基地也在范围内。"},{"k":"C","ok":false,"t":"范围还包括前哨站、基地，不限存活地面机器人。"},{"k":"D","ok":false,"t":"加固是该方统一作用，不是选定一台步兵。"}],"sec":"§5.2 自适应装甲机制","page":"72"},{"id":"Q046","juan":"卷二","juanName":"RMUC 伤害与生存","title":"相对精度与加固面积","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】关于可加固区域的大小，哪项正确？","options":["开赛时固定，后续精度不再影响","只由己方当前血量决定","由双方弹丸命中精度共同决定，己方相对精度越高面积越大","己方发射数量更多就必然面积更大"],"answer":"C","exp":"加固面积体现相对命中精度，发弹量本身不能替代命中质量。","detail":[{"k":"A","ok":false,"t":"该机制不是开赛后面积永远固定。"},{"k":"B","ok":false,"t":"关联的是双方命中精度。"},{"k":"C","ok":true,"t":"原文明确相对精度越高，可加固面积越大。"},{"k":"D","ok":false,"t":"发射数量更多不等于相对命中精度更高。"}],"sec":"§5.2 自适应装甲机制","page":"72"},{"id":"Q047","juan":"卷二","juanName":"RMUC 伤害与生存","title":"脱战强化回血失效","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】某机器人已满足比赛阶段要求，因脱战并激活己方补给区获得强化回血。随后它不再脱战，但仍激活该点。哪项正确？","options":["强化保持到血量回满","脱战强化立即失效，不能仅凭仍在补给区保持强化","强化保持到离开补给区","整个补给区从此永久无法为它回血"],"answer":"B","exp":"补给区内的强化回血还依赖脱战条件，激活地点与状态条件需要同时满足。","detail":[{"k":"A","ok":false,"t":"未满血不能豁免脱战条件。"},{"k":"B","ok":true,"t":"强化依赖脱战状态，条件失去即失效。"},{"k":"C","ok":false,"t":"仍在补给区不能代替脱战条件。"},{"k":"D","ok":false,"t":"取消的是脱战强化，不是永久取消全部补给回血。"}],"sec":"§5.3.1 回血机制","page":"73"},{"id":"Q048","juan":"卷二","juanName":"RMUC 伤害与生存","title":"前哨站回血条件","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】机器人激活了某前哨站增益点，但该阵地尚未被己方完全控制。仅凭激活该点就能获得前哨站回血吗？","options":["能，所有激活者都能回血","能，只要己方基地仍有血量","不能，前哨站回血还要求对应阵地由己方完全控制","不能，因为前哨站点从不提供回血"],"answer":"C","exp":"能激活场地增益点不代表自动获得其所有服务，前哨站回血还要求己方完全控制对应阵地。","detail":[{"k":"A","ok":false,"t":"回血还受完全控制关系约束。"},{"k":"B","ok":false,"t":"基地仍存活不能替代该阵地完全控制。"},{"k":"C","ok":true,"t":"需激活己方完全控制阵地对应的前哨站点。"},{"k":"D","ok":false,"t":"符合规定条件时前哨站点可以回血。"}],"sec":"§5.3.1 回血机制","page":"73"},{"id":"Q049","juan":"卷二","juanName":"RMUC 伤害与生存","title":"战亡状态重置","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】机器人战亡时，其射击热量和底盘缓冲能量如何处理？","options":["热量归零、缓冲能量重置为上限","热量保留、缓冲能量归零","两者都保留战亡前数值","两者都归零"],"answer":"A","exp":"战亡时热量清零、缓冲能量重置为上限，不能把两者都按清零处理。","detail":[{"k":"A","ok":true,"t":"与战亡时重置规则一致。"},{"k":"B","ok":false,"t":"热量会归零，缓冲能量会恢复至上限。"},{"k":"C","ok":false,"t":"战亡会触发两者重置。"},{"k":"D","ok":false,"t":"只有射击热量归零，缓冲能量恢复上限。"}],"sec":"§5.3.2 复活机制","page":"74"},{"id":"Q050","juan":"卷二","juanName":"RMUC 伤害与生存","title":"复活读条成本因素","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】保持己方基地血量等其他条件不变，关于正常复活所需读条，哪项正确？","options":["只与战亡前剩余血量有关","所需读条会受战亡时的比赛进程和累计立即复活次数影响，并非整局固定","整局固定，与时刻及兑换历史无关","立即复活次数越多，之后正常复活读条越短"],"answer":"B","exp":"立即复活还会增加后续正常复活的读条成本，不能只考虑其对当前一次战亡的影响。","detail":[{"k":"A","ok":false,"t":"原公式没有把战亡前剩余血量列为此项变量。"},{"k":"B","ok":true,"t":"比赛进程和累计立即复活次数都会影响正常复活读条成本。"},{"k":"C","ok":false,"t":"原公式包含战亡时比赛剩余时长和累计立即复活次数。"},{"k":"D","ok":false,"t":"累计立即复活次数会增加而非缩短后续读条。"}],"sec":"§5.3.2 复活机制","page":"74"},{"id":"Q051","juan":"卷二","juanName":"RMUC 伤害与生存","title":"复活读条开始与加速","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】机器人正常战亡，尚未回补给区，也没有异常离线或被罚下。关于复活读条的开始与推进，哪项正确？","options":["只要战亡地点在场内，读条就不会推进","必须队友代为占补给区才开始","必须先到补给区才开始读条","战亡后立即开始，补给区是加快进度的条件之一"],"answer":"D","exp":"区分读条开始与读条加速：正常战亡就开始，回补给区可提高推进速度。","detail":[{"k":"A","ok":false,"t":"正常场内战亡可以推进复活读条。"},{"k":"B","ok":false,"t":"开始读条不依赖队友占点。"},{"k":"C","ok":false,"t":"补给区不是正常读条的启动前提。"},{"k":"D","ok":true,"t":"战亡即开始，位于补给区可以提高进度。"}],"sec":"§5.3.2 复活机制","page":"74"},{"id":"Q052","juan":"卷二","juanName":"RMUC 伤害与生存","title":"正常复活后的状态","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】步兵通过正常读条复活。哪项描述符合其初始状态？","options":["保留等级经验，恢复部分血量，并进入虚弱及暂时无敌状态","等级经验清零，但直接满血且无虚弱","仅恢复血量，其他状态由操作手自行配置","保留等级经验并永久无敌"],"answer":"A","exp":"正常读条复活保留等级经验，但仍需处理部分血量及虚弱状态。","detail":[{"k":"A","ok":true,"t":"正常读条复活保留成长进度，但不是满状态返回。"},{"k":"B","ok":false,"t":"等级经验不清零，也不依此直接满血。"},{"k":"C","ok":false,"t":"虚弱及无敌由规则赋予，不是操作手自行配置。"},{"k":"D","ok":false,"t":"无敌是暂时的。"}],"sec":"§5.3.2 复活机制","page":"75"},{"id":"Q053","juan":"卷二","juanName":"RMUC 伤害与生存","title":"虚弱与无敌分别解除","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】机器人正常读条复活后，检测到可激活的己方基地点交互卡，但当次无敌尚未达到规定最短保护时长。哪项正确？","options":["无敌立即解除，虚弱只能再次战亡解除","虚弱与无敌都必须保留到最长时限","虚弱立即解除，无敌达到最短保护时长后解除","检测到交互卡后变为永久无敌"],"answer":"C","exp":"虚弱与无敌不是同一状态，其解除条件可以分别生效；无需记忆时长也应理解这一差别。","detail":[{"k":"A","ok":false,"t":"解除的是虚弱，无敌仍有最低时长要求。"},{"k":"B","ok":false,"t":"指定交互可以改变状态，不必全部等最长时限。"},{"k":"C","ok":true,"t":"交互卡解除虚弱，但未满最低时长的无敌需先补足。"},{"k":"D","ok":false,"t":"无敌不会变为永久。"}],"sec":"§5.3.2 复活机制","page":"75"},{"id":"Q054","juan":"卷二","juanName":"RMUC 伤害与生存","title":"经验体系适用对象","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】关于通过积累经验升级，哪项正确？","options":["重装与哨兵都按步兵经验表自动升级","只要能发弹就都能靠经验升级","所有地面机器人都适用同一经验体系","步兵适用经验体系，不能泛化到其余机器人"],"answer":"D","exp":"机器人具有等级或成长机制，不代表都采用步兵的经验累积路径。","detail":[{"k":"A","ok":false,"t":"重装有装配机制，哨兵也不按步兵经验表升级。"},{"k":"B","ok":false,"t":"发弹能力不等于经验升级资格。"},{"k":"C","ok":false,"t":"经验体系并非所有地面机器人通用。"},{"k":"D","ok":true,"t":"原文明确其余机器人不适用该经验体系。"}],"sec":"§5.5.1 经验体系","page":"89"},{"id":"Q055","juan":"卷二","juanName":"RMUC 伤害与生存","title":"来源不明伤害的经验","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】蓝方机器人受到17mm弹丸攻击伤害，但系统未识别来源。红方既有符合条件的存活步兵，也有已战亡步兵。经验怎样分配？","options":["在红方全部机器人间均分，不区分状态","在红方能正常造成该类弹丸伤害、可获经验的存活机器人间均分","由操作手手工指定获得者","经验直接作废"],"answer":"B","exp":"无法识别具体来源时仍可分配经验，但不是无条件在全队平分。","detail":[{"k":"A","ok":false,"t":"战亡或不符合资格的机器人不参与。"},{"k":"B","ok":true,"t":"分配集合受伤害类型能力、经验资格与存活状态约束。"},{"k":"C","ok":false,"t":"按系统规定条件分配，不由操作手指定。"},{"k":"D","ok":false,"t":"来源不明不代表经验必然作废。"}],"sec":"§5.5.1 经验体系","page":"89"},{"id":"Q056","juan":"卷二","juanName":"RMUC 伤害与生存","title":"性能类型选择固定","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】步兵已选好底盘与发射机构类型并进入正式比赛，发现当前类型不适合战况。能否本局更换？","options":["可以，回补给区就能更换","可以，每次升级都重选","可以，只要暂时停止射击","不可以，比赛开始且选择完毕后整局不可更换"],"answer":"D","exp":"性能类型是需要提前考虑的选择，不是进入比赛后随战况自由切换。","detail":[{"k":"A","ok":false,"t":"补给区不豁免此限制。"},{"k":"B","ok":false,"t":"升级不提供本局重选权限。"},{"k":"C","ok":false,"t":"停射不会解除类型固定要求。"},{"k":"D","ok":true,"t":"原文明确比赛开始且选择完毕后整局不可更换。"}],"sec":"§5.5.2 性能体系","page":"91"},{"id":"Q057","juan":"卷二","juanName":"RMUC 伤害与生存","title":"升级同步增加当前血量","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】步兵升级使血量上限提升。忽略同时发生的其他回血和扣血，当前血量如何变化？","options":["立即增加本次上限提升的部分","先清零，下次复活才采用新上限","无条件补满到新上限","保持不变，只改上限"],"answer":"A","exp":"升级同时提高容量和当前血量，但补入的是新增容量，而非补满所有缺血。","detail":[{"k":"A","ok":true,"t":"上限增加部分立即添加至当前血量。"},{"k":"B","ok":false,"t":"升级不会因此清空当前血量。"},{"k":"C","ok":false,"t":"增加提升部分不等于无条件补满。"},{"k":"D","ok":false,"t":"规则会把提升部分加到当前血量。"}],"sec":"§5.5.2 性能体系","page":""},{"id":"Q058","juan":"卷二","juanName":"RMUC 伤害与生存","title":"双方能量状态独立","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】关于双方能量机关的机会与收益，哪项正确？","options":["一方激活后，对方须等其收益结束才能激活","双方共用机会池，先用者扣除对方机会","双方状态独立，机会可累积，且可同时拥有能量增益","红方机关激活只给蓝方增益"],"answer":"C","exp":"能量收益不是全场只能一方持有的排他资源，双方各自管理激活机会与状态。","detail":[{"k":"A","ok":false,"t":"双方可以同时拥有能量增益。"},{"k":"B","ok":false,"t":"机会各自发放，不是共同扣减。"},{"k":"C","ok":true,"t":"机会可累积，双方状态独立且收益可并存。"},{"k":"D","ok":false,"t":"一方机关只为该方提供相应收益。"}],"sec":"§5.6.3 能量机关机制","page":"97"},{"id":"Q059","juan":"卷二","juanName":"RMUC 伤害与生存","title":"能量机关触发","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】谁可以按规则主动触发未激活能量机关进入正在激活状态？","options":["只有雷达通过无线链路","任意机器人直接击打任何装甲即可触发","步兵操作手通过选手端，或哨兵通过裁判系统串口","只有重装机器人通过场地交互模块"],"answer":"C","exp":"步兵操作手选手端和哨兵裁判系统串口是规则指定触发方式。","detail":[{"k":"A","ok":false,"t":"雷达不是本条指定的触发主体。"},{"k":"B","ok":false,"t":"需要规定的触发操作，不能任意击打替代。"},{"k":"C","ok":true,"t":"小、大能量机关均规定这两条触发途径。"},{"k":"D","ok":false,"t":"重装与场地交互不是此触发途径。"}],"sec":"§5.6.3 能量机关机制","page":"97"},{"id":"Q060","juan":"卷二","juanName":"RMUC 伤害与生存","title":"小能量的收益方向","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】成功激活小能量机关后，哪组收益方向符合规则？","options":["清空对方所有步兵经验","只提高激活机器人的底盘功率","给该方机器人、前哨站和基地防御收益，并使步兵在期间获得受上限约束的额外经验","只给基地防御，其他对象完全无收益"],"answer":"C","exp":"小能量兼顾即时生存与步兵成长，额外经验并非无限增加。","detail":[{"k":"A","ok":false,"t":"小能量不清空对方经验。"},{"k":"B","ok":false,"t":"收益不只是单台机器人底盘功率。"},{"k":"C","ok":true,"t":"小能量同时具有防御与步兵成长价值，额外经验有全队上限。"},{"k":"D","ok":false,"t":"机器人和前哨站也有防御收益，步兵还有额外经验。"}],"sec":"§5.6.3 能量机关机制","page":"97"},{"id":"Q061","juan":"卷二","juanName":"RMUC 伤害与生存","title":"大能量质量与时长","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】大能量一次成功激活后的效果强弱与持续时间分别与什么关联？","options":["两者都只由发射总数量决定","两者都只由比赛剩余时间决定","只要激活，所有收益完全固定","平均命中环数影响增益效果，激活灯臂数影响持续时间"],"answer":"D","exp":"大能量的效果强弱与持续时间有不同评价维度，应兼顾命中质量和激活完成度。","detail":[{"k":"A","ok":false,"t":"发弹总量不替代有效命中质量及完成度。"},{"k":"B","ok":false,"t":"规则关联平均环数与灯臂数。"},{"k":"C","ok":false,"t":"成功后也需要区分命中质量与激活灯臂数。"},{"k":"D","ok":true,"t":"收益表分别按平均环数和激活灯臂数确定效果与时长。"}],"sec":"§5.6.3 能量机关机制","page":""},{"id":"Q062","juan":"卷二","juanName":"RMUC 伤害与生存","title":"大能量直接经验受益者","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】成功激活大能量机关时，直接产生的经验分给谁？","options":["最后一发命中的机器人独占","平均分给激活方所有存活步兵","只给激活方已战亡步兵","分给双方所有机器人"],"answer":"B","exp":"大能量直接经验是存活步兵的团队收益，不是最后命中者独占奖励。","detail":[{"k":"A","ok":false,"t":"不是最后命中者独占。"},{"k":"B","ok":true,"t":"原文规定激活方所有存活步兵平均分配。"},{"k":"C","ok":false,"t":"战亡步兵不在此直接经验分配对象内。"},{"k":"D","ok":false,"t":"对方不参与该方收益分配。"}],"sec":"§5.6.3 能量机关机制","page":"98"},{"id":"Q063","juan":"卷二","juanName":"RMUC 伤害与生存","title":"大能量有效区域变化","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】己方大能量机关本局已成功激活过，后续再尝试时应如何考虑有效击打区域？","options":["成功激活会缩小后续可检测环数区域，应重新注意有效范围","此前成功后，任意场地位置都算有效","区域始终不变，无需考虑激活历史","成功后区域扩大，外侧更容易计入"],"answer":"A","exp":"成功历史不仅代表已得收益，也影响下一次可有效命中的范围。","detail":[{"k":"A","ok":true,"t":"累计成功次数会改变后续可检测的区域。"},{"k":"B","ok":false,"t":"有效命中仍受装甲可检测区域限制。"},{"k":"C","ok":false,"t":"不能忽略累计成功激活次数。"},{"k":"D","ok":false,"t":"原文规定缩小而不是扩大。"}],"sec":"§5.6.3 能量机关机制","page":"99"},{"id":"Q064","juan":"卷二","juanName":"RMUC 伤害与生存","title":"大能量双目标流程","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】大能量当前组有两个随机点亮目标，机器人已在规定时限内击中第一个可检测区域。关于第二个目标，哪项正确？","options":["第二个未命中会撤销第一个有效命中","后续规定窗口内可追加命中，不论追加是否成功，之后都会重新随机点亮下一组","必须再命中第二个，本组才算成功","必须等本轮总时限结束才能击打"],"answer":"B","exp":"区分首次有效命中与追加命中：后者不是推进该组的必要条件。","detail":[{"k":"A","ok":false,"t":"第二个未命中不撤销本组已完成的首次有效命中。"},{"k":"B","ok":true,"t":"原文规定追加窗口及随后重新随机换组。"},{"k":"C","ok":false,"t":"首个有效命中即可推进组进度，第二个为追加机会。"},{"k":"D","ok":false,"t":"追加窗口紧接第一个命中，不需等总时限结束。"}],"sec":"§5.6.3.1 能量机关的状态","page":"100"},{"id":"Q065","juan":"卷二","juanName":"RMUC 伤害与生存","title":"能量激活失败","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"【RMUC 2027】某方能量机关正在激活，机器人误击了本组未随机点亮的装甲模块。直接后果是什么？","options":["立即获得最低档增益","只忽略本发弹丸，激活进度完全不变","该次激活失败，重置正在激活状态","整局失去全部激活机会"],"answer":"C","exp":"未在2.5秒内命中点亮目标或击中非随机点亮目标，均导致此次失败并重置正在激活状态。","detail":[{"k":"A","ok":false,"t":"失败不会获得增益。"},{"k":"B","ok":false,"t":"规则要求失败重置，不是单纯忽略。"},{"k":"C","ok":true,"t":"命中非随机点亮装甲属于激活失败条件。"},{"k":"D","ok":false,"t":"规则未规定整局清空机会。"}],"sec":"§5.6.3.1 能量机关的状态","page":"101"},{"id":"Q066","juan":"卷二","juanName":"RMUC 伤害与生存","title":"防御增益适用范围","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】机器人有防御增益，但主控在线时因局部模块离线扣血。能否要求防御增益减免该类扣血？","options":["不能，因为防御对任何伤害都没有作用","能，防御减免所有扣血","能，但须同时有攻击增益","不能，模块离线扣血不在其适用范围内"],"answer":"D","exp":"防御增益并不能补偿模块离线等非适用来源，必须区分伤害和机制扣血。","detail":[{"k":"A","ok":false,"t":"防御对规定的弹丸、撞击等伤害有作用。"},{"k":"B","ok":false,"t":"防御不是所有扣血通用。"},{"k":"C","ok":false,"t":"攻击增益不会改变该项适用范围。"},{"k":"D","ok":true,"t":"规则明确排除模块离线扣血。"}],"sec":"§5.6.4.1 场地增益点概述","page":"103"},{"id":"Q067","juan":"卷二","juanName":"RMUC 伤害与生存","title":"同类增益取大","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】机器人同时得到不同来源的防御增益，没有易伤等其他因素。有效防御如何确定？","options":["全部直接相加","只保留最后获得的一项","取效果最大的一项","只保留最先获得的一项"],"answer":"C","exp":"同类增益取最大，多个来源不意味着同类数值逐一相加。","detail":[{"k":"A","ok":false,"t":"同类效果不是直接相加。"},{"k":"B","ok":false,"t":"依据效果强弱而不是获得先后。"},{"k":"C","ok":true,"t":"规则规定多项同类增益取最大效果。"},{"k":"D","ok":false,"t":"先得到弱效果不会排斥后续更强效果。"}],"sec":"§5.6.4.1 场地增益点概述","page":"105"},{"id":"Q068","juan":"卷二","juanName":"RMUC 伤害与生存","title":"增益生命周期","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】某步兵同时拥有地形跨越临时增益和仍处于持续时间内的己方能量机关增益，随后战亡。两种增益按来源分类应怎样处理？","options":["两者都因战亡消除","地形跨越保留，能量机关消除","两者都永久保留至整局结束","地形跨越增益消除，能量机关增益不因战亡消除"],"answer":"D","exp":"场地临时增益战亡或到时消除；非场地临时增益不因战亡消除，来源仍有效时继续适用。","detail":[{"k":"A","ok":false,"t":"能量机关属于非场地临时增益，不因战亡消除。"},{"k":"B","ok":false,"t":"颠倒了两种来源类型的行为。"},{"k":"C","ok":false,"t":"地形跨越战亡清除；能量也受来源持续时间限制。"},{"k":"D","ok":true,"t":"地形跨越属于场地临时，能量属于非场地临时。"}],"sec":"§5.6.4.1 场地增益点概述","page":"104"},{"id":"Q069","juan":"卷二","juanName":"RMUC 伤害与生存","title":"地形跨越顺序","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"【RMUC 2027】机器人在规定时间内检测齐公路跨越的高、低两处卡，途中无其他卡，但顺序先高后低。能触发公路跨越增益吗？","options":["能，逆向通行会额外奖励","不能，公路和高地跨越还要求先低后高","能，两张卡都检测到就行","不能，因为所有地形跨越都禁止经过低处"],"answer":"B","exp":"触发地形增益要求同时满足卡片、时限与顺序，并非简单检测齐所需卡片。","detail":[{"k":"A","ok":false,"t":"规则没有逆向奖励。"},{"k":"B","ok":true,"t":"公路与高地要求先低后高。"},{"k":"C","ok":false,"t":"除了卡片齐全，还需正确顺序。"},{"k":"D","ok":false,"t":"低处是规定触发路径的一部分。"}],"sec":"§5.6.4.5 地形跨越增益点机制","page":""},{"id":"Q070","juan":"卷二","juanName":"RMUC 伤害与生存","title":"隧道路线与增益类型","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"【RMUC 2027】规定时间等条件均满足时，“只按序检测隧道两端”与“按序检测一端、内部、另一端”有何区别？","options":["经过隧道后二者都会同时自动获得","前者提供冷却，后者提供攻击","完全相同，内部卡只用于定位","分别为跨越与穿越隧道，前者提供防御，后者提供热量冷却"],"answer":"D","exp":"跨越与穿越隧道是不同路线判定，需要按任务选择通行方式。","detail":[{"k":"A","ok":false,"t":"收益按检测顺序区分，不是无条件同时触发。"},{"k":"B","ok":false,"t":"前者不是冷却，后者不是攻击增益。"},{"k":"C","ok":false,"t":"是否检测内部卡会改变增益类型。"},{"k":"D","ok":true,"t":"表5-27分别对应防御和热量冷却收益。"}],"sec":"§5.6.4.5 地形跨越增益点机制","page":"106"},{"id":"Q071","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"金币的用途","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，下列哪组全部属于手册明确列出的金币兑换用途？","options":["装配难度直接解锁、裁判自检豁免","实体弹仓容量、基地护甲闭合","允许发弹量、远程回血、立即复活","控制度、基地血量、比赛加时"],"answer":"C","exp":"金币可兑换允许发弹量、远程回血和立即复活","detail":[{"k":"A","ok":false,"t":"装配难度有自身解锁条件，自检也没有该项金币豁免"},{"k":"B","ok":false,"t":"经济体系没有列明购买实体弹仓容量或闭合基地护甲"},{"k":"C","ok":true,"t":"金币可兑换允许发弹量、远程回血和立即复活"},{"k":"D","ok":false,"t":"这些不是该经济体系列明的金币兑换项目"}],"sec":"§5.4.1","page":"75"},{"id":"Q072","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"远程回血的脱战要求","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，地面机器人仍处于交战状态，操作手希望花金币远程兑换血量。仅按远程回血的状态前提，如何判断？","options":["需要先满足脱战状态要求","只要在射击就自动满足","只要金币足够就一定可以","必须先战亡才能申请"],"answer":"A","exp":"远程兑换血量要求地面机器人处于脱战状态","detail":[{"k":"A","ok":true,"t":"远程兑换血量要求地面机器人处于脱战状态"},{"k":"B","ok":false,"t":"正在射击不构成该条要求的脱战条件"},{"k":"C","ok":false,"t":"金币足够不能替代脱战前提"},{"k":"D","ok":false,"t":"这是存活机器人的回血，不是战亡复活流程"}],"sec":"§5.3.1","page":"73"},{"id":"Q073","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"远程回血不能突破上限","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，远程回血成功进入生效结算时，若按规定增加血量会超过机器人此时血量上限，应如何处理？","options":["允许超出上限并永久保留","把超出的血量转为金币","本次兑换自动改成复活","血量最多恢复到此时上限"],"answer":"D","exp":"远程回血受此时上限血量约束，不能产生超上限血量","detail":[{"k":"A","ok":false,"t":"手册明确增加后不会超过上限血量"},{"k":"B","ok":false,"t":"没有将超出血量转为金币的机制"},{"k":"C","ok":false,"t":"回血封顶并不使兑换类型变成复活"},{"k":"D","ok":true,"t":"远程回血受此时上限血量约束，不能产生超上限血量"}],"sec":"§5.3.1","page":"73"},{"id":"Q074","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"远程回血等待期战亡","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，地面机器人确认远程回血后，在规定的等待期内战亡。这次兑换如何处理？","options":["自动改为立即复活","等原定生效时刻自动复活","无效，金币不返还","无效，金币全部退回"],"answer":"C","exp":"确认后的规定等待期内战亡，远程回血无效且金币不返还","detail":[{"k":"A","ok":false,"t":"远程回血不会自动转换为立即复活"},{"k":"B","ok":false,"t":"延迟回血不能替代战亡后的复活机制"},{"k":"C","ok":true,"t":"确认后的规定等待期内战亡，远程回血无效且金币不返还"},{"k":"D","ok":false,"t":"规则明确金币不会返还"}],"sec":"§5.3.1","page":"73"},{"id":"Q075","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"允许发弹量与发射的关系","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，机器人发射弹丸时，允许发弹量按什么基本原则消耗？","options":["消耗所发射弹丸类型对应的允许发弹量","只要弹仓有实体弹丸就不消耗额度","只在命中后消耗","两种口径额度总是一起消耗"],"answer":"A","exp":"每次发射会消耗对应弹丸类型的允许发弹量","detail":[{"k":"A","ok":true,"t":"每次发射会消耗对应弹丸类型的允许发弹量"},{"k":"B","ok":false,"t":"实体弹丸与允许发弹量是不同资源，实体弹仍在不代表不扣额度"},{"k":"C","ok":false,"t":"消耗以发射为依据，不以命中为前提"},{"k":"D","ok":false,"t":"基础规则区分弹丸类型，不是两种额度同步扣除"}],"sec":"§5.4.2","page":"76"},{"id":"Q076","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"远程弹量不是立即生效","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，操作手已成功远程兑换允许发弹量，随后立即按新增额度安排发射。仅按远程兑换生效机制，这种做法有什么问题？","options":["任何远程兑换都必须再回补给区确认","远程兑换永远不增加允许发弹量","远程兑换只改变实体弹丸数量","远程兑换成功后仍有规定的生效等待期"],"answer":"D","exp":"远程兑换成功与新增额度生效存在规定延迟，不能把成功瞬间当作已到账","detail":[{"k":"A","ok":false,"t":"远程兑换不要求再回补给区确认才生效"},{"k":"B","ok":false,"t":"规则明确远程兑换可以增加允许发弹量"},{"k":"C","ok":false,"t":"它增加的是允许发弹量，不是自动补充实体弹丸"},{"k":"D","ok":true,"t":"远程兑换成功与新增额度生效存在规定延迟，不能把成功瞬间当作已到账"}],"sec":"§5.4.2","page":"77"},{"id":"Q077","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"金币兑换弹量上限的口径","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，关于手册对17mm允许发弹量金币兑换上限的说明，哪项正确？","options":["定期领取的免费弹量会自动取消金币兑换上限","所有来源的允许发弹量都必须计入该金币兑换上限","上限按每台机器人单独计算","只约束通过金币兑换的允许发弹量，并按队统计"],"answer":"D","exp":"手册特别说明该上限指通过金币兑换的允许发弹量上限","detail":[{"k":"A","ok":false,"t":"免费获取不会取消金币兑换上限"},{"k":"B","ok":false,"t":"不能把非金币获取来源直接并入这一特定口径"},{"k":"C","ok":false,"t":"表5-7的上限单位按队，不是每台独立名额"},{"k":"D","ok":true,"t":"手册特别说明该上限指通过金币兑换的允许发弹量上限"}],"sec":"§5.4.1","page":"76"},{"id":"Q078","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"允许发弹量耗尽后超发","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，重装机器人存活，但对应允许发弹量已耗尽，仍继续发射42mm弹丸。哪项符合特殊伤害结算规则？","options":["超发会触发对方相关装甲的42mm伤害屏蔽，17mm不因此屏蔽","只要存活，仍一定正常造成42mm伤害","自动把17mm额度转成42mm额度","仅改变金币余额，不影响伤害"],"answer":"A","exp":"该超发触发42mm伤害屏蔽，规则同时说明17mm伤害不会因此被屏蔽","detail":[{"k":"A","ok":true,"t":"该超发触发42mm伤害屏蔽，规则同时说明17mm伤害不会因此被屏蔽"},{"k":"B","ok":false,"t":"额度耗尽后超发本身就是42mm屏蔽触发条件"},{"k":"C","ok":false,"t":"规则没有自动转换两种口径额度的机制"},{"k":"D","ok":false,"t":"允许发弹量不仅是经济记账，还影响特殊伤害有效性"}],"sec":"§5.4.2","page":""},{"id":"Q079","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"42mm伤害屏蔽的解除","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，重装战亡触发的42mm伤害屏蔽，在没有其他持续异常时，要满足哪组状态才结束？","options":["重装存活即可，额度耗尽也无妨","只需重启操作手选手端","只要额度恢复，重装可仍战亡","重装恢复存活且对应允许发弹量未耗尽"],"answer":"D","exp":"规则要求重装存活与允许发弹量大于零同时满足","detail":[{"k":"A","ok":false,"t":"存活之外还需对应允许发弹量大于零"},{"k":"B","ok":false,"t":"重启选手端不是此条明确的解除条件"},{"k":"C","ok":false,"t":"允许发弹量恢复之外还需重装存活"},{"k":"D","ok":true,"t":"规则要求重装存活与允许发弹量大于零同时满足"}],"sec":"§5.4.2","page":"76"},{"id":"Q080","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"哨兵定期弹量可以累积","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，哨兵没有及时激活己方补给区领取定期允许发弹量，关于尚未通过这种方式领取的额度，哪项正确？","options":["只能转给对方机器人","到下个发放节点必然全部作废","可以累积，之后按规则激活领取","必须先花金币才能保留"],"answer":"C","exp":"哨兵补给区定期获取机制允许尚未领取的允许发弹量累积","detail":[{"k":"A","ok":false,"t":"没有把此额度转给对方的机制"},{"k":"B","ok":false,"t":"原文明确未领取的该类额度可以累积"},{"k":"C","ok":true,"t":"哨兵补给区定期获取机制允许尚未领取的允许发弹量累积"},{"k":"D","ok":false,"t":"该累积并不以先支付金币为前提"}],"sec":"§5.4.2","page":"77"},{"id":"Q081","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"堡垒储备与自身额度的关系","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，机器人正在使用已生效己方堡垒提供的储备允许发弹量。发射时两类额度应怎样使用？","options":["优先消耗储备，耗尽后再消耗自身允许发弹量","总是先消耗自身额度，储备永不使用","储备只能兑换金币，不能用于发射","同一发总要同时扣除两类额度"],"answer":"A","exp":"堡垒储备独立于自身额度，规则规定先储备、后自身","detail":[{"k":"A","ok":true,"t":"堡垒储备独立于自身额度，规则规定先储备、后自身"},{"k":"B","ok":false,"t":"这把规则明确的消耗顺序颠倒了"},{"k":"C","ok":false,"t":"储备允许发弹量就是为堡垒内发射提供额度"},{"k":"D","ok":false,"t":"储备足够时不要求同一发同时扣两类额度"}],"sec":"§5.6.4.9","page":"107"},{"id":"Q082","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"装配难度的逐级前置条件","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，比赛时间已允许选择较高装配难度，但本方尚未成功完成其前一难度。能否仅凭时间解锁直接跳级选择？","options":["不可以，还必须完成上一个难度的装配","可以，时间门槛是唯一条件","可以，只要对方不在装配","可以，只要金币足够"],"answer":"A","exp":"手册要求完成上一个难度后才能选择下一个，时间开放不意味着可以跳级","detail":[{"k":"A","ok":true,"t":"手册要求完成上一个难度后才能选择下一个，时间开放不意味着可以跳级"},{"k":"B","ok":false,"t":"难度选择同时受时间和逐级前置要求约束"},{"k":"C","ok":false,"t":"对方流程状态也不能替代本方逐级装配前置"},{"k":"D","ok":false,"t":"金币不能替代完成前一难度的要求"}],"sec":"§5.4.3","page":""},{"id":"Q083","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"装配流程的发起","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，重装机器人准备进行能量单元装配，应如何按规则发起流程？","options":["激活装配区增益点，再由操作手在选手端选择难度","只要把单元放在科技核心旁边","步兵进入补给区后自动替重装发起","先发射42mm弹丸就自动开始"],"answer":"A","exp":"装配流程先由重装激活装配区增益点，再由操作手选择装配难度","detail":[{"k":"A","ok":true,"t":"装配流程先由重装激活装配区增益点，再由操作手选择装配难度"},{"k":"B","ok":false,"t":"放在旁边不等于完成激活与选难度操作"},{"k":"C","ok":false,"t":"流程不是由步兵在补给区代替发起"},{"k":"D","ok":false,"t":"发射弹丸不是这一流程的发起条件"}],"sec":"§5.4.3","page":"85"},{"id":"Q084","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"核心到位前不能抢先插入","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，装配难度已选，但科技核心尚未运动到可装配位姿。重装能否提前插入能量单元，指望运动结束后自动继续流程？","options":["只要已激活装配区就可忽略核心状态","只要单元重量合适就可以","不可以，必须等科技核心到达相应位姿后再插入","可以，任何时刻插入都等效"],"answer":"C","exp":"当且仅当科技核心运动到相应可装配位姿后才可插入","detail":[{"k":"A","ok":false,"t":"激活装配区并不取消核心必须到位的要求"},{"k":"B","ok":false,"t":"单元重量不能替代核心到位这一流程前提"},{"k":"C","ok":true,"t":"当且仅当科技核心运动到相应可装配位姿后才可插入"},{"k":"D","ok":false,"t":"原文明确提早插入不能正常进行后续装配流程"}],"sec":"§5.4.3","page":"85"},{"id":"Q085","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"四级装配与对方流程互斥","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，蓝方正在尝试一、二、三级中的一种装配难度，红方已经满足本方选择四级的时间和前置条件。红方此时能否选择四级？","options":["可以，四级会强制抢占对方流程","可以，只需额外支付金币","不可以，对方正在尝试一、二、三级装配时不能选择四级","必须要求蓝方先自毁机器人"],"answer":"C","exp":"四级涉及双方科技核心，对方正在尝试一至三级装配时不能选择四级","detail":[{"k":"A","ok":false,"t":"规则不允许四级强制抢占正在进行的低级流程"},{"k":"B","ok":false,"t":"规则没有用金币绕过该互斥的机制"},{"k":"C","ok":true,"t":"四级涉及双方科技核心，对方正在尝试一至三级装配时不能选择四级"},{"k":"D","ok":false,"t":"要求对方自毁并非规则提供的解锁方式"}],"sec":"§5.4.3","page":"82"},{"id":"Q086","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"四级需要双核心协同完成","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，关于四级装配的完成要求，下列哪项正确？","options":["必须完成双方科技核心装配，并满足整体和步骤协同的时间要求","只要比赛结束前完成任意步骤即可","只要取走对方能量单元便算成功","只完成本方一个科技核心就足够"],"answer":"A","exp":"规则要求双方核心均按相应平移旋转要求完成，并满足整体及指定步骤的时限","detail":[{"k":"A","ok":true,"t":"规则要求双方核心均按相应平移旋转要求完成，并满足整体及指定步骤的时限"},{"k":"B","ok":false,"t":"四级有明确完整流程和时间要求，不能只做任意一步"},{"k":"C","ok":false,"t":"取走单元不等于完成装配要求"},{"k":"D","ok":false,"t":"四级不是单核心任务，必须完成两个科技核心的装配"}],"sec":"§5.4.3","page":""},{"id":"Q087","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"首次与重复装配的收益关系","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，理解能量单元装配的经济收益时，下列哪项正确？","options":["每次成功都会把此前周期收益全部清零","所有收益都是确认瞬间的一次性金币","首次完成与非首次完成应区分，部分难度重复成功仍可增加后续周期金币收入","任何重复装配都完全没有收益"],"answer":"C","exp":"首次和重复装配对应不同收益；可重复难度的非首次成功仍能提高后续周期收入","detail":[{"k":"A","ok":false,"t":"示例将不同成功装配的周期金币贡献累加，不是清零"},{"k":"B","ok":false,"t":"表5-12包含此后周期获得金币，并非全部为一次性金币"},{"k":"C","ok":true,"t":"首次和重复装配对应不同收益；可重复难度的非首次成功仍能提高后续周期收入"},{"k":"D","ok":false,"t":"手册列明可重复难度的非首次收益"}],"sec":"§5.4.3","page":""},{"id":"Q088","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"装配与等级上限解锁","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，关于成功完成二级装配的作用，下列哪项符合手册？","options":["只改变能量单元外观，不影响团队能力","可以解锁更高机器人等级上限，并带来后续金币收益","使基地永久免疫所有来源扣血","取消其他所有装配难度的前置条件"],"answer":"B","exp":"二级首次装配将团队机器人等级上限提高，并增加后续周期金币收益","detail":[{"k":"A","ok":false,"t":"二级首次有升级、等级上限解锁和周期金币收益"},{"k":"B","ok":true,"t":"二级首次装配将团队机器人等级上限提高，并增加后续周期金币收益"},{"k":"C","ok":false,"t":"装配收益不能扩大为基地永久免疫全部扣血"},{"k":"D","ok":false,"t":"仍须按规则满足更高难度的逐级与时间条件"}],"sec":"§5.4.3","page":"83"},{"id":"Q089","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"三级装配的发射机构权限奖励","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，首次成功完成三级装配时，下列哪项是明确列出的奖励？","options":["允许地面机器人开始预装弹丸","取消所有远程兑换等待期","把场上所有前哨阵地直接转为己方完全控制","解锁重装模块化42mm发射机构使用权，并提高团队机器人等级上限"],"answer":"D","exp":"表5-12列明三级首次解锁该发射机构使用权并提高等级上限","detail":[{"k":"A","ok":false,"t":"准备阶段预装弹丸不是首次三级装配才解锁的能力"},{"k":"B","ok":false,"t":"远程兑换的生效延迟不会因该奖励取消"},{"k":"C","ok":false,"t":"装配收益没有直接完全占领全场前哨阵地的效果"},{"k":"D","ok":true,"t":"表5-12列明三级首次解锁该发射机构使用权并提高等级上限"}],"sec":"§5.4.3","page":"83"},{"id":"Q090","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"四级不能无限重复获益","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，关于四级装配，哪项理解正确？","options":["可以无限重复，每次都再次获得相同首次奖励","仅限完成一次，成功后有持续至比赛结束的防御收益和后续金币收益","只有装配的重装机器人获得收益，基地与前哨站不适用","成功只改变灯效，不提供团队收益"],"answer":"B","exp":"四级成功有持续防御和周期金币收益，且完成次数受一次限制","detail":[{"k":"A","ok":false,"t":"四级明确仅限完成一次，不能无限重复刷取"},{"k":"B","ok":true,"t":"四级成功有持续防御和周期金币收益，且完成次数受一次限制"},{"k":"C","ok":false,"t":"防御适用对象包括该方地面机器人、前哨站和基地"},{"k":"D","ok":false,"t":"表5-12明确列出团队防御和金币奖励"}],"sec":"§5.4.3","page":"83"},{"id":"Q091","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"达到等级上限后的经验","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，机器人已达到当前解锁的等级上限，但尚未解锁更高上限。此时能否继续获取经验并无限储存？","options":["不能，达到等级上限后不再获取经验","只有击毁基地后才可无限累积","只能通过发射弹丸继续获取","可以，经验会一直无限累积"],"answer":"A","exp":"达到当前等级上限后不再获取经验，需先有进一步上限解锁才可继续成长","detail":[{"k":"A","ok":true,"t":"达到当前等级上限后不再获取经验，需先有进一步上限解锁才可继续成长"},{"k":"B","ok":false,"t":"没有击毁基地便可在上限状态无限累积的例外"},{"k":"C","ok":false,"t":"手册没有仅发射弹丸可以绕过该限制的例外"},{"k":"D","ok":false,"t":"原文明确到达等级上限后不再获取经验"}],"sec":"§5.4.3","page":"84"},{"id":"Q092","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"已有能量单元时不能改难度","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，装配难度已选，科技核心内已有能量单元但尚未成功。操作手能否直接改选其他难度？","options":["发射弹丸后便可改","只要支付金币就可改","可以，任何时刻均可改","不可以，核心内已有单元时不得更改装配难度"],"answer":"D","exp":"选难度后若核心内已有能量单元，就不得更改装配难度","detail":[{"k":"A","ok":false,"t":"发射弹丸不能解除这项装配流程限制"},{"k":"B","ok":false,"t":"手册没有支付金币绕过限制的方法"},{"k":"C","ok":false,"t":"核心内已有能量单元时，规则限制改变难度"},{"k":"D","ok":true,"t":"选难度后若核心内已有能量单元，就不得更改装配难度"}],"sec":"§5.4.3","page":"88"},{"id":"Q093","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"装配中取出单元的后果","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，装配尚未完成时，重装把能量单元从科技核心取出，传感器已检测到取出。此次装配如何处理？","options":["自动按最低难度成功","只暂停，原进度永久保留","立即失败","只扣金币但仍发放奖励"],"answer":"C","exp":"科技核心传感器检测到能量单元被取出时，当次装配立即失败","detail":[{"k":"A","ok":false,"t":"规则没有取出后自动降级成功的机制"},{"k":"B","ok":false,"t":"取出触发立即失败，不是保留进度暂停"},{"k":"C","ok":true,"t":"科技核心传感器检测到能量单元被取出时，当次装配立即失败"},{"k":"D","ok":false,"t":"失败不应仍按成功发放对应奖励"}],"sec":"§5.4.3","page":"88"},{"id":"Q094","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"装配交互持续丢失的后果","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，装配过程中，重装连续未检测到装配区交互模块卡，已达到规则规定的失败时限。接下来如何处理？","options":["判当次装配失败并自动退出，科技核心执行回收","必须等整局结束才允许回收","自动判成功并给最低收益","装配流程不受影响"],"answer":"A","exp":"规则规定达到该时限后失败并自动退出，随后科技核心立即回收","detail":[{"k":"A","ok":true,"t":"规则规定达到该时限后失败并自动退出，随后科技核心立即回收"},{"k":"B","ok":false,"t":"无需等待整局结束才回收"},{"k":"C","ok":false,"t":"没有交互丢失后自动按最低难度成功的机制"},{"k":"D","ok":false,"t":"持续失去交互超过规定时限会直接影响装配判定"}],"sec":"§5.4.3","page":"88"},{"id":"Q095","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"装配时战亡的处置","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，重装正在装配时战亡。对于机器人与科技核心的脱离，操作手应如何理解该特别处置？","options":["战亡自动保证装配成功并继续收益","仅42mm发射机构断电，云台底盘保持上电，应按规定尽快控制其脱离科技核心","整机立即全部断电，不能控制脱离","可以无限期停留在核心处阻挡回收"],"answer":"B","exp":"装配战亡时保留云台底盘供电，但须在规定时间内脱离，随后核心执行回收","detail":[{"k":"A","ok":false,"t":"战亡并不自动完成装配，规则判该次失败"},{"k":"B","ok":true,"t":"装配战亡时保留云台底盘供电，但须在规定时间内脱离，随后核心执行回收"},{"k":"C","ok":false,"t":"特别规定保留云台和底盘供电，以便控制脱离"},{"k":"D","ok":false,"t":"回收有规定时限，不能无限停留阻挡"}],"sec":"§5.4.3","page":"88"},{"id":"Q096","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"确认后不能继续干预","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，操作手确认进行能量单元装配后，对该单元应如何处理？","options":["必须继续旋转到任意方向","必须立即强行拔出","不得再进行进一步操作或干预，否则可能导致失败","仍可任意移动，直到金币到账"],"answer":"C","exp":"规则明确确认后不得进一步操作或干预能量单元，否则可能导致装配失败","detail":[{"k":"A","ok":false,"t":"没有确认后继续任意旋转的要求"},{"k":"B","ok":false,"t":"取出会触发失败，不是确认后的必做操作"},{"k":"C","ok":true,"t":"规则明确确认后不得进一步操作或干预能量单元，否则可能导致装配失败"},{"k":"D","ok":false,"t":"确认后不得继续任意操作或干预"}],"sec":"§5.4.3","page":"88"},{"id":"Q097","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"装配区保护不能靠重入刷新","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，重装在同一最高成功装配等级下，离开装配区后重新进入流程。能否仅凭重入把装配区来源的累计无敌保护重新计满？","options":["无敌保护没有累计限制","不可以，离开再激活不重置累计计时；最高成功装配等级提高才刷新计时","可以，只需在区外发射弹丸","可以，每次重入都从头计时"],"answer":"B","exp":"该保护按累计时间管理，单纯重入不刷新，最高成功装配等级增加才刷新计时","detail":[{"k":"A","ok":false,"t":"装配区来源无敌具有最长累计限制"},{"k":"B","ok":true,"t":"该保护按累计时间管理，单纯重入不刷新，最高成功装配等级增加才刷新计时"},{"k":"C","ok":false,"t":"发射弹丸不是刷新保护计时的条件"},{"k":"D","ok":false,"t":"原文明确离开后重新激活不重置累计时间"}],"sec":"§5.6.4.7","page":"106"},{"id":"Q098","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"远程弹量兑换的状态条件","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，机器人仍处于交战状态，操作手希望通过远程兑换立即增加允许发弹量。下列哪项判断正确？","options":["远程兑换要求脱战，成功后还需等待规定生效时间","只有击毁对方机器人后才可远程兑换","只要有实体弹丸就视为远程兑换完成","金币足够就可忽略机器人状态"],"answer":"A","exp":"远程允许发弹量兑换要求脱战，成功后新增额度也有规定生效延迟","detail":[{"k":"A","ok":true,"t":"远程允许发弹量兑换要求脱战，成功后新增额度也有规定生效延迟"},{"k":"B","ok":false,"t":"规则没有必须先击毁对方机器人的前置要求"},{"k":"C","ok":false,"t":"实体弹丸不能代替允许发弹量兑换及其生效"},{"k":"D","ok":false,"t":"金币余额不能替代脱战状态要求"}],"sec":"§5.4.2","page":"77"},{"id":"Q099","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"金币来源不只初始发放","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，关于队伍金币的获取方式，下列哪项正确？","options":["除初始和定期发放外，还可通过装配能量单元获得额外金币收益","可以通过把控制度直接卖给裁判系统获得","只有开局一次发放，之后永不增加","只有击毁对方基地才能获得"],"answer":"A","exp":"经济体系包含初始和定期发放，装配能量单元还可提供额外金币收益","detail":[{"k":"A","ok":true,"t":"经济体系包含初始和定期发放，装配能量单元还可提供额外金币收益"},{"k":"B","ok":false,"t":"手册没有出售控制度换金币的机制"},{"k":"C","ok":false,"t":"手册明确有定期金币，也有装配带来的额外金币"},{"k":"D","ok":false,"t":"金币获取不是只由击毁基地触发"}],"sec":"§5.4.1","page":""},{"id":"Q100","juan":"卷三","juanName":"RMUC 经济与科技核心","title":"插入单元不等于装配成功","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027中，重装已把能量单元放入科技核心，但尚未按所选难度完成全部要求并确认。能否认定奖励已经成立？","options":["能，只要操作手认为位置大致正确","能，放入单元就自动获得全部收益","不能，须按该难度完成要求并确认，由科技核心检测符合后回收并给收益","只要机器人随后战亡就自动结算成功"],"answer":"C","exp":"装配收益以满足相应要求、完成确认并经核心检测正确为前提","detail":[{"k":"A","ok":false,"t":"操作手主观认为正确不能替代科技核心检测"},{"k":"B","ok":false,"t":"放入只是流程中的一部分，并不替代该难度完整要求和确认"},{"k":"C","ok":true,"t":"装配收益以满足相应要求、完成确认并经核心检测正确为前提"},{"k":"D","ok":false,"t":"装配时战亡会触发失败处置，不会自动转为成功"}],"sec":"§5.4.3","page":"88"},{"id":"Q101","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"指挥手与安全员的分工","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，指挥手与安全员的角色分工应如何理解？","options":["指挥手可操作空中与飞镖系统的相应选手端，安全员对空中机器人承担受限的安全干预职责","指挥手只负责语音指挥，不能使用空中或飞镖系统的选手端","有安全员在场，就可以取消空中系统的全自动运行要求","安全员可以把全自动空中机器人作为常规手动飞行机器人操作"],"answer":"A","exp":"指挥手承担相应系统的比赛操作，安全员承担受限安全干预；两种职责不能相互替代。","detail":[{"k":"A","ok":true,"t":"两种角色的操作对象与权限不同，安全职责不能扩大为常规飞行控制权。"},{"k":"B","ok":false,"t":"指挥手可操作空中和飞镖系统对应选手端。"},{"k":"C","ok":false,"t":"安全员在场不构成取消全自动要求的例外。"},{"k":"D","ok":false,"t":"空中机器人要求全自动运行，安全员权限受限。"}],"sec":"§3、3.2.1","page":""},{"id":"Q102","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"指挥手职责","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC 2027某队空中系统、飞镖系统均未上场。指挥手能否仍上场使用这两套系统对应的裁判系统选手端？","options":["不可以，只能借用步兵操作手的选手端","可以，两套系统不上场不取消此项权限","不可以，必须至少有一套系统上场","可以，但因此能在准备阶段结束后自由换位"],"answer":"B","exp":"指挥手的选手端使用权限不以空中或飞镖系统实际上场为前提，其他位置与设备约束仍适用。","detail":[{"k":"A","ok":false,"t":"指挥手有自身对应选手端的使用权限。"},{"k":"B","ok":true,"t":"规则明确无论空中、飞镖系统是否上场，指挥手均可使用对应选手端。"},{"k":"C","ok":false,"t":"规则没有这个前提。"},{"k":"D","ok":false,"t":"使用权限不解除准备阶段结束后的固定位置要求。"}],"sec":"§3 机器人与操作手","page":"21"},{"id":"Q103","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"哨兵通信边界","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC 2027某队为哨兵设计多机通信链路。下列哪项同时符合其发送与接收权限？","options":["向重装发送数据，并接收重装直接下达的目标","向己方步兵发送数据，并接收步兵直接回传的数据","向己方步兵发送数据，接收雷达数据","只能收发雷达数据，不能向其他己方机器人发送"],"answer":"C","exp":"哨兵通信权限不对称：可向己方机器人广泛发送，接收来源则仅为雷达。","detail":[{"k":"A","ok":false,"t":"重装不属于哨兵允许的数据接收来源。"},{"k":"B","ok":false,"t":"接收来源限于雷达，不能因已向步兵发送就接受其回传。"},{"k":"C","ok":true,"t":"哨兵可向所有己方机器人发送，但只能接收雷达的数据。"},{"k":"D","ok":false,"t":"接收受限不代表发送范围也被限于雷达。"}],"sec":"§3.1.3 哨兵机器人","page":"25"},{"id":"Q104","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"雷达通信边界","scope":"RMUC","kind":"概念理解","diff":"进阶","stem":"RMUC 2027雷达可以向所有己方机器人发送数据。这是否意味着它也可接收所有己方机器人通过多机通信发送的数据？","options":["不是，因为雷达完全禁止多机通信","是，只要数据发自己方就没有来源限制","是，发送和接收权限必然相同","不是，雷达只可接收哨兵机器人的数据"],"answer":"D","exp":"设计通信架构时必须分别核对发送对象与接收来源，不能由发送权限反推接收权限。","detail":[{"k":"A","ok":false,"t":"雷达可以发送数据，并可接收哨兵数据，并非完全禁止。"},{"k":"B","ok":false,"t":"己方身份不等于获得雷达接收权限。"},{"k":"C","ok":false,"t":"两种权限在规则中并不对称。"},{"k":"D","ok":true,"t":"规则对雷达接收来源另有限制。"}],"sec":"§3.2.3 雷达系统","page":"28"},{"id":"Q105","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"空中系统通信协同","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027空中机器人需要与其他机器人进行多机通信时，应采用哪种架构？","options":["完全不允许任何通信","直接连接步兵，因为两者均为己方机器人","直接连接雷达，因为雷达承担信息任务","通过机库间接通信"],"answer":"D","exp":"空中机器人通过机库参与通信协同，不能自行绕过机库建立直接多机通信链路。","detail":[{"k":"A","ok":false,"t":"规则允许经机库间接通信。"},{"k":"B","ok":false,"t":"己方身份不能解除机库中转要求。"},{"k":"C","ok":false,"t":"任务关联不构成直接通信权限。"},{"k":"D","ok":true,"t":"规则仅允许空中机器人经机库间接通信。"}],"sec":"§3.2.1 空中系统","page":"27"},{"id":"Q106","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"自动运行与急停","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027空中机器人采用全自动运行，同时配备用于急停的遥控器。对此应如何理解？","options":["全自动运行意味着不得保留任何急停手段","只要安全员在场，就可以取消全自动要求","急停遥控器提供安全干预，不改变全自动运行要求","配有遥控器即表示允许全程手动驾驶"],"answer":"C","exp":"正常运行控制与安全急停属于不同权限，不能将急停设备视为手动驾驶许可。","detail":[{"k":"A","ok":false,"t":"规则明确要求配备急停遥控器。"},{"k":"B","ok":false,"t":"人员在场不替代运行方式要求。"},{"k":"C","ok":true,"t":"规则同时要求全自动与急停保障，二者并不矛盾。"},{"k":"D","ok":false,"t":"急停用途不能扩展为正常驾驶。"}],"sec":"§3.2.1 空中系统","page":"27"},{"id":"Q107","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"哨兵的自主机制操作","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027中，哨兵是否只能等待指挥手操作，才能处理弹量兑换、复活和姿态切换等机制？","options":["是，指挥手未发指令时哨兵必须始终保持战亡状态","不是，因为哨兵可以绕过裁判系统自行改变金币和血量","不是，哨兵也可按规定向裁判系统发送信息，自主执行相关机制操作","是，哨兵不允许自主处理任何资源或复活操作"],"answer":"C","exp":"指挥手干预和哨兵自主机制操作可以并存；自主操作仍受兑换条件和裁判系统规则约束。","detail":[{"k":"A","ok":false,"t":"哨兵不以收到指挥手指令作为保持存活的必要条件。"},{"k":"B","ok":false,"t":"自主操作仍通过裁判系统完成，不能绕过规则修改数据。"},{"k":"C","ok":true,"t":"哨兵具有规则明确允许的自主机制操作渠道。"},{"k":"D","ok":false,"t":"规则允许其自主兑换弹量、回血、处理复活及切换姿态。"}],"sec":"§5.7.2","page":"108"},{"id":"Q108","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"重装解锁路径","scope":"RMUC","kind":"概念理解","diff":"综合","stem":"RMUC 2027某队认为重装只有完成三级装配，才能解锁模块化42mm发射机构使用权。该理解正确吗？","options":["不完整，规则还规定了随比赛进程和本局局势变化的时间解锁路径","不正确，因为只需指挥手口头宣布解锁","正确，其他条件均不能解锁","不正确，因为开赛即无条件解锁"],"answer":"A","exp":"应把装配与时间条件理解为替代路径，不必记公式也能理解重装解锁并非只有装配一条路线。","detail":[{"k":"A","ok":true,"t":"三级装配与规定时间条件是任一满足即可的路径。"},{"k":"B","ok":false,"t":"口头宣布不是规则路径。"},{"k":"C","ok":false,"t":"忽略另一条时间解锁路径。"},{"k":"D","ok":false,"t":"开赛并非无条件解锁。"}],"sec":"§5.7.1 重装机器人特殊机制","page":"108"},{"id":"Q109","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"成功安装判定","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC 2027重装已解锁使用权，并在工作台机械装上模块化42mm发射机构，但尚未发射被裁判系统检测到的42mm弹丸。能否据此认定已“成功安装”？","options":["不能，必须先击毁对方机器人","能，机构机械固定就等同于成功安装","不能，还需通过规定的发射检测完成确认","能，只要队员自行检查机构已通电"],"answer":"C","exp":"机械装配完成与规则状态确认是两个环节，不能省略被裁判系统检测到的发射。","detail":[{"k":"A","ok":false,"t":"安装确认不要求击毁目标。"},{"k":"B","ok":false,"t":"忽略规则中的检测确认条件。"},{"k":"C","ok":true,"t":"机械装配之外，还要求首发42mm弹丸被裁判系统检测到。"},{"k":"D","ok":false,"t":"队员检查不能替代裁判系统检测条件。"}],"sec":"§5.7.1 重装机器人特殊机制","page":"108"},{"id":"Q110","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"安装确认弹的性质","scope":"RMUC","kind":"概念理解","diff":"进阶","stem":"RMUC 2027用于确认重装“成功安装模块化42mm发射机构”的那发弹丸，应如何看待？","options":["它必须先造成伤害，才能确认安装","它既完成安装确认，也正常造成攻击伤害","它用于安装确认，不计热量、射击初速度以及伤害","它只免除伤害，仍按普通弹累计热量"],"answer":"C","exp":"确认弹承担状态确认功能，应与后续常规射击结算区分。","detail":[{"k":"A","ok":false,"t":"确认以系统检测为条件，不以造成伤害为条件。"},{"k":"B","ok":false,"t":"规则明确不计这发弹丸的伤害。"},{"k":"C","ok":true,"t":"规则对这发确认弹明确设置三项计量例外。"},{"k":"D","ok":false,"t":"热量也不计。"}],"sec":"§5.7.1 重装机器人特殊机制","page":"108"},{"id":"Q111","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"重装装拆边界","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC 2027重装拟拆除模块化42mm发射机构，并分解为柔性电缆连接的多个子系统。以下哪种地点选择符合特殊机制？","options":["只要不碰对方，任何地点都可进行","分解在工作台，拆机构可在中央高地","回到工作台完成这些操作","只要在己方任意增益点即可"],"answer":"C","exp":"重装的分合与机构装拆权限附带工作台地点要求，不能因操作看起来安全而放宽。","detail":[{"k":"A","ok":false,"t":"是否碰对方不解除地点限制。"},{"k":"B","ok":false,"t":"拆机构也受工作台限制。"},{"k":"C","ok":true,"t":"装拆、分解和合并均限定在工作台进行。"},{"k":"D","ok":false,"t":"任意增益点不能替代工作台。"}],"sec":"§5.7.1 重装机器人特殊机制","page":"108"},{"id":"Q112","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"哨兵默认控制","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027指挥手在允许的赛前窗口内未选择哨兵操作方式。比赛开始后应采用哪种默认方式？","options":["自动控制","由安全员手动驾驶","半自动控制","自动取消该哨兵的上场资格"],"answer":"A","exp":"未选择时按自动控制执行，队伍应据此准备哨兵的控制与协同方案。","detail":[{"k":"A","ok":true,"t":"规则将未选择的默认方式设为自动控制。"},{"k":"B","ok":false,"t":"未选择不产生安全员驾驶权限。"},{"k":"C","ok":false,"t":"半自动不是未选择时的默认值。"},{"k":"D","ok":false,"t":"规则已有默认处理，并非直接禁赛。"}],"sec":"§5.7.2 哨兵机器人特殊机制","page":"108"},{"id":"Q113","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"哨兵方式选择边界","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027关于哨兵自动或半自动控制方式的选择，哪项理解正确？","options":["比赛开始后可由任意队员随时重选","由指挥手在准备阶段开始后、裁判系统自检阶段前完成选择","只要更换姿态，就同时更换自动或半自动方式","操作方式必须由对方队伍指定"],"answer":"B","exp":"控制方式属于规定赛前窗口内的配置，不能与赛中的姿态切换混同。","detail":[{"k":"A","ok":false,"t":"规则没有授予这种赛中重选权限。"},{"k":"B","ok":true,"t":"这是规则规定的选择主体与阶段边界。"},{"k":"C","ok":false,"t":"姿态与操作方式是不同机制。"},{"k":"D","ok":false,"t":"选择主体是己方指挥手。"}],"sec":"§5.7.2 哨兵机器人特殊机制","page":"108"},{"id":"Q114","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"指挥干预与自主操作","scope":"RMUC","kind":"概念理解","diff":"进阶","stem":"RMUC 2027比较指挥手对自动哨兵和半自动哨兵进行5.7.2所列干预操作的手续费，哪项正确？","options":["自动哨兵完全不允许指挥手干预","两类都必须支付同样的干预手续费","对自动哨兵的该类干预按次收费，半自动哨兵无需该手续费","两类都免费，因为指挥手本就可以干预"],"answer":"C","exp":"“自动”不代表绝对不能干预，控制方式还会改变指挥干预的经济成本。","detail":[{"k":"A","ok":false,"t":"自动哨兵允许所列指令干预，只是存在费用。"},{"k":"B","ok":false,"t":"半自动哨兵对应操作无需该费用。"},{"k":"C","ok":true,"t":"规则区分两类操作方式的指挥干预费用。"},{"k":"D","ok":false,"t":"允许干预不等于免除自动哨兵的按次费用。"}],"sec":"§5.7.2 哨兵机器人特殊机制","page":""},{"id":"Q115","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"进攻姿态取舍","scope":"RMUC","kind":"概念理解","diff":"进阶","stem":"RMUC 2027哨兵的普通进攻姿态主要体现哪种能力取舍？","options":["同时提升热量冷却、底盘功率与防御且无代价","只改变界面颜色，不影响性能","强化防御，但降低热量冷却","强化热量冷却，同时降低底盘功率上限并增加易伤"],"answer":"D","exp":"姿态是有代价的能力转换，进攻姿态并非所有能力一起增强。","detail":[{"k":"A","ok":false,"t":"姿态有明确的功率和易伤代价。"},{"k":"B","ok":false,"t":"姿态会实际改变机器人性能。"},{"k":"C","ok":false,"t":"这是防御姿态的方向，不是进攻姿态。"},{"k":"D","ok":true,"t":"进攻姿态用机动和防护代价换取持续射击能力。"}],"sec":"§5.7.2 哨兵机器人特殊机制","page":"109"},{"id":"Q116","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"防御姿态取舍","scope":"RMUC","kind":"概念理解","diff":"综合","stem":"RMUC 2027哨兵进入普通防御姿态时，应如何理解其性能变化方向？","options":["获得防御增益，同时牺牲底盘功率与热量冷却能力","获得防御与冷却双重提升，机动也不受影响","只要切入防御姿态，就永久锁定该姿态","获得易伤，以换取更快的机动"],"answer":"A","exp":"防御姿态加强生存能力，同时压低机动与持续射击能力，适用场景需要权衡。","detail":[{"k":"A","ok":true,"t":"防御姿态降低功率上限和热量冷却速率。"},{"k":"B","ok":false,"t":"冷却和底盘功率均有下降。"},{"k":"C","ok":false,"t":"规则并未把防御姿态设为永久锁定。"},{"k":"D","ok":false,"t":"这不是防御姿态的变化方向。"}],"sec":"§5.7.2 哨兵机器人特殊机制","page":""},{"id":"Q117","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"强化移动姿态取舍","scope":"RMUC","kind":"概念理解","diff":"进阶","stem":"RMUC 2027哨兵进入强化移动姿态后，以下哪种定性描述符合规则？","options":["只提高机动，不改变承伤或冷却","使所有己方机器人同步获得机动强化","提高机动能力，同时存在易伤和热量冷却下降的代价","提高防御并提升冷却，但不提高机动"],"answer":"C","exp":"强化移动适合机动需求，但并非没有承伤和热量管理成本。","detail":[{"k":"A","ok":false,"t":"忽略姿态代价。"},{"k":"B","ok":false,"t":"此姿态效果属于该哨兵，不是全队增益。"},{"k":"C","ok":true,"t":"表5-28同时规定了功率强化、易伤与冷却衰减。"},{"k":"D","ok":false,"t":"与强化移动的能力方向相反。"}],"sec":"§5.7.2 哨兵机器人特殊机制","page":"109"},{"id":"Q118","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"姿态累计效果下降","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC 2027某哨兵长时间累计使用同一姿态后，队伍试图通过短暂切走再切回，重置该姿态的累计使用时间。该做法能否规避效果下降？","options":["不能，规则按本局同一姿态的累计时间判断","能，每次重新进入都从零开始计时","不能，因为一局完全不允许姿态切换","能，只要切换到过防御姿态就全部重置"],"answer":"A","exp":"是否下降看累计使用而非单次连续停留，切换不能刷新已使用的姿态预算。","detail":[{"k":"A","ok":true,"t":"切换并不会把该姿态本局累计时长清零。"},{"k":"B","ok":false,"t":"误将累计计时理解为每次连续计时。"},{"k":"C","ok":false,"t":"哨兵允许姿态切换，不能规避的原因是累计计时。"},{"k":"D","ok":false,"t":"规则没有这种重置条件。"}],"sec":"§5.7.2 哨兵机器人特殊机制","page":"109"},{"id":"Q119","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"强化姿态独立预算","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC 2027哨兵本局已用完强化进攻姿态预算，尚未使用强化防御姿态。关于后续使用，哪项正确？","options":["只需切到普通进攻姿态，即可清除强化使用记录","所有强化姿态共享同一预算，所以强化防御也被耗尽","只要退出再进，就能再次获得完整强化进攻预算","强化防御仍有独立预算，强化进攻不能靠退出重进恢复预算"],"answer":"D","exp":"不同强化姿态分别管理预算，既不能互相误扣，也不能通过反复进入刷新。","detail":[{"k":"A","ok":false,"t":"普通姿态切换不清除强化预算记录。"},{"k":"B","ok":false,"t":"不同种类计时相互独立。"},{"k":"C","ok":false,"t":"每局累计上限不会因此重置。"},{"k":"D","ok":true,"t":"不同强化姿态分别累计，单类预算不因退出刷新。"}],"sec":"§5.7.2 哨兵机器人特殊机制","page":"109"},{"id":"Q120","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"飞镖闸门运动限制","scope":"RMUC","kind":"情境判断","diff":"基础","stem":"RMUC 2027指挥手已下达开闸命令，飞镖发射站闸门仍在运动。此时哪项操作符合规则？","options":["等待闸门完全开启后再控制飞镖发射","只要飞镖不会碰到闸门就可发射","闭闸过程中可以补射剩余飞镖","命令发出后立即发射即可"],"answer":"A","exp":"飞镖发射控制受闸门实际状态约束，不能仅看命令已发送或自认为安全。","detail":[{"k":"A","ok":true,"t":"闸门开启或闭合过程中不得控制发射。"},{"k":"B","ok":false,"t":"无碰撞不能替代规则的阶段条件。"},{"k":"C","ok":false,"t":"闭合过程中同样禁止控制发射。"},{"k":"D","ok":false,"t":"下达开闸命令不等于完成开闸。"}],"sec":"§5.7.3 飞镖系统特殊机制","page":"110"},{"id":"Q121","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"开闸机会与使用","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC 2027飞镖系统获得开闸机会后未立即使用。关于该机会，哪项理解正确？","options":["机会可累积，因此可以在闸门运动中控制发射","未立即使用就自动作废","未使用机会可以累积，由指挥手择机使用","只要还有镖体，就可无限开闸"],"answer":"C","exp":"机会、镖体和闸门状态共同限制飞镖使用，拥有其中一项不代表其他条件自动满足。","detail":[{"k":"A","ok":false,"t":"机会保留不解除闸门运动时的发射限制。"},{"k":"B","ok":false,"t":"与机会可累积的规定相反。"},{"k":"C","ok":true,"t":"规则允许未用机会累积，不要求获得后立即开闸。"},{"k":"D","ok":false,"t":"装载镖体与开闸机会是不同约束。"}],"sec":"§5.7.3 飞镖系统特殊机制","page":"110"},{"id":"Q122","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"飞镖发射与命中条件","scope":"RMUC","kind":"概念理解","diff":"进阶","stem":"RMUC 2027一枚飞镖在允许发射阶段内合法发出，是否因此保证其之后命中目标都能被有效判定？","options":["是，合法发出就不再受命中窗口限制","不是，因为只有发射阶段结束后命中才有效","不是，还必须在检测窗口内满足目标的命中条件","是，只要目标是基地就没有其他限制"],"answer":"C","exp":"应分别检查发射是否合法、命中是否落在检测窗口以及目标条件是否满足。","detail":[{"k":"A","ok":false,"t":"规则要求在检测窗口内命中。"},{"k":"B","ok":false,"t":"规则并没有要求必须等发射期结束后才命中。"},{"k":"C","ok":true,"t":"合法发射与有效命中是不同层级的条件。"},{"k":"D","ok":false,"t":"基地目标同样受检测和目标条件约束。"}],"sec":"§5.7.3 飞镖系统特殊机制","page":"110"},{"id":"Q123","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"飞镖目标切换边界","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC 2027一次开闸初始选择前哨站，飞镖已有效命中该目标。关于本次开闸内切换目标，哪项正确？","options":["可以按规则从前哨站切换到某个基地目标，但不意味着可任意反复切换","可以在前哨站与基地间无限往返切换","任何情况下都必须等下次开闸才能选基地","只要没命中前哨站，也可任意切换所有目标"],"answer":"A","exp":"目标切换不是一般的无限权限，而是前哨站命中后向基地目标转换的特定例外。","detail":[{"k":"A","ok":true,"t":"规则提供特定方向、有限的切换例外。"},{"k":"B","ok":false,"t":"超出该切换例外。"},{"k":"C","ok":false,"t":"忽略同次开闸命中后的切换权限。"},{"k":"D","ok":false,"t":"该例外以命中前哨站等规定条件为前提。"}],"sec":"§5.7.3 飞镖系统特殊机制","page":"110"},{"id":"Q124","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"移动目标有效命中","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC 2027飞镖选择基地随机移动目标，检测窗口尚未结束，但检测模块仍在移动时被击中。该命中是否有效？","options":["有效，只要发射本身合法即可","无效，此类目标还要求检测模块完成移动并静止","有效，因为随机移动目标本来就允许任何运动状态命中","有效，只要在检测窗口内即可"],"answer":"B","exp":"命中窗口和模块静止状态是需要同时满足的条件。","detail":[{"k":"A","ok":false,"t":"合法发射不能替代有效命中条件。"},{"k":"B","ok":true,"t":"在窗口内并不足够，还需满足目标状态条件。"},{"k":"C","ok":false,"t":"规则明确设置静止后命中的限制。"},{"k":"D","ok":false,"t":"忽略模块须完成移动并静止的要求。"}],"sec":"§5.7.3 飞镖系统特殊机制","page":"111"},{"id":"Q125","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"飞镖目标与护甲效果","scope":"RMUC","kind":"情境判断","diff":"综合","stem":"RMUC 2027一枚飞镖有效命中对方基地“末端移动目标”。按飞镖展开基地护甲的特殊条件，哪项正确？","options":["必须照搬固定目标的累计全中条件才展开","只会影响界面显示，不能改变基地护甲状态","可触发对方基地护甲立即展开","必须先由地面机器人击毁前哨站才有此效果"],"answer":"C","exp":"选择目标会改变命中收益和护甲展开条件，不能把固定目标与移动类目标视为相同机制。","detail":[{"k":"A","ok":false,"t":"不同目标类型的展开条件不同。"},{"k":"B","ok":false,"t":"规则明确包含护甲展开效果。"},{"k":"C","ok":true,"t":"末端移动目标有效命中基地即可触发该效果。"},{"k":"D","ok":false,"t":"该飞镖触发条款未附加这一前提。"}],"sec":"§5.7.3 飞镖系统特殊机制","page":"111"},{"id":"Q126","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"雷达标记的累计机制","scope":"RMUC","kind":"概念理解","diff":"进阶","stem":"RMUC 2027雷达对某地面机器人发送了一次准确坐标。仅凭这一次结果，能否断言已立即获得该目标的全部标记效果？","options":["不能，因为裁判系统完全不考虑雷达发送的坐标","能，只要本次准确，就立即达到所有标记效果","不能，标记效果取决于累计进度，连续标记状态和数据中断也参与更新","能，准确发送过一次后就不再需要维护标记"],"answer":"C","exp":"标记效果由持续更新的累计进度决定，不能把本次准确与立即获得全部效果混同。","detail":[{"k":"A","ok":false,"t":"雷达发送坐标及其识别准确性正是进度更新依据。"},{"k":"B","ok":false,"t":"一次准确不等于累计进度立即达到全部效果阈值。"},{"k":"C","ok":true,"t":"规则按累计被标记进度及其阈值给出效果，更新还考虑连续标记状态，数据中断也会参与错误判定。"},{"k":"D","ok":false,"t":"后续标记与中断仍会更新进度，不是一次成功便永久保留全部效果。"}],"sec":"§5.7.4 雷达系统特殊机制","page":""},{"id":"Q127","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"己方雷达标记收益","scope":"RMUC","kind":"概念理解","diff":"进阶","stem":"RMUC 2027雷达对己方地面机器人的标记已达到显示实际位置的条件。该标记的意义是什么？","options":["己方位置达到条件后反而不再显示","强化己方定位显示，并不因此给己方附加易伤或防御增益","己方也按对方目标规则获得易伤","己方自动获得防御增益"],"answer":"B","exp":"己方标记主要服务定位显示，不能套用对方标记的易伤收益。","detail":[{"k":"A","ok":false,"t":"规则给出实际位置和特殊标识显示。"},{"k":"B","ok":true,"t":"表5-30己方目标只有相应显示效果，无额外增益。"},{"k":"C","ok":false,"t":"己方与对方标记效果不能混用。"},{"k":"D","ok":false,"t":"该表未给己方标记设置防御效果。"}],"sec":"§5.7.4 雷达系统特殊机制","page":"113"},{"id":"Q128","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"双倍易伤作用范围","scope":"RMUC","kind":"概念理解","diff":"进阶","stem":"RMUC 2027雷达合法触发“双倍易伤”。对该效果的作用范围，哪项理解正确？","options":["放大来源于雷达的易伤，不把其他来源易伤一并翻倍","让对方所有机器人立即战亡","所有来源易伤都必定翻倍","使己方所有攻击伤害直接翻倍"],"answer":"A","exp":"“双倍易伤”描述的是雷达来源易伤数值的变化，不能扩大成全来源效果或直接伤害翻倍。","detail":[{"k":"A","ok":true,"t":"规则明确限定为当前来源于雷达的易伤数值。"},{"k":"B","ok":false,"t":"该机制不是立即战亡判定。"},{"k":"C","ok":false,"t":"超出规则限定的来源范围。"},{"k":"D","ok":false,"t":"易伤数值翻倍不等同于全部伤害直接翻倍。"}],"sec":"§5.7.4 雷达系统特殊机制","page":"113"},{"id":"Q129","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"多目标易伤的累计方式","scope":"RMUC","kind":"概念理解","diff":"综合","stem":"RMUC 2027雷达同时维持多台对方机器人易伤。取得“双倍易伤”机会所需累计时间，应如何理解？","options":["只要同时标记多台就无需累计时间","只有恰好一台机器人易伤时才计时","同一时间段只计一次，不因同时易伤的机器人更多而重复累加","同时易伤目标越多，同一时间段就重复计入越多次"],"answer":"C","exp":"应关注易伤覆盖的实际时长，而不是把目标数量乘进同一段时间。","detail":[{"k":"A","ok":false,"t":"仍须满足累计易伤时间条件。"},{"k":"B","ok":false,"t":"多台易伤不是不计时，而是不重复累计。"},{"k":"C","ok":true,"t":"规则明确多台同时易伤时，时间不累加。"},{"k":"D","ok":false,"t":"这把目标数量误当时间倍数。"}],"sec":"§5.7.4 雷达系统特殊机制","page":"113"},{"id":"Q130","juan":"卷四","juanName":"RMUC 机器人与系统协同","title":"干扰波难度抑制方向","scope":"RMUC","kind":"情境判断","diff":"综合","stem":"RMUC 2027蓝方干扰波难度高于红方。按5.7.4的难度比较规则，蓝方雷达即使准确标记红方机器人，也会怎样？","options":["只暂停双倍易伤积累，普通易伤仍生效","不会产生易伤，也不会积累双倍易伤进度","必然给红方附加更强易伤","红方雷达因此不能再发送任何坐标"],"answer":"B","exp":"判断时先固定己方与对方视角；难度比较影响对方雷达的易伤效果及机会积累。","detail":[{"k":"A","ok":false,"t":"条款同时抑制易伤与双倍易伤进度。"},{"k":"B","ok":true,"t":"从红方视角，对方难度更高，对方雷达受到这两项抑制。"},{"k":"C","ok":false,"t":"规则规定抑制，而不是增加易伤。"},{"k":"D","ok":false,"t":"条款并非禁止红方发送坐标。"}],"sec":"§5.7.4 雷达系统特殊机制","page":"114"},{"id":"Q131","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"官方技术暂停维修范围","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC因官方裁判系统故障进入官方技术暂停，队伍还想趁机修复与该故障无关的底盘机械故障。应如何判断？","options":["只要对方同意便可维修","不允许借此维修其他故障，应按裁判要求排除相关故障","只要不更换裁判系统就可任意维修","允许，官方暂停时双方可任意维修"],"answer":"B","exp":"官方技术暂停用于按裁判要求排除裁判系统或官方设备相关故障，不可维修其他故障。","detail":[{"k":"A","ok":false,"t":"对方同意不能改变官方暂停的维修限制。"},{"k":"B","ok":true,"t":"官方技术暂停用于按裁判要求排除裁判系统或官方设备相关故障，不可维修其他故障。"},{"k":"C","ok":false,"t":"是否更换裁判系统不是允许任意维修的依据。"},{"k":"D","ok":false,"t":"这混淆了官方技术暂停与参赛队伍技术暂停的维修范围。"}],"sec":"§6.3.1","page":"120"},{"id":"Q132","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"队伍暂停双方维修权","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC红方申请的参赛队伍技术暂停已获主裁判确认，蓝方希望继续调试机器人。哪项正确？","options":["蓝方必须另消耗一次暂停机会才可维修","蓝方仅能检查官方键鼠，不能维修机器人","双方均可正常继续调试、维修机器人","仅红方可调试，蓝方必须停止"],"answer":"C","exp":"参赛队伍技术暂停时间内，无论哪方发起，双方均可正常继续调试、维修。","detail":[{"k":"A","ok":false,"t":"另一方参与调试不需另行申请暂停。"},{"k":"B","ok":false,"t":"维修范围不限于官方键鼠。"},{"k":"C","ok":true,"t":"参赛队伍技术暂停时间内，无论哪方发起，双方均可正常继续调试、维修。"},{"k":"D","ok":false,"t":"队伍暂停并非仅申请方可以调试。"}],"sec":"§6.3.2","page":"121"},{"id":"Q133","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"自检重置血量","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC十五秒裁判系统自检阶段，服务器对机器人血量进行何种处理？","options":["只重置重装机器人血量","保留准备阶段试射后的血量","重置所有机器人血量，确保开赛时满血","按双方准备完成先后给予不同初始血量"],"answer":"C","exp":"自检会重置所有机器人血量，确保比赛开始时为满血。","detail":[{"k":"A","ok":false,"t":"重置对象是所有机器人。"},{"k":"B","ok":false,"t":"准备阶段血量不会按此说法直接保留。"},{"k":"C","ok":true,"t":"自检会重置所有机器人血量，确保比赛开始时为满血。"},{"k":"D","ok":false,"t":"规则未以准备顺序区分初始血量。"}],"sec":"§6.4","page":"121"},{"id":"Q134","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"五秒倒计时控制响应","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC最后五秒倒计时期间，裁判系统选手端（包括自定义终端）如何响应机器人控制指令？","options":["不响应，倒计时结束后恢复响应并立即开始比赛","只屏蔽射击，底盘始终可控","官方端不响应，但自定义终端可以控制","持续响应所有控制指令"],"answer":"A","exp":"五秒倒计时内选手端不响应机器人控制指令，包括自定义终端；结束后恢复。","detail":[{"k":"A","ok":true,"t":"五秒倒计时内选手端不响应机器人控制指令，包括自定义终端；结束后恢复。"},{"k":"B","ok":false,"t":"条款针对控制指令，并非仅射击。"},{"k":"C","ok":false,"t":"自定义终端也在不响应范围内。"},{"k":"D","ok":false,"t":"与倒计时期间不响应的规定相反。"}],"sec":"§6.5","page":"121"},{"id":"Q135","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"场外遥控器操作限制","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC五秒倒计时已开始，场地人员想用操作间外的上场机器人遥控器调整位置。哪项正确？","options":["允许，只要不发射弹丸","禁止操作，违规机器人可被红牌罚下，最高当局判负","允许操作至倒计时最后1秒","允许，只要机器人仍在初始区域"],"answer":"B","exp":"五秒倒计时开始后不得操作位于操作间外的上场机器人对应遥控器；R24规定红牌，最高当局判负。","detail":[{"k":"A","ok":false,"t":"是否发射弹丸不改变该禁令。"},{"k":"B","ok":true,"t":"五秒倒计时开始后不得操作位于操作间外的上场机器人对应遥控器；R24规定红牌，最高当局判负。"},{"k":"C","ok":false,"t":"禁令从五秒倒计时开始即生效。"},{"k":"D","ok":false,"t":"留在初始区域不能豁免遥控器操作限制。"}],"sec":"§7.2.1.2","page":"128"},{"id":"Q136","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"黄牌遮挡不可用内容","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC因黄牌导致操作界面被遮挡，操作手想改看自定义UI或小地图继续获取画面。哪项正确？","options":["图传、小地图、自定义UI均不可使用","只有官方图传不可用，小地图可用","换自定义终端即可取消遮挡","自定义UI不受影响"],"answer":"A","exp":"黄牌界面遮挡覆盖图传画面、小地图和自定义UI。","detail":[{"k":"A","ok":true,"t":"黄牌界面遮挡覆盖图传画面、小地图和自定义UI。"},{"k":"B","ok":false,"t":"小地图也在不可用范围内。"},{"k":"C","ok":false,"t":"更换显示路径不能豁免判罚。"},{"k":"D","ok":false,"t":"自定义UI明确受到遮挡限制。"}],"sec":"§7.1.2","page":"124"},{"id":"Q137","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"自检前红牌与替补","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC一台机器人在进入十五秒自检阶段前被红牌罚下，队伍打算在同场下一局用另一台机器人替补。按该红牌条款应如何判断？","options":["仅本局不能替补，下一局自动允许","罚下后等待30秒即可重新上场","只要替补通过检录便不受限制","该机器人需搬离战场，且当场所有局均不得由其他机器人替补"],"answer":"D","exp":"进入十五秒自检前罚下的机器人不允许上场并需搬离，且当场所有局不允许有其他机器人替补。","detail":[{"k":"A","ok":false,"t":"限制覆盖当场所有局，而非仅当前局。"},{"k":"B","ok":false,"t":"红牌不具有等待30秒后自动恢复的机制。"},{"k":"C","ok":false,"t":"通过检录不能豁免该红牌替补限制。"},{"k":"D","ok":true,"t":"进入十五秒自检前罚下的机器人不允许上场并需搬离，且当场所有局不允许有其他机器人替补。"}],"sec":"§7.1.2","page":"124"},{"id":"Q138","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"地面机器人红牌","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC比赛中地面机器人被红牌罚下，与普通战亡相比哪项描述正确？","options":["只需花金币即可立即复活","血量立即变为0，图传及多机通信断开，无法复活","仅禁射30秒，仍可占点","可按普通战亡自动读条复活"],"answer":"B","exp":"地面机器人红牌会使血量归零、图传及多机通信断开，且无法复活。","detail":[{"k":"A","ok":false,"t":"金币不能恢复被红牌罚下机器人。"},{"k":"B","ok":true,"t":"地面机器人红牌会使血量归零、图传及多机通信断开，且无法复活。"},{"k":"C","ok":false,"t":"红牌处罚并非限时禁射。"},{"k":"D","ok":false,"t":"红牌罚下不适用普通复活机制。"}],"sec":"§7.1.2","page":"125"},{"id":"Q139","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"指挥手被罚下的影响","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC指挥手被红牌罚下，空中系统和飞镖系统如何处理？","options":["更换另一名指挥手即可立即恢复","两系统均继续运行，只禁用语音","两系统均被罚下，且当场所有局不得上场或由机器人替补","只罚下当时正在操作的系统"],"answer":"C","exp":"指挥手罚下会使空中系统和飞镖系统均被罚下，且当场所有局均不得上场，也不得有机器人替补。","detail":[{"k":"A","ok":false,"t":"场地人员罚下与相关机器人限制不能通过换人绕过。"},{"k":"B","ok":false,"t":"处罚不是仅禁用语音。"},{"k":"C","ok":true,"t":"指挥手罚下会使空中系统和飞镖系统均被罚下，且当场所有局均不得上场，也不得有机器人替补。"},{"k":"D","ok":false,"t":"连带影响同时覆盖两系统。"}],"sec":"§7.1.2","page":"125"},{"id":"Q140","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"雷达被罚下后的通信","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC比赛中雷达被罚下，其多机通信状态如何变化？","options":["完全保持正常双向通信","仅能单向接收，不再能发送","只禁止接收，仍可发送","仅降低带宽一半，仍能双向通信"],"answer":"B","exp":"雷达罚下后多机通信断开，条款注明仅能单向接收，不再能发送。","detail":[{"k":"A","ok":false,"t":"不再允许正常发送。"},{"k":"B","ok":true,"t":"雷达罚下后多机通信断开，条款注明仅能单向接收，不再能发送。"},{"k":"C","ok":false,"t":"方向正好写反。"},{"k":"D","ok":false,"t":"规则没有将此处罚设为减半带宽。"}],"sec":"§7.1.2","page":"125"},{"id":"Q141","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"被诱发违规仍需终止","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC蓝方行为使红方直接产生违规行为。关于红方的处理，哪项符合规则？","options":["红方可无限期维持该行为","红方无需关注裁判要求","该情形不视为红方违规，但红方需及时终止违规行为","双方必然各收到一次黄牌"],"answer":"C","exp":"由一方行为使对方直接产生的违规，不视为对方违规，但对方需及时终止。","detail":[{"k":"A","ok":false,"t":"不视为违规不等于可以持续该行为。"},{"k":"B","ok":false,"t":"仍需及时终止，并非忽视处置要求。"},{"k":"C","ok":true,"t":"由一方行为使对方直接产生的违规，不视为对方违规，但对方需及时终止。"},{"k":"D","ok":false,"t":"规则没有规定此类情形必然双方黄牌。"}],"sec":"§7.1.2","page":"123"},{"id":"Q142","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"比赛中场外通信","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC比赛过程中，操作手希望通过私人通信设备接受操作间外队员的实时战术信息。哪项正确？","options":["只收不发就允许","不可与操作间外通信，警告无效可当局判负","双方都采用此方式即可","只要信息不涉及裁判即可"],"answer":"B","exp":"R33禁止比赛过程中与操作间外通信，先口头警告，警告无效当局判负。","detail":[{"k":"A","ok":false,"t":"只接收实时场外通信也不符合禁令。"},{"k":"B","ok":true,"t":"R33禁止比赛过程中与操作间外通信，先口头警告，警告无效当局判负。"},{"k":"C","ok":false,"t":"双方同意不能改变赛事通信规则。"},{"k":"D","ok":false,"t":"通信内容是否涉及裁判不构成豁免。"}],"sec":"§7.2.1.3","page":"129"},{"id":"Q143","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"准备阶段试射","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC三分钟准备阶段内需要试射弹丸，弹丸应射向哪里？","options":["清弹袋内","对方基地装甲","只要朝向无人区域即可","中央高地空地"],"answer":"A","exp":"准备阶段若需发射弹丸，需将弹丸发射至清弹袋中。","detail":[{"k":"A","ok":true,"t":"准备阶段若需发射弹丸，需将弹丸发射至清弹袋中。"},{"k":"B","ok":false,"t":"准备阶段不能以攻击对方基地替代安全试射。"},{"k":"C","ok":false,"t":"无人区域不等同于清弹袋。"},{"k":"D","ok":false,"t":"中央高地空地不是规定清弹装置。"}],"sec":"§7.2.2.1","page":"130"},{"id":"Q144","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"准备阶段空中系统调试","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC准备阶段，队员在机库平台附近调试空中系统，打算短暂启动桨叶确认转向。应如何判断？","options":["允许，只要少于3秒","允许，只要无人站在正前方","不允许，准备阶段调试空中系统不得启动桨叶","允许，只要不离开机库平台"],"answer":"C","exp":"R47允许在指定区域调试空中系统，但不得启动桨叶。","detail":[{"k":"A","ok":false,"t":"该禁令没有3秒试转例外。"},{"k":"B","ok":false,"t":"人员站位不能豁免不得启动桨叶的规定。"},{"k":"C","ok":true,"t":"R47允许在指定区域调试空中系统，但不得启动桨叶。"},{"k":"D","ok":false,"t":"留在平台也不能启动桨叶。"}],"sec":"§7.2.2.3","page":"131"},{"id":"Q145","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"飞镖待发射状态时段","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC中，关于飞镖系统允许处于规则定义的“待发射状态”的时段，下列哪项正确？","options":["仅限七分钟比赛阶段","仅限五秒倒计时阶段","仅限三分钟准备阶段","仅限赛前检录阶段"],"answer":"A","exp":"R50规定除七分钟比赛阶段外不得处于待发射状态；提供初始动能的储能元件拉紧、充气或转动均属于该状态。","detail":[{"k":"A","ok":true,"t":"R50规定，只有七分钟比赛阶段允许处于该待发射状态。"},{"k":"B","ok":false,"t":"五秒倒计时不属于允许处于待发射状态的比赛阶段。"},{"k":"C","ok":false,"t":"三分钟准备阶段也不得处于待发射状态。"},{"k":"D","ok":false,"t":"赛前检录阶段不得处于待发射状态。"}],"sec":"§7.2.2.3","page":"131"},{"id":"Q146","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"战亡机器人阻挡路径","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC对方一台战亡机器人阻挡关键移动路径。哪项处理符合R51？","options":["可正面高速冲撞将其撞开","可缓慢将其推开以疏通关键路径","可反复剧烈冲撞直至结构损坏","战亡后就允许任意强度推动"],"answer":"B","exp":"R51禁止冲撞，但对战亡机器人造成关键移动路径阻挡的情形，允许缓慢推开。","detail":[{"k":"A","ok":false,"t":"高速冲撞不属于缓慢推开的例外。"},{"k":"B","ok":true,"t":"R51禁止冲撞，但对战亡机器人造成关键移动路径阻挡的情形，允许缓慢推开。"},{"k":"C","ok":false,"t":"反复剧烈冲撞不被该例外允许。"},{"k":"D","ok":false,"t":"战亡不等于任意强度推动均合法。"}],"sec":"§7.2.3.1","page":"131"},{"id":"Q147","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"主动推动存活对手","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC机器人主动推动对方存活机器人，使其产生明显移动，但未达到反复剧烈或远距离等红牌描述。表7-3对应哪类冲撞警告？","options":["黄牌警告","不属于违规","仅口头提醒且绝不出黄牌","只要不扣血就不处罚"],"answer":"A","exp":"表7-3将主动推动使对方机器人产生明显移动列入黄牌警告标准；具体判罚仍由主裁判结合情况决定。","detail":[{"k":"A","ok":true,"t":"表7-3将主动推动使对方机器人产生明显移动列入黄牌警告标准；具体判罚仍由主裁判结合情况决定。"},{"k":"B","ok":false,"t":"主动推动造成明显移动属于表中违规。"},{"k":"C","ok":false,"t":"表中明确列为黄牌级别，而非仅口头提醒。"},{"k":"D","ok":false,"t":"是否扣血不是该项违规的唯一条件。"}],"sec":"§7.2.3.1","page":"132"},{"id":"Q148","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"阻挡对方进入补给区","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC己方机器人堵住通路，阻挡对方机器人进入其补给区。哪项符合R54？","options":["只要不发生接触就永远合法","只有对方已经战亡时才算违规","属于违规，应停止阻挡；可被黄牌，警告无效可红牌","只要堵住的是对方补给区就合法"],"answer":"C","exp":"机器人及其行为均不可阻挡另一方机器人进入其补给区；R54规定黄牌，警告无效红牌。","detail":[{"k":"A","ok":false,"t":"禁令不限于发生结构接触。"},{"k":"B","ok":false,"t":"违规条件并未限定对方战亡。"},{"k":"C","ok":true,"t":"机器人及其行为均不可阻挡另一方机器人进入其补给区；R54规定黄牌，警告无效红牌。"},{"k":"D","ok":false,"t":"该规则保护对方进入其补给区，不因敌我身份失效。"}],"sec":"§7.2.3.1","page":"132"},{"id":"Q149","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"禁止主动攻击的设备","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC哪组对方设备被R53明确列为不可主动攻击的对象？","options":["前哨站与基地装甲","飞镖发射架与雷达","所有可激活的增益点","存活步兵与存活重装"],"answer":"B","exp":"R53明确禁止主动攻击对方飞镖发射架、雷达，最高可取消比赛资格。","detail":[{"k":"A","ok":false,"t":"基地和前哨站有其正常受击机制，不是此禁攻清单。"},{"k":"B","ok":true,"t":"R53明确禁止主动攻击对方飞镖发射架、雷达，最高可取消比赛资格。"},{"k":"C","ok":false,"t":"R53没有以此选项表述禁止主动攻击对象。"},{"k":"D","ok":false,"t":"存活步兵与重装是正常射击对抗中的机器人，不是R53列举设备。"}],"sec":"§7.2.3.1","page":"132"},{"id":"Q150","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"禁区三维空间与携带物","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC机器人底盘未压到禁区地面，但机械臂携带的道具进入该禁区竖直上空。是否算进入禁区？","options":["不算，只看底盘接地点","不算，只有摄像头进入才算","不算，携带物从不计入禁区判定","算，机器人本体或携带物接触、进入禁区空间均算"],"answer":"D","exp":"禁区包含地面及其竖直上空；本体或携带物接触或进入该空间，均判为进入。","detail":[{"k":"A","ok":false,"t":"判定不限于底盘接地点。"},{"k":"B","ok":false,"t":"规则并非仅检测摄像头。"},{"k":"C","ok":false,"t":"携带物被明确纳入判定。"},{"k":"D","ok":true,"t":"禁区包含地面及其竖直上空；本体或携带物接触或进入该空间，均判为进入。"}],"sec":"§7.2.3.2","page":"133"},{"id":"Q151","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"单方禁区准入","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC“单方禁区”的准入含义是什么？","options":["双方都可进入，但只能有1台","只允许当前控制度较低一方进入","双方都禁止进入","仅所属方机器人可进入，对方所有机器人禁止进入"],"answer":"D","exp":"单方禁区仅允许所属方机器人进入；补给禁区、装配禁区属于此类。","detail":[{"k":"A","ok":false,"t":"单方不表示只限单台机器人。"},{"k":"B","ok":false,"t":"准入不根据控制度高低改变。"},{"k":"C","ok":false,"t":"双方均禁入是双方禁区的含义。"},{"k":"D","ok":true,"t":"单方禁区仅允许所属方机器人进入；补给禁区、装配禁区属于此类。"}],"sec":"§7.2.3.2","page":"133"},{"id":"Q152","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"双方禁区分类","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC表7-4中，哪组均属于禁止双方机器人进入的双方禁区？","options":["所有高地与隧道","己方补给禁区与己方基地阵地","补给禁区与装配禁区","基地禁区与发射站禁区"],"answer":"D","exp":"基地禁区和发射站禁区为双方禁区；补给禁区和装配禁区为单方禁区。","detail":[{"k":"A","ok":false,"t":"高地与隧道并非按此条整体列为双方禁区。"},{"k":"B","ok":false,"t":"基地阵地不等同于基地禁区。"},{"k":"C","ok":false,"t":"补给和装配禁区的属性是单方禁区。"},{"k":"D","ok":true,"t":"基地禁区和发射站禁区为双方禁区；补给禁区和装配禁区为单方禁区。"}],"sec":"§7.2.3.2","page":"133"},{"id":"Q153","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"已成功装配的能量单元","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC机器人想取回已装配成功的能量单元作为道具使用。按R60应如何判断？","options":["只要在科技核心外使用就允许","只要不再次提交装配就允许","禁止获取或以任何方式携带、使用，违规当局判负","只要原来由己方装配就允许"],"answer":"C","exp":"R60禁止获取或以任意方式携带、使用已装配成功能量单元，违规处罚为当局判负。","detail":[{"k":"A","ok":false,"t":"地点改变不能豁免该禁令。"},{"k":"B","ok":false,"t":"禁止使用不只针对再次提交。"},{"k":"C","ok":true,"t":"R60禁止获取或以任意方式携带、使用已装配成功能量单元，违规处罚为当局判负。"},{"k":"D","ok":false,"t":"规则没有己方先前装配的例外。"}],"sec":"§7.2.3.2","page":"134"},{"id":"Q154","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"科技核心结构操作限制","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC机器人装配能量单元时，主动操作科技核心上除能量单元外的其他本体或可动结构。R63如何规定？","options":["只要装配成功就不算违规","不允许，违规当局判负","只要不造成损坏便允许","只有对方科技核心才禁止"],"answer":"B","exp":"装配过程中不得操作除能量单元外科技核心的可动结构及其他本体结构，违规当局判负。","detail":[{"k":"A","ok":false,"t":"装配成功不豁免操作限制。"},{"k":"B","ok":true,"t":"装配过程中不得操作除能量单元外科技核心的可动结构及其他本体结构，违规当局判负。"},{"k":"C","ok":false,"t":"该条禁止操作本身，不以造成损坏为必要条件。"},{"k":"D","ok":false,"t":"条款并未仅限对方科技核心。"}],"sec":"§7.2.3.2","page":"134"},{"id":"Q155","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"能量机关与机库禁用攻击物","scope":"RMUC","kind":"概念理解","diff":"基础","stem":"RMUC哪种攻击方式被R62明确禁止用于击打能量机关和机库？","options":["所有官方17mm弹丸无条件一律禁用","仅己方步兵发射的17mm弹丸","符合相应触发要求的17mm弹丸","42mm弹丸、飞镖、空中机器人"],"answer":"D","exp":"R62明确不得使用42mm弹丸、飞镖、空中机器人击打能量机关和机库。具体正常触发仍须符合各自机制。","detail":[{"k":"A","ok":false,"t":"该条没有无条件禁止全部17mm弹丸。"},{"k":"B","ok":false,"t":"该条并非针对己方步兵17mm弹丸设置禁令。"},{"k":"C","ok":false,"t":"符合触发要求的17mm弹丸并非R62的禁用对象。"},{"k":"D","ok":true,"t":"R62明确不得使用42mm弹丸、飞镖、空中机器人击打能量机关和机库。具体正常触发仍须符合各自机制。"}],"sec":"§7.2.3.2","page":"134"},{"id":"Q156","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"自带弹丸进候场赛场","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC队伍打算把自备比赛弹丸带入候场区补充库存，不属于在检录区进行预置的弹丸。哪项正确？","options":["禁止自行携带，违规弹丸会被没收并可能有进一步处罚","允许，由队长统一携带即可","允许，只要未装入机器人","允许，只要弹丸型号相同"],"answer":"A","exp":"R7除检录区进行预置的弹丸外，禁止自行携带比赛弹丸进入候场区或赛场区。","detail":[{"k":"A","ok":true,"t":"R7除检录区进行预置的弹丸外，禁止自行携带比赛弹丸进入候场区或赛场区。"},{"k":"B","ok":false,"t":"队长身份不豁免该禁令。"},{"k":"C","ok":false,"t":"是否装入机器人不改变携带限制。"},{"k":"D","ok":false,"t":"型号相同不构成自行携带的例外。"}],"sec":"§7.2.1.1","page":"126"},{"id":"Q157","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"严重安全异常处置","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC比赛中出现电池爆燃等严重安全隐患，主裁判发现并确认。按异常情况规则，应如何处理当局？","options":["继续比赛，直到出现正常获胜条件","通知双方并罚下所有机器人，当局结果作废，隐患排除后重新开始","仅罚下故障机器人，其余必须继续","立即按故障出现前控制度判胜，不再重赛"],"answer":"B","exp":"严重安全隐患经确认后，罚下所有机器人，当局结果作废，隐患排除后重新开始；优先处理安全问题。","detail":[{"k":"A","ok":false,"t":"此类情况不能要求继续至正常胜负。"},{"k":"B","ok":true,"t":"严重安全隐患经确认后，罚下所有机器人，当局结果作废，隐患排除后重新开始；优先处理安全问题。"},{"k":"C","ok":false,"t":"规定的处置对象是所有机器人。"},{"k":"D","ok":false,"t":"规则不是按故障前控制度直接判胜。"}],"sec":"§8","page":"136"},{"id":"Q158","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"非关键道具损坏","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC比赛中仅基地灯效损坏，经判断不影响比赛公平。应如何处理？","options":["双方立即获得一次队伍技术暂停","按灯效损坏方当局判负","该局必定作废重赛","比赛正常进行"],"answer":"D","exp":"非关键道具损坏且不影响公平，如基地灯效损坏，比赛正常进行。","detail":[{"k":"A","ok":false,"t":"比赛中的此情况不自动产生队伍技术暂停。"},{"k":"B","ok":false,"t":"灯效损坏不直接等同于一方判负。"},{"k":"C","ok":false,"t":"不影响公平的非关键损坏不会按本条必定重赛。"},{"k":"D","ok":true,"t":"非关键道具损坏且不影响公平，如基地灯效损坏，比赛正常进行。"}],"sec":"§8","page":"136"},{"id":"Q159","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"关键官方设备无法修复","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC关键官方设备故障影响公平，且裁判无法通过裁判系统手动处理。按第8章应如何处理？","options":["通知双方、罚下所有机器人，立即结束并作废当局，问题排除后重赛","暂停画面但保留正常比赛计时直至耗尽","继续进行，赛后只给落后一方补金币","直接将故障责任归于当前控制度领先方"],"answer":"A","exp":"关键官方故障影响公平且无法手动处理时，终止并作废该局，问题排除后重新开始。","detail":[{"k":"A","ok":true,"t":"关键官方故障影响公平且无法手动处理时，终止并作废该局，问题排除后重新开始。"},{"k":"B","ok":false,"t":"并非让正常计时继续耗尽。"},{"k":"C","ok":false,"t":"规则没有用赛后补金币替代该重赛处置。"},{"k":"D","ok":false,"t":"领先状态不能决定故障责任。"}],"sec":"§8","page":"136"},{"id":"Q160","juan":"卷五","juanName":"RMUC 流程与违规处置","title":"黄牌扣血与战亡的区别","scope":"RMUC","kind":"情境判断","diff":"进阶","stem":"RMUC中，一台机器人收到黄牌警告，其剩余血量已不足以承受本次黄牌规定的扣血。仅考虑这次黄牌扣血，哪项理解正确？","options":["血量不足时自动从其他队友身上补扣差额","黄牌会像红牌一样直接使机器人战亡且不可复活","血量不足就自动取消本次黄牌及其他处罚","黄牌扣血会保留最低存活血量，不会仅因这次扣血直接战亡"],"answer":"D","exp":"黄牌扣血不足以承受时，机器人血量降为1；黄牌和红牌的机制不同，仍须遵守黄牌带来的其他限制。","detail":[{"k":"A","ok":false,"t":"没有从其他队友补扣差额的规则。"},{"k":"B","ok":false,"t":"血量归零且不可复活是地面机器人红牌罚下的效果。"},{"k":"C","ok":false,"t":"保留最低血量不等于取消黄牌或界面遮挡等处罚。"},{"k":"D","ok":true,"t":"黄牌扣血有最低血量保底，不能把其效果等同于红牌罚下。"}],"sec":"§7.1.2","page":"124"},{"id":"Q161","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"步兵默认类型","scope":"RMUL 3V3","kind":"情境判断","diff":"基础","stem":"RMUL 2027 3V3对抗赛步兵操作手没有在赛前选择底盘与发射机构类型。开赛后的默认组合是？","options":["没有默认值，机器人自动失去上场资格","血量优先底盘与冷却优先发射机构","随机选择，直到操作手主动确认","功率优先底盘与爆发优先发射机构"],"answer":"B","exp":"未选择时按固定默认类型执行，不能假定系统会沿用队伍偏好的配置。","detail":[{"k":"A","ok":false,"t":"规则已有默认处理。"},{"k":"B","ok":true,"t":"规则对未选择情况给出了这组默认类型。"},{"k":"C","ok":false,"t":"规则不是随机分配。"},{"k":"D","ok":false,"t":"两项都不是默认类型。"}],"sec":"§3.1.2 步兵机器人","page":"18"},{"id":"Q162","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"性能类型锁定","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛已经开始，步兵底盘与发射机构类型也已选定。队伍希望回到补给区后更换性能类型，是否允许？","options":["允许，由队长口头宣布即可","允许，战亡复活后就能更换","允许，只要回到己方补给区","不允许，选定后整局不能更换"],"answer":"D","exp":"赛前配置与赛中资源补给是不同机制，不能用回补或复活刷新选型。","detail":[{"k":"A","ok":false,"t":"队内宣布不能改变类型锁定。"},{"k":"B","ok":false,"t":"复活不解除类型锁定。"},{"k":"C","ok":false,"t":"补给区权限不包含性能类型重选。"},{"k":"D","ok":true,"t":"回补不构成本局重选类型的例外。"}],"sec":"§3.1.2 步兵机器人","page":"18"},{"id":"Q163","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"跨赛事哨兵控制方式","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"参照20261015版规则，RMUC 2027可选自动或半自动哨兵。某队把半自动方案用于RMUL 2027 3V3对抗赛，该做法如何判断？","options":["只要不装遥控器就自然属于全自动","符合，两个赛事的控制方式要求完全相同","只要降低哨兵血量就符合","不符合，RMUL 3V3要求哨兵全自动运行"],"answer":"D","exp":"迁移技术方案时应按目标赛项核对运行方式；RMUL 3V3不提供半自动哨兵选项。","detail":[{"k":"A","ok":false,"t":"运行方式取决于实际控制，不能仅凭是否装遥控器判断。"},{"k":"B","ok":false,"t":"两套规则在此存在明确差异。"},{"k":"C","ok":false,"t":"RMUL没有用降血量换取半自动控制的规定。"},{"k":"D","ok":true,"t":"不能将RMUC的可选控制方式直接扩展到RMUL。"}],"sec":"§3.1.3 哨兵机器人","page":"20"},{"id":"Q164","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"哨兵多机通信限制","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛某队计划由步兵通过多机通信给哨兵直接发送目标指令。仅按哨兵通信权限，哪项正确？","options":["允许，因为发送者是己方机器人","允许，因为哨兵必须自动运行","改成由重装发送就允许","不允许，该赛项哨兵不允许多机通信"],"answer":"D","exp":"自动控制与通信许可需要分别核对，不能认为自动机器人就可以接收任意队友数据。","detail":[{"k":"A","ok":false,"t":"己方身份不构成豁免。"},{"k":"B","ok":false,"t":"自动运行不等于开放多机通信。"},{"k":"C","ok":false,"t":"更换发送者不解除哨兵通信限制。"},{"k":"D","ok":true,"t":"表3-5明确限制哨兵多机通信。"}],"sec":"§3.1.3 哨兵机器人","page":"20"},{"id":"Q165","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"重装安装前补给保护","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛重装尚未成功完成模块化42mm发射机构安装，且正在激活己方补给区。按重装特殊机制，其状态是什么？","options":["处于无敌状态","因为没有成功安装而被自动罚下","只要任意队友在补给区，重装就无敌","无论是否离开补给区都持续无敌"],"answer":"A","exp":"该保护取决于安装状态与自身补给区激活状态两个条件，不能只看其中之一。","detail":[{"k":"A","ok":true,"t":"未成功安装与激活己方补给区的条件同时满足。"},{"k":"B","ok":false,"t":"未安装是规则允许的阶段状态。"},{"k":"C","ok":false,"t":"条件是该重装自己激活己方补给区。"},{"k":"D","ok":false,"t":"无敌还依赖激活己方补给区，不能扩展至全场。"}],"sec":"§3.3.6 重装机器人特殊机制","page":"38"},{"id":"Q166","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"重装性能提升确认","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛重装已机械装好模块化42mm发射机构，但未发射过被裁判系统正确识别的42mm弹丸。是否已满足提升性能的全部条件？","options":["已经满足，机械装好即自动完成全部确认","尚未，必须先击毁对方机器人","尚未，还需完成规定的发射识别确认","只要队长确认就视为完成"],"answer":"C","exp":"机械安装与比赛系统确认不同，性能提升还需要裁判系统正确识别发射。","detail":[{"k":"A","ok":false,"t":"漏掉裁判系统识别发射的条件。"},{"k":"B","ok":false,"t":"规则没有把击毁设为安装确认条件。"},{"k":"C","ok":true,"t":"性能提升要求装好机构并发射被系统正确识别的弹丸。"},{"k":"D","ok":false,"t":"人工队内确认不能替代系统检测条件。"}],"sec":"§3.3.6 重装机器人特殊机制","page":"37"},{"id":"Q167","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"重装装拆地点","scope":"RMUL 3V3","kind":"概念理解","diff":"基础","stem":"RMUL 2027 3V3对抗赛重装获准分解或合并子系统、安装或拆除模块化发射机构。这意味着什么？","options":["只要不发射弹丸就能边行驶边拆装","只要位于任意控制区就能进行","这些特许操作仍只能在工作台进行","获准操作后就能在战场任意地点进行"],"answer":"C","exp":"操作权限与地点条件同时适用，不能只记住“允许装拆”。","detail":[{"k":"A","ok":false,"t":"停止射击也不能解除工作台限制。"},{"k":"B","ok":false,"t":"控制区不能替代工作台。"},{"k":"C","ok":true,"t":"允许操作的同时也附有明确地点限制。"},{"k":"D","ok":false,"t":"忽略工作台条件。"}],"sec":"§3.3.6 重装机器人特殊机制","page":""},{"id":"Q168","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"伤害检测不等于合法攻击","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛某队认为“装甲能检测到撞击扣血，所以主动撞击造成伤害也是合法战术”。应如何判断？","options":["正确，只要没有使用弹丸就不算攻击","正确，凡系统能识别的伤害都属于合法攻击","错误，能触发扣血不代表允许通过撞击造成伤害","正确，只要撞击伤害小就不受限制"],"answer":"C","exp":"自动伤害结算与违规判断可以同时成立，不能利用检测机制绕过交互限制。","detail":[{"k":"A","ok":false,"t":"撞击正是本条限制的方式。"},{"k":"B","ok":false,"t":"检测能力不能替代行为规则。"},{"k":"C","ok":true,"t":"规则明确禁止通过撞击对对方造成伤害。"},{"k":"D","ok":false,"t":"伤害大小不能使禁止行为自动合法。"}],"sec":"§3.3.1.1 攻击伤害或撞击","page":"29"},{"id":"Q169","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"底盘超功率机制","scope":"RMUL 3V3","kind":"概念理解","diff":"基础","stem":"RMUL 2027 3V3对抗赛机器人缓冲能量已经耗尽，底盘功率仍超限。哪种理解正确？","options":["只要弹量充足就可继续无限超功率","只会影响射击，不影响底盘供电","会触发底盘断电惩罚，不能无限透支缓冲能量","缓冲耗尽后功率限制自动取消"],"answer":"C","exp":"缓冲能量只能暂时承接超功率消耗，不能当作绕过功率限制的永久许可。","detail":[{"k":"A","ok":false,"t":"弹量与底盘功率约束无关。"},{"k":"B","ok":false,"t":"该机制明确作用于底盘供电。"},{"k":"C","ok":true,"t":"规则规定缓冲耗尽后继续超限会导致底盘断电。"},{"k":"D","ok":false,"t":"缓冲耗尽不会取消功率限制。"}],"sec":"§3.3.1.4 底盘功率超限","page":"32"},{"id":"Q170","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"异常离线与复活","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛一台战亡机器人的主控模块离线，进入异常离线状态。期间复活读条如何处理？","options":["由其他队友替它累计读条","仍按正常战亡状态持续增加","立即填满并复活","不再增加"],"answer":"D","exp":"估计复活可用性时，必须区分正常战亡与主控异常离线。","detail":[{"k":"A","ok":false,"t":"规则没有读条转移机制。"},{"k":"B","ok":false,"t":"正常自动读条规则不能覆盖异常离线限制。"},{"k":"C","ok":false,"t":"异常离线不是复活加速条件。"},{"k":"D","ok":true,"t":"异常离线有暂停复活读条增长的特殊处理。"}],"sec":"§3.3.1.5.1 异常离线","page":"33"},{"id":"Q171","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"战亡资源重置","scope":"RMUL 3V3","kind":"概念理解","diff":"基础","stem":"RMUL 2027 3V3对抗赛机器人的战亡事件本身如何影响射击热量与缓冲能量？","options":["热量升到上限，缓冲能量不变","射击热量清零，缓冲能量恢复到上限","两者都清零","两者均保持战亡前数值"],"answer":"B","exp":"不要把所有资源理解为统一清空，热量与缓冲能量按各自规定重置。","detail":[{"k":"A","ok":false,"t":"两项处理均与规则相反。"},{"k":"B","ok":true,"t":"规则对两项资源给出不同方向的重置。"},{"k":"C","ok":false,"t":"缓冲能量重置到上限，而非清零。"},{"k":"D","ok":false,"t":"战亡事件会重置这两项。"}],"sec":"§3.3.2.2 复活机制","page":"35"},{"id":"Q172","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"反复战亡的复活代价","scope":"RMUL 3V3","kind":"概念理解","diff":"进阶","stem":"RMUL 2027 3V3对抗赛同一台机器人本局反复战亡，且不考虑落后扶持等修正。其所需复活读条总体如何变化？","options":["战亡越多，正常读条反而越短","后续战亡所需读条逐次增加","每次都与首次完全相同","只取决于队友的战亡次数"],"answer":"B","exp":"复活代价与同一机器人的本局战亡记录相关，不能把每次战亡都当首次处理。","detail":[{"k":"A","ok":false,"t":"正常机制不是越死越快。"},{"k":"B","ok":true,"t":"规则让同一机器人每次战亡后的复活读条递增。"},{"k":"C","ok":false,"t":"忽略多次战亡的递增机制。"},{"k":"D","ok":false,"t":"递增针对同一台机器人自身的战亡。"}],"sec":"§3.3.2.2 复活机制","page":"35"},{"id":"Q173","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"复活不等于恢复战斗力","scope":"RMUL 3V3","kind":"概念理解","diff":"进阶","stem":"RMUL 2027 3V3对抗赛机器人刚完成自动复活，尚未检测到己方补给区卡。对其即时状态，哪项理解正确？","options":["只要无敌就可以忽略虚弱限制","必须先重新检录才能回到本局","立即满血并可自由射击、激活控制区","仅恢复部分血量，并伴随暂时无敌和虚弱限制"],"answer":"D","exp":"复活提供重新行动的机会，但部分血量与虚弱限制意味着仍需完成后续恢复。","detail":[{"k":"A","ok":false,"t":"无敌与虚弱同时存在，各自生效。"},{"k":"B","ok":false,"t":"自动复活不要求重新检录。"},{"k":"C","ok":false,"t":"虚弱状态下发射锁定且不能激活控制区。"},{"k":"D","ok":true,"t":"复活不是满血且立即完全恢复作战能力。"}],"sec":"§3.3.2.2 复活机制","page":"35"},{"id":"Q174","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"补给区解除复活状态","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛某机器人复活后仍处于虚弱和无敌状态，此时检测到己方补给区场地交互模块卡。将发生什么？","options":["只解除无敌，虚弱持续整局","两状态都不受己方补给区影响","只解除虚弱，原有无敌保护必定保留","虚弱与无敌状态同时解除"],"answer":"D","exp":"回己方补给区恢复作战状态的同时，也会失去复活无敌保护。","detail":[{"k":"A","ok":false,"t":"虚弱也会解除。"},{"k":"B","ok":false,"t":"与规定解除条件相反。"},{"k":"C","ok":false,"t":"忽略补给区同时解除无敌的条件。"},{"k":"D","ok":true,"t":"规则明确规定检测到己方补给区卡时两状态解除。"}],"sec":"§3.3.2.2 复活机制","page":"35"},{"id":"Q175","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"金币的使用范围","scope":"RMUL 3V3","kind":"概念理解","diff":"进阶","stem":"RMUL 2027 3V3对抗赛关于金币用途，哪项正确？","options":["可以购买立即复活","可以直接购买控制度","可以直接兑换机器人血量","金币仅能用于兑换允许发弹量"],"answer":"D","exp":"RMUL 3V3经济围绕允许发弹量展开，不能自行增加复活、血量或控制度购买项目。","detail":[{"k":"A","ok":false,"t":"本赛项金币用途没有该项目。"},{"k":"B","ok":false,"t":"规则没有购买控制度的兑换项目。"},{"k":"C","ok":false,"t":"不能将其他赛事的远程回血兑换套入本赛项。"},{"k":"D","ok":true,"t":"本赛项经济体系明确限定该用途。"}],"sec":"§3.3.3 经济体系","page":"35"},{"id":"Q176","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"落后金币补偿","scope":"RMUL 3V3","kind":"概念理解","diff":"进阶","stem":"RMUL 2027 3V3对抗赛某方控制度较少，并首次达到规则规定的补偿差值。关于金币补偿，哪项理解正确？","options":["只要差值一直存在，就持续逐秒发金币","一旦获得金币补偿，就立即判该方获胜","由控制度较少的一方获得，且不是持续按秒发放","由控制度较多的一方获得"],"answer":"C","exp":"落后补偿提供经济上的追赶机会，需区分首次触发与持续计时机制。","detail":[{"k":"A","ok":false,"t":"规则是首次达到规定差值触发，不是按秒持续发放。"},{"k":"B","ok":false,"t":"补偿是经济机制，不替代胜负条件。"},{"k":"C","ok":true,"t":"补偿依据首次阈值事件触发，并有本局总额约束。"},{"k":"D","ok":false,"t":"补偿对象是控制度较少的一方。"}],"sec":"§3.3.3 经济体系","page":"35"},{"id":"Q177","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"重装超发与伤害有效性","scope":"RMUL 3V3","kind":"情境判断","diff":"综合","stem":"RMUL 2027 3V3对抗赛红方重装在42mm允许发弹量已经耗尽时仍继续发射。尚未满足规定解除条件时，哪项正确？","options":["蓝方同时屏蔽所有17mm伤害","蓝方装甲会屏蔽42mm伤害，17mm伤害不因此被屏蔽","只影响金币余额，不影响伤害结算","再空发一次就必定解除屏蔽"],"answer":"B","exp":"允许发弹量是42mm伤害有效性的条件之一，不只是记账信息。","detail":[{"k":"A","ok":false,"t":"规则明确17mm伤害不会因此屏蔽。"},{"k":"B","ok":true,"t":"超发触发专门的42mm伤害屏蔽，而非全口径屏蔽。"},{"k":"C","ok":false,"t":"规则明确会影响42mm伤害有效性。"},{"k":"D","ok":false,"t":"解除还要求重装存活且允许发弹量恢复为正。"}],"sec":"§3.3.3 经济体系","page":"36"},{"id":"Q178","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"激活不等于立即控制","scope":"RMUL 3V3","kind":"概念理解","diff":"基础","stem":"RMUL 2027 3V3对抗赛一方机器人独自开始激活一处中立控制区。关于激活与控制，哪项正确？","options":["机器人数量越多，就完全不需要占领进度","需按规则累计占领进度，不能把刚激活视为立即控制","刚接触控制区卡就直接完成控制","只有击毁对方全部机器人才能开始占领"],"answer":"B","exp":"控制区激活是推进占领的输入，达到规定进度才形成控制关系。","detail":[{"k":"A","ok":false,"t":"规则没有取消占领进度的这种例外。"},{"k":"B","ok":true,"t":"控制要等己方占领进度满足条件。"},{"k":"C","ok":false,"t":"激活与进度计满不是同一事件。"},{"k":"D","ok":false,"t":"中立区占领不以击毁全队为前提。"}],"sec":"§3.3.4.1 控制区机制","page":"36"},{"id":"Q179","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"夺取敌控区的顺序","scope":"RMUL 3V3","kind":"情境判断","diff":"综合","stem":"RMUL 2027 3V3对抗赛某区仍有红方占领进度，蓝方从此独自持续激活。按控制区机制，过程应如何理解？","options":["蓝方开始激活就立即把全部红方进度转给自己","先减少红方进度，清零后才增加蓝方进度","只要红方曾控制过，蓝方永久无法夺取","红蓝进度始终同步一减一增"],"answer":"B","exp":"夺区包含解除对方既有占领与建立己方占领两个阶段。","detail":[{"k":"A","ok":false,"t":"进度不会直接转移。"},{"k":"B","ok":true,"t":"有对方进度时先扣对方，不是双方同时一增一减。"},{"k":"C","ok":false,"t":"规则允许通过进度变化改变控制。"},{"k":"D","ok":false,"t":"不符合原文的分阶段变化逻辑。"}],"sec":"§3.3.4.1 控制区机制","page":"36"},{"id":"Q180","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"双方激活时争夺暂停","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛双方同时激活同一处控制区，原有占领进度尚未改变。接下来如何处理？","options":["只按先进入的一方继续增长","双方进度立即全部清零","占领进度变化暂停，直到只剩一方激活","双方进度同时增长"],"answer":"C","exp":"同区双方同时激活会冻结占领进度，需消除争夺状态才能继续推进。","detail":[{"k":"A","ok":false,"t":"先进入不是暂停条件的例外。"},{"k":"B","ok":false,"t":"暂停不等于立即清零。"},{"k":"C","ok":true,"t":"双方同时激活触发争夺暂停。"},{"k":"D","ok":false,"t":"规则规定暂停，而非同时加进度。"}],"sec":"§3.3.4.1 控制区机制","page":"36"},{"id":"Q181","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"无人激活时控制衰减","scope":"RMUL 3V3","kind":"概念理解","diff":"进阶","stem":"RMUL 2027 3V3对抗赛双方都不再激活一处非中立控制区。关于既有占领进度，哪项正确？","options":["按规则逐步衰减，最终可能因清零而失去控制","占领过一次就永久拥有该区","只停止增益，进度绝不变化","原控制方离开后，对方立即自动获得控制"],"answer":"A","exp":"占区不是一次完成就永久有效，撤离会使控制随进度衰减而丧失。","detail":[{"k":"A","ok":true,"t":"无人激活并不会永久保留既有控制。"},{"k":"B","ok":false,"t":"忽略无人激活时的衰减。"},{"k":"C","ok":false,"t":"原文明确占领进度会下降。"},{"k":"D","ok":false,"t":"失去控制不等于直接转给对方。"}],"sec":"§3.3.4.1 控制区机制","page":"36"},{"id":"Q182","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"控制度的两类损失","scope":"RMUL 3V3","kind":"概念理解","diff":"基础","stem":"RMUL 2027 3V3对抗赛中，哪组事件都可能减少己方控制度？","options":["己方选择步兵类型，以及暂停发射","己方领取定期金币，以及队友进入补给区","己方控制控制区，以及对方机器人战亡","对方控制控制区，以及己方机器人战亡"],"answer":"D","exp":"控制度既反映控制区争夺，也受己方战亡影响，保全机器人同样关系胜负资源。","detail":[{"k":"A","ok":false,"t":"这些不直接构成本节控制度损失来源。"},{"k":"B","ok":false,"t":"这些不是所列控制度扣除事件。"},{"k":"C","ok":false,"t":"这两项有利于己方，不是本条己方损失来源。"},{"k":"D","ok":true,"t":"占区会扣对方控制度，战亡会扣所属方控制度。"}],"sec":"§3.3.4.2 控制度机制","page":"37"},{"id":"Q183","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"落后扶持方向","scope":"RMUL 3V3","kind":"概念理解","diff":"进阶","stem":"RMUL 2027 3V3对抗赛一方控制度较少，且已达到规定的落后扶持条件。该扶持的主要方向是什么？","options":["直接把双方控制度重置为相同","让领先方复活更快并回血更快","让落后方所有机器人立即满血复活","减轻其复活读条负担，并加快己方补给区回血"],"answer":"D","exp":"扶持帮助落后方恢复作战资源，但不直接修改已经形成的胜负资源差。","detail":[{"k":"A","ok":false,"t":"扶持不直接抹平控制度差。"},{"k":"B","ok":false,"t":"受益对象不是领先方。"},{"k":"C","ok":false,"t":"扶持调整恢复机制，并非立即全队满血。"},{"k":"D","ok":true,"t":"两项效果都服务于控制度较少方的恢复能力。"}],"sec":"§3.3.4.2 控制度机制","page":"37"},{"id":"Q184","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"高地增益不按阵营封锁","scope":"RMUL 3V3","kind":"情境判断","diff":"基础","stem":"RMUL 2027 3V3对抗赛蓝方机器人成功激活红方高地增益点。仅就该高地增益而言，哪项正确？","options":["蓝方全队都自动获得同样效果","蓝方因进入红方高地而必定受到易伤","不可能获得，只有红方能激活红方高地","该蓝方机器人可以获得防御增益"],"answer":"D","exp":"高地名称的阵营归属不等于只能由该阵营使用，需按具体激活规则判断。","detail":[{"k":"A","ok":false,"t":"该条给激活机器人，而非无条件施加全队。"},{"k":"B","ok":false,"t":"本条规定的是防御增益。"},{"k":"C","ok":false,"t":"规则没有按高地颜色封锁激活方。"},{"k":"D","ok":true,"t":"双方机器人均可激活双方高地增益点，效果属于激活者。"}],"sec":"§3.3.5.1 高地增益点兼高地控制区机制","page":"37"},{"id":"Q185","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"隧道触发路径完整性","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛某机器人在符合用时要求的情况下，先后检测到己方两处隧道增益点卡，但途中又检测到中央控制区卡。能否凭这次过程获得隧道增益？","options":["可以，中央控制区卡能增强这次隧道增益","不能，途中检测到其他场地交互卡破坏了条件","可以，只要起点终点是两处隧道卡即可","不能，因为己方隧道卡本来就不能激活"],"answer":"B","exp":"隧道增益需要整个检测路径满足要求，不能只看两个端点。","detail":[{"k":"A","ok":false,"t":"规则没有这种替代触发路径。"},{"k":"B","ok":true,"t":"用时合格不能替代途中无其他卡这一条件。"},{"k":"C","ok":false,"t":"忽略中途检测限制。"},{"k":"D","ok":false,"t":"己方隧道可以激活，本题问题在于途中其他卡。"}],"sec":"§3.3.5.2 隧道增益点机制","page":"37"},{"id":"Q186","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"全队战亡不等于即时判负","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛红方当前没有存活机器人，但双方控制度均未归零，比赛时间也未耗尽。仅据这些信息，能否直接判蓝方已获胜？","options":["能，全队战亡就立即结束任何RMUL赛项","能，只要蓝方当前控制度较高就立即结束","不能，全队战亡不是本赛项列明的立即结束条件","不能，因为还必须击毁红方基地"],"answer":"C","exp":"战亡会影响控制度，但“全队暂无存活机器人”本身不等于控制度已经归零。","detail":[{"k":"A","ok":false,"t":"不能把其他赛项的击毁条件套用到3V3。"},{"k":"B","ok":false,"t":"比较控制度高低的条款用于时间耗尽。"},{"k":"C","ok":true,"t":"即时胜负看控制度归零，而题设尚未发生。"},{"k":"D","ok":false,"t":"3V3并不以击毁基地作为胜负条件。"}],"sec":"§3.3.7 赛制及获胜条件","page":"38"},{"id":"Q187","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"终局控制度优先","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛时间耗尽，双方控制度均未归零。红方控制度更高，但蓝方全队攻击伤害更高，应判谁获胜？","options":["直接平局，因为各有一项数据占优","红方，先比较控制度","必须再比较剩余血量，才能知道谁胜","蓝方，攻击伤害高即可越过控制度"],"answer":"B","exp":"终局判胜按优先级逐项进行，不把控制度和伤害并列权衡。","detail":[{"k":"A","ok":false,"t":"胜负判据有先后，并非各项投票。"},{"k":"B","ok":true,"t":"控制度不同已足以判胜，伤害无需继续比较。"},{"k":"C","ok":false,"t":"尚未进入血量判据。"},{"k":"D","ok":false,"t":"伤害只在控制度相同且非零时比较。"}],"sec":"§3.3.7 赛制及获胜条件","page":"38"},{"id":"Q188","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"伤害优先于剩余血量","scope":"RMUL 3V3","kind":"情境判断","diff":"进阶","stem":"RMUL 2027 3V3对抗赛时间耗尽，双方控制度相同且非零。红方全队攻击伤害较高，蓝方机器人总剩余血量较高，应判谁获胜？","options":["必须由双方队长商量决定","蓝方，活下来更多比伤害更重要","直接平局，两项数据各有领先","红方，先比较攻击伤害"],"answer":"D","exp":"同控制度时先看攻击伤害，仅在攻击伤害也一致时才比较总剩余血量。","detail":[{"k":"A","ok":false,"t":"规则已能直接区分胜负。"},{"k":"B","ok":false,"t":"总剩余血量属于后续判据。"},{"k":"C","ok":false,"t":"按优先级不是平衡两项优势。"},{"k":"D","ok":true,"t":"控制度相同后攻击伤害先于总剩余血量。"}],"sec":"§3.3.7 赛制及获胜条件","page":"38"},{"id":"Q189","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"终局剩余血量判据","scope":"RMUL 3V3","kind":"概念理解","diff":"进阶","stem":"RMUL 2027 3V3对抗赛时间耗尽，双方控制度相同且非零，全队攻击伤害也一致。接下来应比较什么？","options":["剩余金币多少","报名顺序","首次发弹时间","全队机器人总剩余血量"],"answer":"D","exp":"总剩余血量是控制度与攻击伤害均未能分胜负时的后续判据。","detail":[{"k":"A","ok":false,"t":"金币余额不是此处列明的胜负判据。"},{"k":"B","ok":false,"t":"规则没有该判胜依据。"},{"k":"C","ok":false,"t":"这是不能移用于3V3的步兵对抗赛特定判据。"},{"k":"D","ok":true,"t":"规则在控制度与伤害均一致后比较此项。"}],"sec":"§3.3.7 赛制及获胜条件","page":"38"},{"id":"Q190","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"接触干扰补血","scope":"RMUL 3V3","kind":"情境判断","diff":"基础","stem":"RMUL 2027 3V3对抗赛某机器人使用接触式手段干扰对方补血，但认为“没有快速冲撞，所以一定合法”。应如何判断？","options":["只是把对方回血效果减弱，不涉及行为违规","一定合法，只要没有快速冲撞","一定合法，只要对方还能回复少量血","仍属违规，补血交互有独立的接触干扰限制"],"answer":"D","exp":"判断合法性不能只检查冲撞规则，还需核对补血交互的专门限制。","detail":[{"k":"A","ok":false,"t":"这是一项明确禁止的交互行为。"},{"k":"B","ok":false,"t":"忽略独立的补血保护条款。"},{"k":"C","ok":false,"t":"不必完全阻断回血才构成该违规。"},{"k":"D","ok":true,"t":"R44禁止任何接触式手段干扰对方补血，不以前提为快速冲撞。"}],"sec":"§6.2.2.1 机器人交互 R44","page":"58"},{"id":"Q191","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"步兵对抗弹量资源","scope":"RMUL 步兵对抗赛","kind":"情境判断","diff":"基础","stem":"RMUL 2027步兵对抗赛某步兵已用完本局初始允许发弹量，拟套用3V3经济体系，花金币补充允许发弹量。哪项正确？","options":["可以，两赛项都自动适用金币补弹","不可，本赛项允许发弹量局内不可增加","可以，只要先回到己方补给区","可以，只要对方同意"],"answer":"B","exp":"相同兵种在不同赛项的资源玩法不同，步兵对抗赛不能照搬3V3局内兑换。","detail":[{"k":"A","ok":false,"t":"两赛项玩法不同。"},{"k":"B","ok":true,"t":"步兵对抗赛采用固定局内弹量，不能套用3V3补弹。"},{"k":"C","ok":false,"t":"本赛项没有此增加局内允许发弹量的路径。"},{"k":"D","ok":false,"t":"对方同意不改变机制限制。"}],"sec":"§4.1.1 步兵机器人","page":"40"},{"id":"Q192","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"步兵对抗伤害回血","scope":"RMUL 步兵对抗赛","kind":"概念理解","diff":"进阶","stem":"RMUL 2027步兵对抗赛关于造成弹丸伤害与自身回血的关系，哪项正确？","options":["只要发射了弹丸，即使命中无效也自动回血","对对方造成弹丸伤害，会按本赛项专门机制恢复自身血量","必须先战亡复活，才可通过伤害回血","本赛项完全不存在任何形式的回血"],"answer":"B","exp":"应区分专门伤害回血与3V3常规回血、复活机制，不能看到“不适用”就否认该专门条款。","detail":[{"k":"A","ok":false,"t":"触发条件是造成弹丸伤害，不是仅发射。"},{"k":"B","ok":true,"t":"4.3.1明确设有与伤害量关联的回血。"},{"k":"C","ok":false,"t":"没有该前提，且本赛项不套用3V3读条复活。"},{"k":"D","ok":false,"t":"忽略专门的伤害回血条款。"}],"sec":"§4.3.1 回血机制","page":"44"},{"id":"Q193","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"步兵对抗击毁判胜","scope":"RMUL 步兵对抗赛","kind":"情境判断","diff":"基础","stem":"RMUL 2027步兵对抗赛比赛尚未耗尽时，红方机器人血量归零、蓝方仍存活。应如何处理？","options":["只扣红方控制度，比赛继续","比赛立即结束，蓝方获胜","让红方按3V3读条复活后继续","等时间耗尽后再比较攻击伤害"],"answer":"B","exp":"步兵对抗赛的即时胜负由击毁机器人触发，与3V3控制度归零不同。","detail":[{"k":"A","ok":false,"t":"步兵对抗赛不采用3V3控制度玩法。"},{"k":"B","ok":true,"t":"本赛项一方机器人血量归零即触发结束。"},{"k":"C","ok":false,"t":"不能套用3V3复活流程。"},{"k":"D","ok":false,"t":"无需等待时间耗尽。"}],"sec":"§4.4 赛制及获胜条件","page":"44"},{"id":"Q194","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"步兵对抗血量优先","scope":"RMUL 步兵对抗赛","kind":"情境判断","diff":"基础","stem":"RMUL 2027步兵对抗赛时间耗尽，双方均存活。红方剩余血量较高，蓝方总发弹量较高，应判谁胜？","options":["看剩余金币，不看剩余血量","红方，先按剩余血量高低判定","平局，因为双方各有一项领先","蓝方，发弹量总比血量优先"],"answer":"B","exp":"血量不同已能分胜负时，不再用发弹量推翻结果。","detail":[{"k":"A","ok":false,"t":"金币余额不是本赛项列明的胜负条件。"},{"k":"B","ok":true,"t":"双方存活且血量不同，较高者获胜。"},{"k":"C","ok":false,"t":"规则有明确的判断顺序。"},{"k":"D","ok":false,"t":"发弹量判据用于双方均满血的特定分支。"}],"sec":"§4.4 赛制及获胜条件","page":"44"},{"id":"Q195","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"同血量首次失血判据","scope":"RMUL 步兵对抗赛","kind":"情境判断","diff":"进阶","stem":"RMUL 2027步兵对抗赛时间耗尽，双方均存活、剩余血量相同且都不是满血。红方首次被扣血早于蓝方，应如何判定？","options":["红方获胜，首次被扣血较早","蓝方获胜，首次被扣血较晚","改比较剩余金币","直接平局，不再比较任何信息"],"answer":"B","exp":"同血量且非满血时，需区分首次失血先后，较晚者获胜。","detail":[{"k":"A","ok":false,"t":"判据方向相反。"},{"k":"B","ok":true,"t":"该条件下偏向首次失血较晚的一方。"},{"k":"C","ok":false,"t":"金币不是此处判据。"},{"k":"D","ok":false,"t":"仍有首次失血时间判据。"}],"sec":"§4.4 赛制及获胜条件","page":"44"},{"id":"Q196","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"满血时比较发弹量","scope":"RMUL 步兵对抗赛","kind":"情境判断","diff":"进阶","stem":"RMUL 2027步兵对抗赛时间耗尽，双方本局均未发生过扣血且始终满血，红方总发弹量少于蓝方。按该分支应如何判定？","options":["先比较队员人数","蓝方获胜，总发弹量较高","红方获胜，因为保留的允许发弹量更多","必定平局，满血时不能判胜"],"answer":"B","exp":"本题明确双方整局均未扣血，首次扣血判据不能区分双方；此时按满血分支比较已发弹量，不比较剩余允许发弹量。","detail":[{"k":"A","ok":false,"t":"人员数量不是该胜负判据。"},{"k":"B","ok":true,"t":"在本题整局均未扣血、此前条件不能区分胜负的前提下，按已发弹量较高的一方获胜。"},{"k":"C","ok":false,"t":"判据看已发弹量，不是剩余弹量。"},{"k":"D","ok":false,"t":"双方始终满血不意味着必定平局，本题已满足继续比较总发弹量的条件。"}],"sec":"§4.4 赛制及获胜条件","page":"44"},{"id":"Q197","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"满血同弹量先发判据","scope":"RMUL 步兵对抗赛","kind":"情境判断","diff":"进阶","stem":"RMUL 2027步兵对抗赛时间耗尽，双方本局均未发生过扣血且始终满血，总发弹量也相同，红方首次发弹早于蓝方。应如何判定？","options":["直接平局，同弹量后不再比较","先比较队伍报名顺序","蓝方获胜，首次发弹较晚","红方获胜，首次发弹较早"],"answer":"D","exp":"本题双方整局均未扣血，且满血、总发弹量相同，相关前置条件不能分出胜负，因此采用首次发弹较早者获胜。不能将其与首次扣血较晚者获胜混淆。","detail":[{"k":"A","ok":false,"t":"仍有首次发弹判据。"},{"k":"B","ok":false,"t":"规则没有该依据。"},{"k":"C","ok":false,"t":"把首次发弹与首次失血的方向混淆。"},{"k":"D","ok":true,"t":"本题明确此前比较无法分出胜负，故按首次发弹较早者获胜。"}],"sec":"§4.4 赛制及获胜条件","page":"44"},{"id":"Q198","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"步兵对抗单局平局","scope":"RMUL 步兵对抗赛","kind":"情境判断","diff":"进阶","stem":"RMUL 2027步兵对抗赛小组循环赛某局时间耗尽，双方均满血、总发弹量及首次发弹时间也相同，其他列明条件均不能分胜负。应如何处理？","options":["该局视为平局","按红方优先直接判红胜","按蓝方优先直接判蓝胜","必须照搬3V3淘汰赛规则立即加赛"],"answer":"A","exp":"小组赛单局可出现平局，不能为了必须分胜负而自行增加判据。","detail":[{"k":"A","ok":true,"t":"列明胜负条件全部无法区分时，按平局处理。"},{"k":"B","ok":false,"t":"没有颜色优先规则。"},{"k":"C","ok":false,"t":"没有颜色优先规则。"},{"k":"D","ok":false,"t":"不能跨赛项、跨阶段套用加赛条款。"}],"sec":"§4.4 赛制及获胜条件","page":"44"},{"id":"Q199","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"淘汰赛特殊比分处理","scope":"RMUL 步兵对抗赛","kind":"概念理解","diff":"综合","stem":"RMUL 2027步兵对抗赛淘汰赛最终出现双方各胜一局的特殊比分。关于后续判断，哪项正确？","options":["按规定统计范围比较局均净胜剩余血量，较高者胜出","改比较当前金币余额","不比较任何指标，直接按报名顺序决定","无条件照搬3V3的平局立即加赛处理"],"answer":"A","exp":"不同赛项淘汰赛平局处理并不相同，应按步兵对抗赛特殊比分条款使用规定统计指标。","detail":[{"k":"A","ok":true,"t":"4.4.1对该特殊比分指定了此项指标。"},{"k":"B","ok":false,"t":"本条没有该判据。"},{"k":"C","ok":false,"t":"规则已指定局均净胜剩余血量指标。"},{"k":"D","ok":false,"t":"步兵对抗赛有专门特殊比分条款。"}],"sec":"§4.4.1 步兵对抗赛特殊情况说明","page":"44"},{"id":"Q200","juan":"卷六","juanName":"RMUL 专题与赛事差异","title":"不套用3V3读条复活","scope":"RMUL 步兵对抗赛","kind":"情境判断","diff":"进阶","stem":"RMUL 2027步兵对抗赛某方机器人血量归零后，队伍要求沿用RMUL 3V3读条复活继续比赛。哪项判断正确？","options":["可以，所有RMUL赛项都自动共用复活规则","不能套用，该赛项血量归零触发比赛结束","可以，只要队长申请购买立即复活","可以，只要还有剩余允许发弹量"],"answer":"B","exp":"应区分回血与战亡复活：步兵对抗赛有伤害回血，但不能在战亡后套用3V3读条复活。","detail":[{"k":"A","ok":false,"t":"同属RMUL不代表机制完全一致。"},{"k":"B","ok":true,"t":"步兵对抗赛没有3V3读条复活，但专门伤害回血仍独立适用。"},{"k":"C","ok":false,"t":"本赛项没有该立即复活购买路径。"},{"k":"D","ok":false,"t":"剩余弹量不构成复活条件。"}],"sec":"§4.1.1 步兵机器人","page":"40"}]</script>
+<script>
+"use strict";
+const QS = JSON.parse(document.getElementById('qdata').textContent);
+const JUANS = [];
+const JMAP = {};
+QS.forEach(q=>{
+  if(!JMAP[q.juan]){ JMAP[q.juan]={name:q.juan, title:q.juanName, list:[]}; JUANS.push(JMAP[q.juan]); }
+  JMAP[q.juan].list.push(q);
+});
+const JUAN_DESC = {
+  '卷一':'判胜顺序、阵地控制、基地保护、前哨站与堡垒',
+  '卷二':'伤害与锁定、生存与复活、经验成长、能量机关',
+  '卷三':'金币与弹量、远程操作、装配门槛与收益',
+  '卷四':'操作权限、重装解锁、哨兵控制、飞镖与雷达',
+  '卷五':'赛前与比赛阶段、黄红牌、禁区、异常处置',
+  '卷六':'RMUL 控制区与复活、经济扶持、步兵对抗'
+};
+const LS='rm_ops_quiz_v3';
+let STORAGE_OK = true;
+try{
+  localStorage.setItem('__probe__','1');
+  if(localStorage.getItem('__probe__')!=='1') STORAGE_OK = false;
+  localStorage.removeItem('__probe__');
+}catch(e){ STORAGE_OK = false; }
+
+let store = load();
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem(LS)||'{}');
+    return {ans:s.ans||{}, wrong:s.wrong||{}, best:s.best||0,
+            session:s.session||null, prog:s.prog||{}};
+  }catch(e){ return {ans:{},wrong:{},best:0,session:null,prog:{}}; }
+}
+function save(){ try{ localStorage.setItem(LS, JSON.stringify(store)); }catch(e){} }
+
+/* ---------- toast ---------- */
+let toastTimer;
+function toast(msg){
+  let t=document.getElementById('toast');
+  if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('on'), 2200);
+}
+function ago(ts){
+  const d=Date.now()-ts;
+  if(d<60000) return '刚刚';
+  if(d<3600000) return Math.floor(d/60000)+' 分钟前';
+  if(d<86400000) return Math.floor(d/3600000)+' 小时前';
+  return Math.floor(d/86400000)+' 天前';
+}
+
+/* ---------- helpers ---------- */
+const $ = s=>document.querySelector(s);
+const el = (tag,cls,html)=>{const d=document.createElement(tag); if(cls)d.className=cls; if(html!=null)d.innerHTML=html; return d;};
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function diffCls(d){ return d==='基础'?'b-base' : d==='进阶'?'b-adv' : 'b-comp'; }
+
+/* ---------- countdown ---------- */
+const EXAM = new Date('2026-11-08T09:00:00+08:00');
+function tick(){
+  const now = new Date();
+  let ms = EXAM - now;
+  if(ms<0) ms=0;
+  const d = Math.floor(ms/86400000);
+  const h = Math.floor(ms%86400000/3600000);
+  const m = Math.floor(ms%3600000/60000);
+  $('#cd-big').innerHTML = (d>0? d+'<small>天后开考</small>' : h+'<small>小时后开考</small>');
+  $('#countdown').querySelector('span').textContent = d>0 ? `D-${d}` : `${h}h${String(m).padStart(2,'0')}m`;
+}
+tick(); setInterval(tick, 30000);
+
+/* ---------- stats ---------- */
+function renderStats(){
+  const ids = Object.keys(store.ans);
+  const done = ids.length;
+  let c=0; ids.forEach(id=>{ if(store.ans[id].ok) c++; });
+  $('#st-done').textContent = done;
+  $('#st-acc').textContent = done? Math.round(c/done*100)+'%' : '—';
+  $('#st-wrong').textContent = Object.keys(store.wrong).length;
+  $('#st-best').textContent = store.best? store.best+'/30' : '—';
+  JUANS.forEach(j=>{
+    const total=j.list.length;
+    const d=j.list.filter(q=>store.ans[q.id]).length;
+    const bar=document.getElementById('bar-'+j.name);
+    const pct=document.getElementById('pct-'+j.name);
+    if(bar) bar.style.width = (d/total*100)+'%';
+    if(pct) pct.textContent = d+'/'+total;
+  });
+  updateDiag();
+}
+
+function updateDiag(){
+  const d=$('#diag'); if(!d) return;
+  if(!STORAGE_OK){
+    d.innerHTML='<b class="bad">浏览器禁用了本地存储，进度无法保存</b> · 建议用 Chrome / Edge 打开本文件';
+  }else{
+    const n=Object.keys(store.ans).length;
+    d.innerHTML = n ? `进度已保存 · 累计记录 ${n} 题` : '进度保存在本机浏览器，换设备不同步';
+  }
+}
+
+/* ---------- home ---------- */
+function renderJuans(){
+  const g=$('#jgrid'); g.innerHTML='';
+  JUANS.forEach(j=>{
+    const total=j.list.length;
+    const d=j.list.filter(q=>store.ans[q.id]).length;
+    const c=j.list.filter(q=>store.ans[q.id]&&store.ans[q.id].ok).length;
+    const card=el('div','jcard');
+    card.innerHTML = `
+      <div class="top"><span class="tag">${j.name}</span>
+        <span class="qm">${j.list[0].id} – ${j.list[j.list.length-1].id}</span></div>
+      <h3>${esc(j.title)}</h3>
+      <p>${JUAN_DESC[j.name]||''}</p>
+      <div class="bar"><i id="bar-${j.name}" style="width:${d/total*100}%"></i></div>
+      <div class="pct" id="pct-${j.name}">${d}/${total}${c?` · 正确 ${Math.round(c/Math.max(d,1)*100)}%`:''}</div>`;
+    card.onclick=()=>startQuiz(j.list.map(q=>q.id), j.name);
+    g.appendChild(card);
+  });
+}
+
+function idsForLabel(label){
+  if(JMAP[label]) return JMAP[label].list.map(q=>q.id);
+  if(label==='顺序通刷') return QS.map(q=>q.id);
+  if(label==='模拟考' && store.session && store.session.ids) return store.session.ids.slice();
+  if(label==='错题重练') return Object.keys(store.wrong);
+  return QS.map(q=>q.id);
+}
+
+function currentCursor(){
+  const s=store.session;
+  if(s && !s.done && s.ids && s.ids.length && (s.idx>0 || Object.keys(s.picks||{}).length>0)){
+    return {label:s.label, idx:s.idx, answered:Object.keys(s.picks||{}).length,
+            total:s.ids.length, ts:s.savedAt||Date.now()};
+  }
+  const p=store.prog||{};
+  let best=null;
+  Object.keys(p).forEach(k=>{
+    const v=p[k];
+    if(v && !v.done && v.idx>0 && (!best || (v.ts||0)>(best.ts||0))) best={label:k, idx:v.idx, ts:v.ts};
+  });
+  if(best){
+    const ids=idsForLabel(best.label);
+    if(ids && ids.length>best.idx) return {label:best.label, idx:best.idx, answered:null, total:ids.length, ts:best.ts};
+  }
+  // 终极兜底：只有答题记录（老版本没存进度）时，按顺序前缀推断
+  const all=QS.map(q=>q.id);
+  let i=0; while(i<all.length && store.ans[all[i]]) i++;
+  if(i>0 && i<all.length){
+    return {label:'顺序通刷', idx:i, answered:i, total:all.length, ts:null};
+  }
+  return null;
+}
+
+function renderResume(){
+  const box=$('#resume-wrap'); if(!box) return;
+  const c=currentCursor();
+  if(!c){ box.innerHTML=''; return; }
+  const ansTxt = c.answered!=null ? `已答 ${c.answered}/${c.total}` : `共 ${c.total} 题`;
+  box.innerHTML=`
+    <div class="resume">
+      <div class="rt">
+        <b>上次停在「${esc(c.label)}」第 ${c.idx+1} 题</b>
+        <span>${ansTxt}${c.ts?' · '+ago(c.ts):''}</span>
+      </div>
+      <div class="ra">
+        <button class="btn primary" id="resume-go">继续</button>
+        <button class="btn ghost" id="resume-reset">重来</button>
+      </div>
+    </div>`;
+  $('#resume-go').onclick=()=>{
+    startQuiz(idsForLabel(c.label), c.label);
+  };
+  $('#resume-reset').onclick=()=>{
+    if(c.label==='模拟考'){
+      store.session=null; save();
+      startQuiz(shuffle(QS.map(q=>q.id)).slice(0,30),'模拟考',{fresh:true});
+    }else if(c.label==='错题重练'){
+      store.session=null; save();
+      const ids=Object.keys(store.wrong);
+      if(ids.length) startQuiz(ids,'错题重练',{fresh:true});
+      else { renderResume(); toast('错题本是空的'); }
+    }else{
+      store.session=null;
+      if(store.prog && store.prog[c.label]) delete store.prog[c.label];
+      save();
+      startQuiz(idsForLabel(c.label), c.label, {fresh:true});
+    }
+  };
+}
+
+/* ---------- quiz engine ---------- */
+let Q = null;
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function resumeSession(){
+  const s = store.session;
+  if(!s || !s.ids || !s.ids.length) return null;
+  Q = { ids:s.ids.slice(), idx:Math.min(s.idx||0, s.ids.length-1), picks:s.picks||{},
+        label:s.label, t0:s.t0||Date.now(), done:false, redoMode: s.label==='错题重练' };
+  return Q;
+}
+
+function startQuiz(ids, label, opts){
+  opts = opts||{};
+  const s = store.session;
+  const p = (store.prog||{})[label];
+  const fixedMode = (label==='顺序通刷' || !!JMAP[label]);   // 固定题序的模式才谈得上续位
+
+  // ① 完整恢复：同一模式、同一题单
+  if(!opts.fresh && s && !s.done && s.label===label && s.ids && s.ids.length===ids.length
+     && s.ids.join('|')===ids.join('|') && (s.idx>0 || Object.keys(s.picks||{}).length>0)){
+    resumeSession();
+    switchView('quiz'); renderQuiz();
+    toast('接上次进度 · 第 '+(Q.idx+1)+' 题');
+    return;
+  }
+
+  let startIdx = 0, resumed = false;
+
+  // ② 进度指针：只记位置，不依赖上次的选项快照
+  if(!opts.fresh && fixedMode && p && !p.done && p.idx>0 && p.idx<ids.length){
+    startIdx = p.idx; resumed = true;
+  }
+
+  // ③ 兜底推断：从答题记录里找第一道没做过的题（老版本没存进度也能救回来）
+  if(!resumed && !opts.fresh && fixedMode){
+    let i=0; while(i<ids.length && store.ans[ids[i]]) i++;
+    if(i>0 && i<ids.length){ startIdx = i; resumed = true; }
+  }
+
+  Q = { ids, idx:startIdx, picks:{}, label, t0:Date.now(), done:false, redoMode: label==='错题重练' };
+  persistSession();
+  switchView('quiz'); renderQuiz();
+  if(resumed) toast('接上次进度 · 第 '+(Q.idx+1)+' 题');
+}
+
+function persistSession(){
+  if(!Q) return;
+  store.session = { label:Q.label, ids:Q.ids, idx:Q.idx, picks:Q.picks,
+                    t0:Q.t0, done:!!Q.done, savedAt:Date.now() };
+  store.prog = store.prog||{};
+  store.prog[Q.label] = { idx:Q.idx, done:!!Q.done, ts:Date.now() };
+  save();
+}
+
+function renderQuiz(){
+  const box=$('#quiz-body');
+  if(!Q){ box.innerHTML = `<div class="card empty"><div class="ic">◻</div><p>从「概览」选一个模式开始</p></div>`; return; }
+  if(Q.done){ renderResult(); return; }
+
+  const q = QS.find(x=>x.id===Q.ids[Q.idx]);
+  const picked = Q.picks[q.id];
+  box.innerHTML = `
+    <div class="qhead">
+      <span class="num">${Q.idx+1} / ${Q.ids.length}</span>
+      <div class="prog"><i style="width:${(Q.idx)/Q.ids.length*100}%"></i></div>
+      <button class="x" id="quit" title="退出">✕</button>
+    </div>
+    <div class="card">
+      <div class="qmeta">
+        <span class="badge b-juan">${q.juan} · ${esc(q.juanName)}</span>
+        <span class="badge ${diffCls(q.diff)}">${q.diff}</span>
+        <span class="badge b-id">${q.id}</span>
+        ${q.scope!=='RMUC'?`<span class="badge b-id">${esc(q.scope)}</span>`:''}
+      </div>
+      <div class="stem">${esc(q.stem)}</div>
+      <div class="opts" id="opts"></div>
+      <div id="expl"></div>
+      <div class="qnav">
+        <button class="btn ghost" id="prev" ${Q.idx===0?'disabled':''}>上一题</button>
+        <button class="btn primary" id="next" ${picked?'':'disabled'}>${Q.idx===Q.ids.length-1?'完成':'下一题'}</button>
+      </div>
+      <div class="hint">键盘 <kbd>1</kbd>–<kbd>4</kbd> 选择 · <kbd>Enter</kbd> 下一题</div>
+    </div>`;
+
+  const ob=$('#opts');
+  q.options.forEach((o,i)=>{
+    const k='ABCD'[i];
+    const b=el('button','opt');
+    b.innerHTML=`<span class="k">${k}</span><span>${esc(o)}</span>`;
+    b.onclick=()=>choose(q,k);
+    if(picked){
+      b.disabled=true;
+      if(k===q.answer) b.classList.add('ok');
+      else if(k===picked.pick) b.classList.add('bad');
+      else b.classList.add('dim');
+    }
+    ob.appendChild(b);
+  });
+  if(picked) showExpl(q,picked.pick);
+  $('#prev').onclick=()=>{ if(Q.idx>0){Q.idx--; renderQuiz();} };
+  $('#next').onclick=()=>nextQ();
+  $('#quit').onclick=()=>{
+    persistSession();
+    if(confirm('退出本次练习？进度会保留，下次从这里继续。')){ Q=null; switchView('home'); renderAll(); }
+  };
+}
+
+function choose(q,k){
+  if(Q.picks[q.id]) return;
+  Q.picks[q.id]={pick:k, ok:k===q.answer};
+  const prev = store.ans[q.id]||{ok:false,c:0,w:0};
+  store.ans[q.id]={ok:k===q.answer, c:(prev.c||0)+(k===q.answer?1:0), w:(prev.w||0)+(k===q.answer?0:1)};
+  if(k===q.answer){
+    if(Q.redoMode) delete store.wrong[q.id];
+  }else{
+    store.wrong[q.id]=Date.now();
+  }
+  save();
+  persistSession();
+  renderQuiz();
+  renderStats();
+}
+
+function showExpl(q,pick){
+  const ok = pick===q.answer;
+  const box=$('#expl'); if(!box) return;
+  let lis='';
+  if(q.detail && q.detail.length){
+    lis = `<ul class="dl">`+q.detail.map(d=>`<li><b class="${d.ok?'y':'n'}">${d.k}</b><span>${esc(d.t)}</span></li>`).join('')+`</ul>`;
+  }
+  box.innerHTML = `
+    <div class="expl">
+      <div class="hd2">
+        <span class="v ${ok?'ok':'bad'}">${ok?'答对了':'答错了'}</span>
+        <span class="ans">正确答案 ${q.answer}</span>
+      </div>
+      <div class="bd">
+        <p class="rule">${esc(q.exp)}</p>
+        ${lis}
+        <div class="src">出处：${esc(q.sec||'')} · 印刷第 ${q.page||'—'} 页</div>
+      </div>
+    </div>`;
+}
+
+function nextQ(){
+  if(!Q) return;
+  if(!Q.picks[QS.find(x=>x.id===Q.ids[Q.idx]).id]) return;
+  if(Q.idx < Q.ids.length-1){
+    Q.idx++; persistSession(); renderQuiz();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }else{
+    Q.done=true; persistSession(); renderResult();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+function renderResult(){
+  const items = Q.ids.map(id=>{
+    const q=QS.find(x=>x.id===id); const p=Q.picks[id];
+    return {q, p, ok: p&&p.ok};
+  });
+  const total=items.length;
+  const right=items.filter(i=>i.ok).length;
+  const wrongs=items.filter(i=>!i.ok);
+  const secs=Math.round((Date.now()-Q.t0)/1000);
+  const pct=Math.round(right/total*100);
+  const mins=Math.floor(secs/60), ss=secs%60;
+
+  if(Q.label==='模拟考' && total===30){
+    if(right>store.best){ store.best=right; save(); }
+  }
+  const deg = pct*3.6;
+  const color = pct>=85?'var(--green)' : pct>=60?'var(--amber)' : 'var(--red)';
+  const verdict = pct>=85?'稳了，保持手感' : pct>=60?'及格线附近，错题再过一遍' : '这块还不熟，先看速记页';
+
+  $('#quiz-body').innerHTML = `
+    <div class="card result">
+      <div class="ring" style="background:conic-gradient(${color} ${deg}deg,#eef0f3 0)">
+        <div class="in"><div><b>${right}</b><small>/ ${total}</small></div></div>
+      </div>
+      <h2 class="verdict">${verdict}</h2>
+      <p class="verdict-sub">正确率 ${pct}% · 用时 ${mins}分${String(ss).padStart(2,'0')}秒</p>
+      <div class="rstat">
+        <div><b style="color:var(--green)">${right}</b><span>答对</span></div>
+        <div><b style="color:var(--red)">${total-right}</b><span>答错</span></div>
+        <div><b>${Math.round(secs/Math.max(total,1))}s</b><span>平均每题</span></div>
+      </div>
+      <div class="acts" style="justify-content:center">
+        <button class="btn primary" id="again">再来一次</button>
+        ${wrongs.length?'<button class="btn" id="redo-this">只练这次错的</button>':''}
+        <button class="btn ghost" id="back">回概览</button>
+      </div>
+    </div>
+    ${wrongs.length?`
+    <div class="sec-title"><h2>这次错的 ${wrongs.length} 题</h2><span>点开看逐项解析</span></div>
+    <div class="rlist">${wrongs.map(i=>reviewItem(i.q,i.p)).join('')}</div>`:''}`;
+
+  $('#again').onclick=()=>startQuiz(Q.ids.slice(), Q.label);
+  const rt=$('#redo-this');
+  if(rt) rt.onclick=()=>startQuiz(wrongs.map(i=>i.q.id), '错题重练');
+  $('#back').onclick=()=>{ Q=null; switchView('home'); renderAll(); };
+  bindAcc();
+}
+
+function reviewItem(q,p){
+  const your = p? p.pick : '—';
+  return `<div class="ritem">
+    <div class="rh"><div class="t"><i>${q.id} · ${q.juan} · ${esc(q.sec||'')}</i>${esc(q.stem)}</div><span class="arw">›</span></div>
+    <div class="rb">
+      ${q.options.map((o,i)=>{
+        const k='ABCD'[i];
+        let cls=''; if(k===q.answer) cls='good'; else if(k===your) cls='bad';
+        return `<div class="o ${cls}"><em>${k}</em><span>${esc(o)}</span></div>`;
+      }).join('')}
+      <div class="ex">${esc(q.exp)}</div>
+    </div></div>`;
+}
+
+function bindAcc(){
+  document.querySelectorAll('.ritem .rh').forEach(h=>{
+    h.onclick=()=>h.parentElement.classList.toggle('open');
+  });
+}
+
+
+/* ---------- mindmap ---------- */
+const MIND = {
+  t:'RMUC 2027 比赛规则',
+  k:[
+    { t:'胜负判定', c:'#d81e28', k:[
+      { t:'基地被击毁 · 立即判胜', k:[
+        { t:'比双方基地剩余血量，高者获胜' },
+        { t:'这一步不看控制度，也不看攻击伤害' }
+      ]},
+      { t:'时间耗尽 · 依次比较', k:[
+        { t:'① 累计控制度' },
+        { t:'② 全队攻击伤害（违规判罚的扣血计入对方）' },
+        { t:'③ 全队总剩余血量（只算存活机器人）' },
+        { t:'④ 仍分不出 → 平局；淘汰赛加赛直到分胜负' }
+      ]}
+    ]},
+    { t:'机器人阵容', c:'#2b5fbf', k:[
+      { t:'地面机器人', k:[
+        { t:'重装 1 台（备用 1），唯一能装 42mm 发射机构' },
+        { t:'步兵 3–4 台（备用 2）' },
+        { t:'哨兵 1 台，无备用' },
+        { t:'首局至少 3 台地面机器人上场' }
+      ]},
+      { t:'组合系统', k:[
+        { t:'空中系统：机库 1 + 空中机器人 4' },
+        { t:'飞镖系统：发射架 1 + 镖体 4' },
+        { t:'雷达系统：运算平台 1 + 传感器 1' }
+      ]},
+      { t:'操作手席位', k:[
+        { t:'重装操作手 1、步兵操作手 2' },
+        { t:'指挥手 1：空中/飞镖是否上场都能用选手端' },
+        { t:'安全员 1：只做受限的安全干预' }
+      ]}
+    ]},
+    { t:'战场与阵地', c:'#0e8a5f', k:[
+      { t:'三组阵地', k:[
+        { t:'基地阵地 = 基地增益点 + 堡垒增益点' },
+        { t:'前哨阵地 = 前哨站增益点 + 中央高地增益点' },
+        { t:'基地阵地的完全控制永远属于初始拥有方' }
+      ]},
+      { t:'控制关系怎么变', k:[
+        { t:'夺取临时控制：连续激活该阵地任一构成点达规定时长' },
+        { t:'不要求同时激活全部构成点' },
+        { t:'中断激活 → 进度按规则倒退，不会清零' },
+        { t:'双方同时有效激活 → 进度暂停（争夺状态）' }
+      ]},
+      { t:'击毁前哨站的转换', k:[
+        { t:'打掉对方完全控制的前哨站 → 降为「对方临时控制」' },
+        { t:'己方已临时控制 + 击毁 → 转为己方完全控制' }
+      ]},
+      { t:'控制度怎么涨', k:[
+        { t:'前哨组：必须控制全部前哨阵地' },
+        { t:'基地组：必须控制全部基地阵地' },
+        { t:'只拿到一处 → 这一组一分不给' }
+      ]}
+    ]},
+    { t:'伤害与生存', c:'#b3521a', k:[
+      { t:'什么算攻击伤害', k:[
+        { t:'弹丸、飞镖、空中机器人冲击' },
+        { t:'撞击只有规则允许时才算' },
+        { t:'违规判罚导致的扣血计入对方攻击伤害' }
+      ]},
+      { t:'三个超限限制', k:[
+        { t:'射击热量：超限锁定发射机构' },
+        { t:'底盘功率：先吃缓冲能量，透支才断底盘供电' },
+        { t:'射击初速度超限与测速离线各自独立锁定' }
+      ]},
+      { t:'42mm 伤害屏蔽', k:[
+        { t:'触发：允许发弹量耗尽仍超发 42mm' },
+        { t:'解除：重装存活 且 允许发弹量大于 0' },
+        { t:'只屏蔽 42mm，17mm 不受影响' }
+      ]},
+      { t:'回血', k:[
+        { t:'补给区强化回血还要求处于脱战状态' },
+        { t:'前哨站回血要求己方完全控制该阵地' },
+        { t:'远程回血：要脱战、不超上限、等待期战亡不退金币' }
+      ]},
+      { t:'复活', k:[
+        { t:'战亡重置：热量清零、缓冲能量重置为上限' },
+        { t:'读条复活保留等级经验，但仍带部分血量与虚弱' },
+        { t:'回补给区加速读条，同时失去复活无敌' }
+      ]}
+    ]},
+    { t:'能量机关', c:'#7c4dd6', k:[
+      { t:'怎么触发', k:[
+        { t:'步兵操作手选手端、哨兵裁判系统串口' },
+        { t:'双方能量状态各自独立，不是抢同一份' }
+      ]},
+      { t:'小能量', k:[
+        { t:'兼顾即时生存与步兵成长' }
+      ]},
+      { t:'大能量', k:[
+        { t:'效果强弱看命中质量 + 激活完成度' },
+        { t:'直接经验是存活步兵的团队收益，不是最后命中者独占' },
+        { t:'成功历史会影响下一次的有效命中区域' }
+      ]},
+      { t:'失败条件', k:[
+        { t:'2.5 秒内没打中点亮的目标' },
+        { t:'打中非随机点亮的目标' }
+      ]}
+    ]},
+    { t:'经济与装配', c:'#a76a00', k:[
+      { t:'金币', k:[
+        { t:'来源：初始发放 + 定期 + 装配能量单元收益' },
+        { t:'用途：兑换发弹量 / 远程回血 / 立即复活' },
+        { t:'远程兑换发弹量要求脱战，到账还有延迟' }
+      ]},
+      { t:'装配流程', k:[
+        { t:'重装先激活装配区增益点，操作手再选难度' },
+        { t:'逐级解锁，不能跳级' },
+        { t:'插入单元不等于装配成功：还要位姿 + 确认 + 核心检测' }
+      ]},
+      { t:'各级收益', k:[
+        { t:'二级首次：提高团队等级上限 + 后续周期金币' },
+        { t:'三级首次：解锁发射机构使用权 + 提高等级上限' },
+        { t:'四级：需双方核心协同完成，且只能完成一次' }
+      ]},
+      { t:'失败与打断', k:[
+        { t:'取出能量单元 → 当次装配立即失败' },
+        { t:'装配中战亡：保留云台底盘供电，须限时脱离，随后核心回收' }
+      ]}
+    ]},
+    { t:'比赛流程', c:'#0b7f8c', k:[
+      { t:'赛前', k:[
+        { t:'检录 → 候场' },
+        { t:'自带弹丸只有检录区预置的可以带进候场和赛场' }
+      ]},
+      { t:'三分钟准备', k:[
+        { t:'官方技术暂停：只能排除裁判系统/官方设备故障' },
+        { t:'队伍技术暂停：不论哪方申请，双方都能继续调试维修' },
+        { t:'要试射必须把弹丸打进清弹袋' }
+      ]},
+      { t:'十五秒自检', k:[
+        { t:'重置所有机器人血量' },
+        { t:'自检前被红牌罚下的机器人不许上场，也不能替补' }
+      ]},
+      { t:'五秒倒计时', k:[
+        { t:'选手端不响应任何控制指令（含自定义终端）' },
+        { t:'此时操作操作间外的遥控器 → 红牌，最高当局判负' }
+      ]}
+    ]},
+    { t:'违规与判罚', c:'#c2185b', k:[
+      { t:'黄牌', k:[
+        { t:'扣血有保底：血量不足时降到 1，不会仅因此战亡' },
+        { t:'界面遮挡：图传、小地图、自定义 UI 全盖住' }
+      ]},
+      { t:'红牌', k:[
+        { t:'血量立即归零' },
+        { t:'图传与多机通信断开' },
+        { t:'无法复活' }
+      ]},
+      { t:'高频违规', k:[
+        { t:'比赛中与操作间外通信（R33）：先警告，无效当局判负' },
+        { t:'阻挡对方机器人进补给区（R54）：黄牌，无效红牌' },
+        { t:'主动攻击飞镖发射架、雷达（R53）：最高取消比赛资格' },
+        { t:'携带或使用已装配的能量单元（R60）：当局判负' }
+      ]},
+      { t:'禁区', k:[
+        { t:'三维概念：地面 + 竖直上空' },
+        { t:'本体或携带物碰到都算进入' },
+        { t:'单方禁区：补给、装配；双方禁区：基地、发射站' }
+      ]}
+    ]},
+    { t:'RMUL 差异', c:'#4a5568', k:[
+      { t:'3V3', k:[
+        { t:'靠控制区累积控制度' },
+        { t:'没有 3V3 那套读条复活' }
+      ]},
+      { t:'步兵对抗赛', k:[
+        { t:'一方血量归零 → 比赛立即结束，另一方胜' },
+        { t:'时间耗尽先比剩余血量' },
+        { t:'同血且非满血：首次失血较晚者胜' },
+        { t:'满血：比总发弹量，多者胜' },
+        { t:'全同：首次发弹较早者胜' },
+        { t:'小组赛可以平局' }
+      ]}
+    ]}
+  ]
+};
+
+function mmHTML(n, lv){
+  const kids=n.k||[];
+  const has=kids.length>0;
+  const cls='mm-node lv'+Math.min(lv,3)+(has?' has-kids':'');
+  const st=n.c?` style="--c:${n.c}"`:'';
+  return `<div class="${cls}"${st}>
+    <div class="mm-head">
+      <span class="mm-dot"></span>
+      <span class="mm-label">${esc(n.t)}</span>
+      ${has?`<span class="mm-n">${kids.length}</span><span class="mm-arrow">›</span>`:''}
+    </div>
+    ${has?`<div class="mm-kids"><div class="mm-inner">${kids.map(k=>mmHTML(k,lv+1)).join('')}</div></div>`:''}
+  </div>`;
+}
+
+function mmKids(n){ return n.children && n.children[1]; }
+
+function openNode(n, instant){
+  if(!n) return;
+  const k=mmKids(n); if(!k) return;
+  n.classList.add('open');
+  if(instant){ k.style.height='auto'; return; }
+  const h=k.scrollHeight;
+  if(!h){ k.style.height='auto'; return; }
+  k.style.height=h+'px';
+  setTimeout(()=>{ if(n.classList.contains('open')) k.style.height='auto'; }, 360);
+}
+
+function closeNode(n){
+  if(!n) return;
+  const k=mmKids(n); if(!k) return;
+  if(k.style.height==='auto'||!k.style.height) k.style.height=k.scrollHeight+'px';
+  n.classList.remove('open');
+  requestAnimationFrame(()=>{ k.style.height='0px'; });
+}
+
+function toggleMM(n){
+  if(n.classList.contains('open')) closeNode(n); else openNode(n);
+}
+
+function renderMind(){
+  const box=$('#mind-root'); if(!box) return;
+  box.innerHTML = mmHTML(MIND, 0);
+  box.querySelectorAll('.mm-node.has-kids > .mm-head').forEach(h=>{
+    h.addEventListener('click', ()=>toggleMM(h.parentElement));
+  });
+  box.querySelectorAll('.mm-node.lv0, .mm-node.lv1').forEach(n=>openNode(n, true));
+}
+
+/* ---------- knowledge ---------- */
+const HAND = [
+ {t:'判胜顺序（RMUC）', items:[
+   '基地被击毁 → <b>立即判定</b>，比双方<b>基地剩余血量</b>，高者胜。控制度在这一步完全不参与。',
+   '时间耗尽且基地均存活 → 先比<b>累计控制度</b>。',
+   '控制度相同 → 比<b>全队攻击伤害</b>。注意：违规判罚导致的扣血<b>计入对方攻击伤害</b>。',
+   '攻击伤害也相同 → 比<b>全队总剩余血量</b>（只统计存活机器人）。',
+   '仍分不出 → 平局；淘汰赛按赛制加赛，直到分出胜负。'
+ ]},
+ {t:'阵地与控制度', items:[
+   '<b>基地阵地 = 基地增益点 + 堡垒增益点</b>。可被临时控制，但<b>完全控制只属于初始拥有方</b>，抢不走。',
+   '<b>前哨阵地 = 前哨站增益点 + 中央高地增益点</b>。',
+   '夺取临时控制：<b>连续激活该阵地任一构成点</b>达规定时长即可，<b>不要求同时激活全部构成点</b>。',
+   '中断激活 → 进度<b>按规则倒退</b>，不是立即归零；双方同时有效激活同一阵地 → 进度<b>暂停</b>（争夺状态）。',
+   '击毁<b>对方完全控制</b>的前哨站 → 该阵地降为<b>「对方临时控制」</b>，不是你直接抢到手。',
+   '己方已<b>临时控制</b> + 击毁其上前哨站 → 转为<b>己方完全控制</b>。',
+   '控制度按<b>组</b>增长：必须控制<b>同类全部阵地</b>（前哨组全部 / 基地组全部），控制一处不给分。'
+ ]},
+ {t:'伤害与生存', items:[
+   '<b>黄牌</b>扣血有保底：血量不足时降为 <b>1</b>，不会仅因这次扣血战亡；但黄牌其他限制照常（如界面被遮挡）。',
+   '<b>红牌</b>：血量立即归零、图传与多机通信断开、<b>无法复活</b>。',
+   '42mm 伤害屏蔽的解除条件：<b>重装存活</b> 且 <b>允许发弹量 &gt; 0</b>，两条同时满足。',
+   '<b>暂时过热</b>要等<b>热量冷却至零</b>才恢复图传；永久锁定阈值是另一回事，别混。',
+   '战亡重置：<b>热量清零</b>、<b>缓冲能量重置为上限</b>——一个清零一个回满，不是都清零。',
+   '复活保留等级与经验，但仍带部分血量与虚弱；回补给区可加速读条，同时也会<b>失去复活无敌</b>。'
+ ]},
+ {t:'经济与装配', items:[
+   '金币三个用途：<b>兑换允许发弹量</b>、<b>远程回血</b>、<b>立即复活</b>。',
+   '远程回血必须<b>脱战</b>；不能突破<b>上限血量</b>；等待期内战亡 → 无效且<b>金币不退</b>。',
+   '装配<b>逐级解锁</b>，不能跳级；四级需<b>双方核心协同</b>，且<b>只能完成一次</b>。',
+   '插入能量单元 ≠ 装配成功，还要满足位姿、确认、核心检测三重条件。'
+ ]},
+ {t:'流程与违规', items:[
+   '<b>官方技术暂停</b>：只能排除裁判系统/官方设备故障，<b>不准</b>借机修自己的车。',
+   '<b>参赛队伍技术暂停</b>：无论哪方申请，<b>双方都可以</b>继续调试维修。',
+   '五秒倒计时开始后，选手端<b>不响应</b>任何控制指令（含自定义终端）；场外操作遥控器 → 红牌，最高当局判负。',
+   '<b>禁区是三维的</b>：地面 + 竖直上空；本体<b>或携带物</b>碰到都算进入。',
+   '单方禁区（补给、装配）只许所属方进；双方禁区（基地、发射站）两边都能进。'
+ ]},
+ {t:'RMUL 差异（卷六重点）', items:[
+   '<b>3V3</b>：靠控制区累积控制度；<b>没有</b> 3V3 那套读条复活的经济项。',
+   '<b>步兵对抗赛</b>：一方血量归零 → <b>比赛立即结束</b>，另一方胜。',
+   '步兵对抗时间耗尽：比<b>剩余血量</b> → 同血且非满血，<b>首次失血较晚者</b>胜 → 满血则比<b>总发弹量</b>（多者胜）→ 全同则<b>首次发弹较早者</b>胜。',
+   '步兵对抗<b>小组赛可以平局</b>；淘汰赛按特殊比分条款处理。<b>不要</b>把 3V3 的判据套过来。'
+ ]}
+];
+
+function renderHand(){
+  const box=$('#k-hand'); let n=0;
+  box.innerHTML = HAND.map(g=>{
+    const items=g.items.map(t=>{ n++; return `<div class="kitem"><div class="idx">${n}</div><div class="tx">${t}</div></div>`; }).join('');
+    return `<div class="card kcard" style="margin-bottom:12px">
+      <div class="kh"><h3>${g.t}</h3><span class="n">${g.items.length} 条</span></div>
+      <div class="kb">${items}</div></div>`;
+  }).join('');
+  const t=$('#hand-title'); if(t) t.textContent = `这 ${n} 条，能救你一半的分`;
+}
+
+function renderSec(){
+  const box=$('#k-sec');
+  let html='';
+  JUANS.forEach(j=>{
+    const map=new Map();
+    j.list.forEach(q=>{
+      const k=q.sec||'未标注';
+      if(!map.has(k)) map.set(k,{sec:k, pts:new Set()});
+      map.get(k).pts.add(q.exp.trim());
+    });
+    const arr=[...map.values()].sort((a,b)=>a.sec.localeCompare(b.sec,'zh',{numeric:true}));
+    html += `<div class="sec-title" style="margin-top:22px"><h2>${j.name} · ${esc(j.title)}</h2><span>${j.list.length} 题 / ${arr.length} 条</span></div>`;
+    html += arr.map(m=>`
+      <div class="acc">
+        <div class="ah"><span>${esc(m.sec)}</span><span class="c">${m.pts.size} 条</span></div>
+        <div class="ab"><ul>${[...m.pts].map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
+      </div>`).join('');
+  });
+  box.innerHTML=html;
+  box.querySelectorAll('.ah').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
+}
+
+/* ---------- wrong book ---------- */
+function renderWrong(){
+  const ids = Object.keys(store.wrong);
+  const box=$('#wrong-list');
+  $('#wrong-title').textContent = ids.length? `${ids.length} 道待清` : '还没有错题';
+  if(!ids.length){
+    box.innerHTML=`<div class="card empty"><div class="ic">✓</div><p>答错的题会自动出现在这里</p></div>`;
+    return;
+  }
+  const items = ids.map(id=>QS.find(q=>q.id===id)).filter(Boolean).sort((a,b)=>a.id.localeCompare(b.id));
+  box.innerHTML = items.map(q=>reviewItem(q,{pick:null})).join('');
+  bindAcc();
+}
+
+/* ---------- wiring ---------- */
+function switchView(v){
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on', s.id==='v-'+v));
+  if(v==='quiz' && !Q){
+    const c=currentCursor();
+    if(c) startQuiz(idsForLabel(c.label), c.label);
+    else renderQuiz();
+  }
+  if(v==='wrong') renderWrong();
+  if(v==='home') renderResume();
+  window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>switchView(b.dataset.v));
+
+$('#btn-mock').onclick=()=>{
+  const s=store.session;
+  if(s && !s.done && s.label==='模拟考' && Object.keys(s.picks||{}).length>0 && s.ids){
+    const left=s.ids.length-Object.keys(s.picks).length;
+    if(!confirm(`上次模拟考还剩 ${left} 题没做完。\n\n确定：重新抽一套新的\n取消：继续上次那套`)){
+      resumeSession(); switchView('quiz'); renderQuiz();
+      toast('已继续上次的模拟考');
+      return;
+    }
+  }
+  startQuiz(shuffle(QS.map(q=>q.id)).slice(0,30),'模拟考',{fresh:true});
+};
+$('#btn-all').onclick=()=>startQuiz(QS.map(q=>q.id),'顺序通刷');
+$('#btn-wrong-quick').onclick=()=>{
+  const ids=Object.keys(store.wrong);
+  if(!ids.length){ alert('错题本是空的，先去刷几题。'); return; }
+  startQuiz(ids,'错题重练');
+};
+$('#btn-redo-wrong').onclick=()=>{
+  const ids=Object.keys(store.wrong);
+  if(!ids.length){ alert('错题本是空的。'); return; }
+  startQuiz(ids,'错题重练');
+};
+$('#btn-clear-wrong').onclick=()=>{
+  if(confirm('清空错题本？答对记录不受影响。')){ store.wrong={}; save(); renderWrong(); renderStats(); }
+};
+
+$('#mm-expand').onclick=()=>{
+  const box=$('#mind-root'); if(!box) return;
+  const nodes=[].slice.call(box.querySelectorAll('.mm-node.has-kids'));
+  nodes.forEach((n,i)=>setTimeout(()=>openNode(n), Math.min(i*28, 700)));
+  toast('已全部展开');
+};
+$('#mm-collapse').onclick=()=>{
+  const box=$('#mind-root'); if(!box) return;
+  const deep=[].slice.call(box.querySelectorAll('.mm-node.has-kids'))
+    .filter(n=>!n.classList.contains('lv0') && !n.classList.contains('lv1'));
+  deep.reverse().forEach(n=>closeNode(n));
+  box.querySelectorAll('.mm-node.lv1').forEach(n=>openNode(n, true));
+  toast('已收回到一级');
+};
+
+document.addEventListener('keydown',e=>{
+  if(!Q || Q.done) return;
+  if(!$('#v-quiz').classList.contains('on')) return;
+  if(e.key>='1'&&e.key<='4'){
+    const q=QS.find(x=>x.id===Q.ids[Q.idx]);
+    if(!Q.picks[q.id]) choose(q,'ABCD'[+e.key-1]);
+  }else if(e.key==='Enter'){ nextQ(); }
+});
+
+function renderAll(){
+  renderStats(); renderJuans(); renderResume();
+}
+renderAll(); renderHand(); renderSec(); renderMind(); tick();
+</script>
+</body>
+</html>

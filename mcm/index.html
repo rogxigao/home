@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#faf9f6">
+<title>美赛 MCM/ICM 2027 备赛 | 高荣信</title>
+<meta name="description" content="2027 年美国大学生数学建模竞赛备赛页：赛程硬指标、六道赛题、奖项比例、时间线，以及对五份流传资料的逐条核查。">
+<link rel="canonical" href="https://gahaga.eu.cc/mcm/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f6e66'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='38' font-weight='700' fill='%23ffffff' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#FAF9F6;--surface:#FFFFFF;--surface-2:#F4F1EA;
+  --ink:#17181A;--ink-2:#4B4D52;--ink-3:#8B8C90;
+  --line:#E6E1D6;--accent:#0F6E66;--accent-soft:#E2F0ED;
+  --warn:#A8541C;--warn-soft:#F8EADF;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#141416;--surface:#1C1D20;--surface-2:#232428;--ink:#EDEBE6;--ink-2:#B4B2AC;
+        --ink-3:#82807B;--line:#2E2F33;--accent:#5EC8BA;--accent-soft:#1E3330;
+        --warn:#E0A070;--warn-soft:#33261C;}
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.8;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:760px;margin:0 auto;padding:56px 24px 96px;}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);}
+a:hover{border-color:var(--accent);}
+.back{display:inline-block;margin-bottom:32px;font-size:12.5px;color:var(--ink-3);border:0;}
+.back:hover{color:var(--accent);}
+.kicker{margin:0 0 16px;font-size:11px;letter-spacing:.24em;color:var(--accent);font-weight:600;}
+h1{font-family:var(--serif);font-size:clamp(30px,5vw,42px);line-height:1.2;margin:0 0 14px;font-weight:600;}
+.lede{margin:0 0 22px;font-size:16px;color:var(--ink-2);max-width:52ch;}
+
+/* 倒计时 */
+.countdown{display:flex;align-items:baseline;gap:10px;margin:0 0 44px;padding:16px 20px;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;}
+.countdown b{font-family:var(--serif);font-size:30px;color:var(--accent);font-weight:600;line-height:1;}
+.countdown span{font-size:13px;color:var(--ink-2);}
+
+h2{font-family:var(--serif);font-size:24px;margin:52px 0 14px;font-weight:600;line-height:1.35;}
+h2 .num{font-size:13px;color:var(--accent);letter-spacing:.12em;display:block;margin-bottom:6px;font-family:var(--sans);font-weight:600;}
+h3{font-size:15px;margin:26px 0 8px;font-weight:600;}
+p{margin:0 0 14px;}
+ul{margin:0 0 14px;padding-left:20px;}
+li{margin-bottom:7px;}
+strong{font-weight:600;}
+
+/* 硬指标表 */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:18px 0 8px;}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:14px 16px;}
+.fact dt{font-size:11.5px;color:var(--ink-3);letter-spacing:.06em;margin-bottom:4px;}
+.fact dd{margin:0;font-size:14.5px;font-weight:500;line-height:1.5;}
+.fact dd em{font-style:normal;color:var(--accent);}
+
+/* 奖项条 */
+.awards{margin:18px 0 6px;}
+.aw{display:flex;align-items:center;gap:12px;margin-bottom:8px;font-size:13px;}
+.aw .lb{width:26px;font-weight:600;color:var(--ink-2);flex:none;}
+.aw .bar{height:9px;border-radius:99px;background:var(--accent);opacity:.85;flex:none;min-width:3px;}
+.aw .bar.gray{background:var(--ink-3);opacity:.35;}
+.aw .pc{color:var(--ink-3);font-size:12px;}
+
+/* 警告卡 */
+.alert{background:var(--warn-soft);border:1px solid var(--warn);border-radius:12px;padding:18px 20px;margin:18px 0;}
+.alert h4{margin:0 0 8px;font-size:14px;color:var(--warn);font-weight:600;}
+.alert p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.75;}
+
+/* 时间线 */
+.tl{position:relative;margin:20px 0 8px;padding-left:22px;}
+.tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--line);}
+.tl-item{position:relative;margin-bottom:18px;}
+.tl-item::before{content:"";position:absolute;left:-21px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);}
+.tl-item b{display:block;font-size:13px;color:var(--accent);letter-spacing:.04em;font-weight:600;}
+.tl-item span{font-size:14px;color:var(--ink-2);}
+
+footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="../">← 返回首页</a>
+
+<p class="kicker">MCM / ICM · 2027 SEASON</p>
+<h1>美赛备赛</h1>
+<p class="lede">2027 年美国大学生数学建模竞赛。这个页面放三样东西：不掺水的赛程硬指标、六道赛题的取舍、以及对网上流传资料的核查结论。</p>
+
+<div class="countdown">
+  <b id="days">—</b><span>天后开赛 · 北京时间 2027-01-29 06:00（美东 1/28 17:00）</span>
+</div>
+
+<h2><span class="num">PART 01</span>硬指标，一条都不要记错</h2>
+<div class="facts">
+  <dl class="fact"><dt>交稿截止</dt><dd>2027-02-02 10:00<br><em>过点即 DQ</em></dd></dl>
+  <dl class="fact"><dt>注册截止</dt><dd>2027-01-29 04:00<br><em>逾期无补报</em></dd></dl>
+  <dl class="fact"><dt>参赛费</dt><dd>$100 / 队<br>不退</dd></dl>
+  <dl class="fact"><dt>队伍</dt><dd>1–3 人，必须同校<br>每人只能进一队</dd></dl>
+  <dl class="fact"><dt>论文上限</dt><dd>25 页封顶<br><em>摘要、目录、参考文献、附录、代码全算</em></dd></dl>
+  <dl class="fact"><dt>正文</dt><dd>英文 PDF<br>字体不小于 12 磅</dd></dl>
+  <dl class="fact"><dt>提交</dt><dd>新在线表单<br>文件名＝队伍控制号，≤20 MB</dd></dl>
+  <dl class="fact"><dt>AI 使用</dt><dd>允许，但须在附录披露模型、用途、校验方式；<em>禁止代写整篇</em></dd></dl>
+</div>
+
+<h2><span class="num">PART 02</span>六道题，其实是三种能力</h2>
+<p>MCM 的 A（连续型）、B（离散型）、C（数据洞察），ICM 的 D（运筹与网络）、E（可持续）、F（公共政策）。开赛时才公布具体题面，但每道题要的能力是稳定的。</p>
+<ul>
+  <li><strong>A / B</strong>：数学建模硬功夫，微分方程、优化、离散结构。中国队的传统强项，也是竞争最卷的方向。</li>
+  <li><strong>C</strong>：数据 + 机器学习 + 洞察。近年最贴近真实工作的题，但套国赛那套评价方法会被一眼看穿。</li>
+  <li><strong>D / E / F</strong>：需要读懂政策与系统，写作比计算更吃重，适合英文表达强的队伍。</li>
+</ul>
+
+<h2><span class="num">PART 03</span>奖项比例：分水岭在 M</h2>
+<div class="awards">
+  <div class="aw"><span class="lb">O</span><span class="bar" style="width:6px"></span><span class="pc">&lt;1%　特等奖</span></div>
+  <div class="aw"><span class="lb">F</span><span class="bar" style="width:8px"></span><span class="pc">≈1%　提名奖</span></div>
+  <div class="aw"><span class="lb">M</span><span class="bar" style="width:42px"></span><span class="pc">≈7%　一等奖</span></div>
+  <div class="aw"><span class="lb">H</span><span class="bar gray" style="width:120px"></span><span class="pc">≈22%　二等奖</span></div>
+  <div class="aw"><span class="lb">S</span><span class="bar gray" style="width:300px"></span><span class="pc">≈68%　成功参赛</span></div>
+</div>
+<p class="small">数据为 2026 年实际比例。H 是及格线，S 等于“我参加了”——真正值得写进简历的是 M 及以上。</p>
+
+<h2><span class="num">PART 04</span>时间线</h2>
+<div class="tl">
+  <div class="tl-item"><b>现在 → 2026 年底</b><span>组队、分工、方法库建设。按四天赛程反推，这段时间应该已经在做真题而不是看教程。</span></div>
+  <div class="tl-item"><b>2026-12 → 2027-01</b><span>完整模拟赛至少两轮，严格按四天节奏走，包括凌晨时段的体力分配。</span></div>
+  <div class="tl-item"><b>2027-01-29 04:00</b><span>注册截止。顾问必须由本人注册账号、填信息、完成付款。</span></div>
+  <div class="tl-item"><b>2027-01-29 06:00</b><span>开赛，题面公布。</span></div>
+  <div class="tl-item"><b>2027-02-02 10:00</b><span>交稿截止。留足上传时间，20 MB 限制要在最后一晚之前确认。</span></div>
+  <div class="tl-item"><b>2027-05-08 前</b><span>出成绩。</span></div>
+</div>
+
+<h2><span class="num">PART 05</span>五份流传资料，逐条核查过</h2>
+<p>网上能搜到的备赛资料，绝大多数已经过时。我把五份逐个打开读过，结论是：<strong>没有一份是针对 2027 赛季的</strong>。</p>
+
+<div class="alert">
+  <h4>其中有一条是错的，照做会出事</h4>
+  <p>某份流传的备赛表格在备注里写：「指导老师信息一栏为必填，如果没有指导老师，写一个团队以外的任何名字也是可以的」。<strong>这是错的。</strong>美赛的 advisor 必须真实存在，要由本人注册账号、填写信息、完成付款、赛前确认队伍。写一个假名字，这笔钱谁付？队伍谁来确认？实操上走不通，还带资格风险。</p>
+</div>
+
+<h3>另外三处时效问题</h3>
+<ul>
+  <li><strong>起算点错了</strong>：那份表按“赛前 3–4 个月”倒推，对应 2026 年 9–10 月组队。现在是 11 月底，按那张表已经处在“分工学习”中后段。</li>
+  <li><strong>方法库偏旧</strong>：清单集中在层次分析法、灰色关联、TOPSIS、熵值法、模糊综合评价——这些是国赛老套路，C 题近年基本是数据 + 机器学习，套这些容易被评委看出来。</li>
+  <li><strong>三样新规则没提</strong>：25 页总页数上限、AI 使用披露要求、2027 的新在线提交流程。</li>
+</ul>
+
+<p>还有一份百度网盘资源叫「数学竞赛」，名字骗人，点进去根本不是数模资料。唯一有复用价值的是那份备赛时间线的<strong>框架</strong>，但具体数字要按 2027 重算。</p>
+
+<h2><span class="num">PART 06</span>工作区里有什么</h2>
+<ul>
+  <li><strong>01_论文库</strong>：2025 年 MCM A 题 O 奖论文原文，加一份全文中文翻译、校勘与评析，附导读速查（方法链、六个关键数字、可复用公式）。</li>
+  <li><strong>02_赛题</strong>：历年题面与数据包。</li>
+  <li><strong>03_备赛</strong>：周计划、模拟记录、组队与分工。</li>
+  <li><strong>04_笔记</strong>：方法库、工具踩坑、优秀论文拆解。</li>
+</ul>
+<p>读 O 奖论文的正确方式不是“看懂结论”，而是还原它的方法链：它先做了什么、为什么放弃另一条路、哪个数字撑起了整篇论证。</p>
+
+<footer>
+  <span>MCM / ICM 2027</span>
+  <a href="../">返回首页</a>
+</footer>
+
+</div>
+
+<script>
+// 开赛倒计时。目标时间写死带时区，避免访客本地时区干扰
+(function(){
+  var target = new Date('2027-01-29T06:00:00+08:00').getTime();
+  var el = document.getElementById('days');
+  if (!el) return;
+  function tick(){
+    var diff = target - Date.now();
+    if (diff <= 0){ el.textContent = '0'; return; }
+    el.textContent = Math.ceil(diff / 86400000);
+  }
+  tick();
+  setInterval(tick, 3600000);
+})();
+</script>
+</body>
+</html>

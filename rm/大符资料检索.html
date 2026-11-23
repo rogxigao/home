@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RM2027 大符资料检索 · 能量机关</title>
+<style>
+:root{
+  --bg:#f4f5f7;
+  --panel:#ffffff;
+  --ink:#14161a;
+  --ink-2:#4a4f57;
+  --ink-3:#8a9099;
+  --line:#e4e6ea;
+  --line-2:#eef0f3;
+  --red:#d9232e;
+  --red-soft:#fdecec;
+  --amber:#b8761a;
+  --amber-soft:#fdf3e3;
+  --blue:#2c5f9e;
+  --blue-soft:#eaf1fa;
+  --green:#2f7a52;
+  --green-soft:#e9f5ee;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(20,22,26,.05), 0 8px 24px rgba(20,22,26,.05);
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:14px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:#ffe0b2}
+
+/* ---------- header ---------- */
+header{
+  position:sticky;top:0;z-index:30;
+  background:rgba(255,255,255,.86);
+  backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.hwrap{max-width:1180px;margin:0 auto;padding:14px 20px 12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;flex:none}
+.brand .mark{
+  width:26px;height:26px;border-radius:6px;background:var(--ink);color:#fff;
+  display:grid;place-items:center;font-weight:800;font-size:13px;letter-spacing:-.5px;
+  position:relative;top:3px;
+}
+.brand h1{font-size:15px;margin:0;font-weight:700;letter-spacing:.2px}
+.brand span{font-size:12px;color:var(--ink-3)}
+.searchbox{flex:1;min-width:260px;position:relative}
+.searchbox input{
+  width:100%;height:40px;border:1px solid var(--line);border-radius:var(--radius);
+  background:#fff;padding:0 78px 0 38px;font-size:14px;color:var(--ink);outline:none;
+  transition:.18s;
+  font-family:inherit;
+}
+.searchbox input:focus{border-color:#c9ced6;box-shadow:0 0 0 3px rgba(20,22,26,.05)}
+.searchbox .ico{position:absolute;left:13px;top:11px;width:16px;height:16px;opacity:.45}
+.searchbox .hint{
+  position:absolute;right:10px;top:9px;font-size:11px;color:var(--ink-3);
+  border:1px solid var(--line);border-radius:5px;padding:1px 6px;background:#fafbfc;
+  font-family:var(--mono);
+}
+.meta-line{max-width:1180px;margin:0 auto;padding:0 20px 12px;font-size:12px;color:var(--ink-3);display:flex;gap:14px;flex-wrap:wrap}
+
+/* ---------- tracker ---------- */
+.tracker{max-width:1180px;margin:0 auto;padding:14px 20px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tracker .tl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.tracker label{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2);
+  background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px 11px 3px 8px;cursor:pointer;transition:.15s}
+.tracker label:hover{border-color:#cfd4db}
+.tracker label.done{background:var(--green-soft);border-color:#cfe7da;color:var(--green)}
+.tracker input{accent-color:#2f7a52;margin:0;width:13px;height:13px}
+.tracker .bar{flex:1;min-width:120px;height:4px;background:var(--line);border-radius:99px;overflow:hidden}
+.tracker .bar i{display:block;height:100%;width:0;background:var(--green);transition:.3s}
+.tracker .pct{font-family:var(--mono);font-size:11px;color:var(--ink-3);min-width:34px;text-align:right}
+
+/* ---------- layout ---------- */
+main{max-width:1180px;margin:0 auto;padding:20px;display:grid;grid-template-columns:196px 1fr;gap:22px;align-items:start}
+@media (max-width:820px){ main{grid-template-columns:1fr} }
+
+/* ---------- sidebar ---------- */
+aside{position:sticky;top:104px}
+@media (max-width:820px){ aside{position:static} }
+.catlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.catlist button{
+  width:100%;text-align:left;border:0;background:transparent;cursor:pointer;
+  padding:7px 10px;border-radius:7px;font-size:13px;color:var(--ink-2);
+  display:flex;justify-content:space-between;align-items:center;font-family:inherit;
+  transition:.14s;
+}
+.catlist button:hover{background:#fff;color:var(--ink)}
+.catlist button.on{background:var(--ink);color:#fff}
+.catlist button.on .n{color:rgba(255,255,255,.6)}
+.catlist .n{font-size:11px;color:var(--ink-3);font-family:var(--mono)}
+.side-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px 10px;font-weight:600}
+.side-block{margin-bottom:22px}
+.quick{display:flex;flex-direction:column;gap:6px}
+.quick a{
+  display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink-2);
+  font-size:12.5px;padding:7px 10px;border-radius:7px;background:#fff;border:1px solid var(--line-2);
+  transition:.14s;
+}
+.quick a:hover{border-color:var(--line);color:var(--ink);transform:translateX(2px)}
+.quick .dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex:none}
+.quick .dot.b{background:var(--blue)}
+.quick .dot.g{background:var(--green)}
+
+/* ---------- results ---------- */
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px;flex-wrap:wrap}
+.count{font-size:12.5px;color:var(--ink-3)}
+.count b{color:var(--ink);font-family:var(--mono);font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{
+  font-size:12px;border:1px solid var(--line);background:#fff;color:var(--ink-2);
+  padding:4px 10px;border-radius:99px;cursor:pointer;font-family:inherit;transition:.14s;
+}
+.chip:hover{border-color:#cfd4db}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.list{display:flex;flex-direction:column;gap:8px}
+.card{
+  background:var(--panel);border:1px solid var(--line-2);border-radius:var(--radius);
+  padding:13px 16px;cursor:pointer;transition:.16s;position:relative;overflow:hidden;
+}
+.card:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:transparent;transition:.16s;
+}
+.card:hover{border-color:#d8dce2;box-shadow:var(--shadow);transform:translateY(-1px)}
+.card:hover:before{background:var(--red)}
+.card.sel{border-color:#c9ced6;box-shadow:var(--shadow)}
+.card.sel:before{background:var(--red)}
+.card .top{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+.card h3{margin:0;font-size:14.5px;font-weight:650;letter-spacing:.1px;line-height:1.45}
+.badge{
+  font-size:10.5px;padding:1px 7px;border-radius:4px;font-weight:600;letter-spacing:.02em;
+  flex:none;
+}
+.badge.rule{background:var(--red-soft);color:var(--red)}
+.badge.size{background:var(--blue-soft);color:var(--blue)}
+.badge.field{background:var(--green-soft);color:var(--green)}
+.badge.dwg{background:var(--amber-soft);color:var(--amber)}
+.badge.team{background:#f0edf8;color:#5b4a9e}
+.badge.plan{background:#e9f4f6;color:#256b78}
+.badge.ref{background:#f0f1f3;color:#5d636b}
+.card p{margin:0;font-size:12.8px;color:var(--ink-2);line-height:1.6;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .src{font-size:11px;color:var(--ink-3);margin-top:6px;font-family:var(--mono)}
+mark{background:#ffe9a8;color:inherit;padding:0 1px;border-radius:2px}
+.empty{padding:60px 20px;text-align:center;color:var(--ink-3)}
+.empty b{display:block;color:var(--ink-2);margin-bottom:6px;font-size:15px}
+
+/* ---------- drawer ---------- */
+.scrim{
+  position:fixed;inset:0;background:rgba(20,22,26,.28);opacity:0;pointer-events:none;
+  transition:.22s;z-index:40;backdrop-filter:blur(1px);
+}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(640px,94vw);background:#fff;z-index:50;
+  transform:translateX(102%);transition:.26s cubic-bezier(.22,.61,.36,1);
+  display:flex;flex-direction:column;box-shadow:-24px 0 60px rgba(20,22,26,.14);
+}
+.drawer.on{transform:none}
+.dhead{padding:18px 24px 14px;border-bottom:1px solid var(--line-2);display:flex;gap:12px;align-items:flex-start}
+.dhead .txt{flex:1}
+.dhead h2{margin:6px 0 4px;font-size:19px;line-height:1.4;letter-spacing:.1px}
+.dhead .src{font-size:11.5px;color:var(--ink-3);font-family:var(--mono)}
+.close{
+  border:1px solid var(--line);background:#fff;border-radius:7px;width:30px;height:30px;
+  cursor:pointer;color:var(--ink-3);font-size:16px;line-height:1;flex:none;
+}
+.close:hover{color:var(--ink);border-color:#cfd4db}
+.dbody{padding:20px 24px 60px;overflow:auto;font-size:14px;line-height:1.8;color:var(--ink-2)}
+.dbody h3{font-size:14px;color:var(--ink);margin:22px 0 8px;letter-spacing:.2px}
+.dbody h3:first-child{margin-top:0}
+.dbody p{margin:0 0 10px}
+.dbody ul,.dbody ol{margin:0 0 12px;padding-left:20px}
+.dbody li{margin:3px 0}
+.dbody strong{color:var(--ink);font-weight:650}
+.dbody code{font-family:var(--mono);background:#f4f5f7;padding:1px 5px;border-radius:4px;font-size:12.5px}
+.dbody table{border-collapse:collapse;width:100%;margin:10px 0 14px;font-size:12.8px}
+.dbody th,.dbody td{border:1px solid var(--line);padding:6px 9px;text-align:left}
+.dbody th{background:#fafbfc;color:var(--ink);font-weight:600}
+.dbody .note{
+  background:#fafbfc;border-left:3px solid var(--red);padding:10px 14px;border-radius:0 6px 6px 0;
+  font-size:13px;color:var(--ink-2);margin:12px 0;
+}
+.dbody .tagrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:24px;padding-top:16px;border-top:1px solid var(--line-2)}
+.dbody .tagrow span{font-size:11px;color:var(--ink-3);background:#f4f5f7;padding:2px 8px;border-radius:99px}
+
+/* ---------- footer ---------- */
+footer{max-width:1180px;margin:0 auto;padding:28px 20px 60px;color:var(--ink-3);font-size:12px;
+  border-top:1px solid var(--line);margin-top:30px}
+footer b{color:var(--ink-2);font-weight:600}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="brand">
+      <div class="mark">R</div>
+      <div>
+        <h1>RM2027 大符资料检索</h1>
+        <span>RoboMaster 超级对抗赛 · 能量机关</span>
+      </div>
+    </div>
+    <div class="searchbox">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="搜尺寸、条款、工艺…  例如：72° / 增益 / 折弯 / 每周" autocomplete="off" spellcheck="false">
+      <span class="hint">/</span>
+    </div>
+  </div>
+  <div class="meta-line">
+    <span>资料截至 2026-10-26</span>
+    <span>·</span>
+    <span>来源：规则手册 V1.0.0、制作规范 V1.0.0、官方 STEP、队群通知</span>
+    <span>·</span>
+    <span>共 <b id="total">0</b> 条</span>
+  </div>
+</header>
+  <div class="tracker standalone" id="tracker">
+    <span class="tl">进度</span>
+    <label><input type="checkbox" data-w="1"><span>W1 10/26–11/1 方案</span></label>
+    <label><input type="checkbox" data-w="2"><span>W2 11/2–11/8 建模</span></label>
+    <label><input type="checkbox" data-w="3"><span>W3 11/9–11/15 出图</span></label>
+    <label><input type="checkbox" data-w="4"><span>W4 11/16–11/20 定稿</span></label>
+    <div class="bar"><i id="pbar"></i></div>
+    <span class="pct" id="ppct">0%</span>
+  </div>
+
+<main>
+  <aside>
+    <div class="side-block">
+      <p class="side-title">分类</p>
+      <ul class="catlist" id="cats"></ul>
+    </div>
+    <div class="side-block">
+      <p class="side-title">快捷入口</p>
+      <div class="quick">
+        <a href="#" data-q="72°"><span class="dot"></span>核心尺寸一览</a>
+        <a href="#" data-q="增益"><span class="dot b"></span>增益与环数</a>
+        <a href="#" data-q="每周"><span class="dot g"></span>每周要交什么</a>
+      </div>
+    </div>
+    <div class="side-block">
+      <p class="side-title">说明</p>
+      <p style="font-size:11.5px;color:var(--ink-3);line-height:1.7;padding:0 10px;margin:0">
+        数值带「读图」字样者，为从官方图纸读出，使用前请对原图复核。带「实测」者为从官方 STEP 提取。
+      </p>
+    </div>
+  </aside>
+
+  <section>
+    <div class="toolbar">
+      <div class="count" id="count"></div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+</main>
+
+<footer>
+  <b>使用说明</b>　按 <code style="font-family:monospace">/</code> 聚焦搜索，<code style="font-family:monospace">↑↓</code> 选择，<code style="font-family:monospace">Enter</code> 打开，<code style="font-family:monospace">Esc</code> 关闭。<br>
+  数据整理自官方规则手册与制作规范（V1.0.0，2026-10-15）、官方开源场地 STEP、队伍群通知。官方声明「渲染图仅供示意」，所有尺寸以图纸标注与现场实物为准。
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <div class="dhead">
+    <div class="txt">
+      <span class="badge" id="dbadge"></span>
+      <h2 id="dtitle"></h2>
+      <div class="src" id="dsrc"></div>
+    </div>
+    <button class="close" id="dclose">✕</button>
+  </div>
+  <div class="dbody" id="dbody"></div>
+</aside>
+
+<script>
+const CATS = {
+  rule:  {name:"规则机制", cls:"rule"},
+  size:  {name:"结构尺寸", cls:"size"},
+  field: {name:"场地",     cls:"field"},
+  dwg:   {name:"制图规范", cls:"dwg"},
+  team:  {name:"队伍要求", cls:"team"},
+  plan:  {name:"学习计划", cls:"plan"},
+  ref:   {name:"参考资料", cls:"ref"}
+};
+
+const DATA = [
+/* ============ 规则机制 ============ */
+{id:"M01",cat:"rule",title:"大符是什么：5 臂旋转靶盘",src:"规则手册 5.6.3 · P97",tags:["概述","大小符","能量机关"],
+body:`<p>能量机关是一个持续旋转的 <strong>5 臂靶盘</strong>，机器人用 17mm 弹丸击打被点亮的装甲模块，按<strong>平均环数</strong>与<strong>激活灯臂数</strong>换取攻击、防御、热量冷却增益。</p>
+<p>按比赛时间分两个阶段：</p>
+<ul><li><strong>0:00 – 3:00</strong>　小能量机关</li><li><strong>3:00 之后</strong>　大能量机关（我们画的就是这个）</li></ul>
+<div class="note">红蓝两侧是<strong>共轴、背靠背</strong>的两套回转体。观察一方时可能看到对方的一部分。</div>`},
+
+{id:"M02",cat:"rule",title:"转速：6 秒一圈 / 10 rpm",src:"规则手册 5.6.3 · P97",tags:["转速","电机","选型","转速公式"],
+body:`<table><tr><th>状态</th><th>转速</th></tr>
+<tr><td>小能量机关</td><td>固定 π/3 rad/s ≈ 1.047 rad/s（6 秒一圈 / 10 rpm）</td></tr>
+<tr><td>大能量机关（非激活）</td><td>固定 π/3 rad/s</td></tr>
+<tr><td>大能量机关（激活态）</td><td>按正弦周期变化</td></tr></table>
+<p>灯臂端点线速度（r=700mm）：v = 1.047 × 0.7 ≈ <strong>0.73 m/s</strong>。</p>
+<div class="note">这是判断电机选型对不对的硬指标：必须能稳在 10 rpm，且能跟随 0~20 rpm 的正弦加减速。</div>`},
+
+{id:"M03",cat:"rule",title:"激活态速度函数 spd = a·sin(ωt) + b",src:"规则手册 5.6.3 · P97",tags:["转速","正弦","参数","频率"],
+body:`<p><code>spd = a · sin(ω · t) + b</code>，单位 rad/s。</p>
+<ul><li>a ∈ [0.780, 1.045]</li><li>ω ∈ [1.884, 2.000]</li><li><strong>b = 2.090 − a</strong>（始终成立）</li></ul>
+<p>每次进入可激活状态时 t 重置为 0，a 与 ω 在区间内随机；实际转速与目标函数的时间误差 ≤ 500ms。</p>
+<p>代入可得区间 <code>[2.090−2a, 2.090]</code>：a=0.78 时约 0.53~2.09 rad/s；a=1.045 时最低<strong>会瞬间停住</strong>。</p>`},
+
+{id:"M04",cat:"rule",title:"激活机会：3 分钟、4:15、5:30",src:"规则手册 5.6.3 · P97–98",tags:["时间轴","激活","机会","累积"],
+body:`<ul><li>比赛开始 3 分钟、4 分 15 秒、5 分 30 秒，双方各获得 1 次激活大符机会，<strong>可累积</strong>。</li>
+<li>步兵操作手通过裁判系统选手端、或哨兵通过串口触发。</li>
+<li>进入「正在激活」后 <strong>20 秒</strong>未完成，自动退回未激活（机会消耗）。</li></ul>
+<p>小符：0:00 与 1:30 各 1 次。</p>`},
+
+{id:"M05",cat:"rule",title:"大符激活流程：2 块亮、2.5 秒、1 秒",src:"规则手册 5.6.3.1 · P100",tags:["流程","灯效","时序","瞄准"],
+body:`<ol><li>随机点亮 5 块装甲模块中的 <strong>2 块</strong>，对应灯臂中轴出现箭头状流动灯效；</li>
+<li>须在 <strong>2.5 秒</strong>内击中<strong>被点亮</strong>模块的可检测区域；</li>
+<li>命中后该臂改变灯效，此后 <strong>1 秒</strong>内可再击中另一块被点亮的模块；不论是否成功，立刻重新随机点亮 2 块；</li>
+<li>一组 = 2 块，<strong>击中该组第一块即视为该组成功</strong>；</li>
+<li>5 组完成 → 已激活；灯臂中部灯效显示进度（1/5、2/5 …）。</li></ol>
+<p>重新点亮下一组前，灯效会<strong>熄灭至多 200ms</strong>。</p>`},
+
+{id:"M06",cat:"rule",title:"激活失败的两种情形",src:"规则手册 5.6.3.1 · P101",tags:["失败","判定","规则"],
+body:`<ul><li>未能在 2.5 秒内击中点亮的装甲模块；</li><li>击中了<strong>非</strong>随机点亮的装甲模块。</li></ul>
+<p>任一情况即本次激活失败，能量机关重置为未激活状态。</p>`},
+
+{id:"M07",cat:"rule",title:"平均环数 → 增益（表 5-22）",src:"规则手册 表 5-22 · P98",tags:["增益","环数","攻击","防御","冷却"],
+body:`<table><tr><th>平均环数</th><th>攻击</th><th>防御</th><th>冷却</th></tr>
+<tr><td>[1,3]</td><td>150%</td><td>25%</td><td>无</td></tr>
+<tr><td>(3,7]</td><td>150%</td><td>25%</td><td>2 倍</td></tr>
+<tr><td>(7,8]</td><td>200%</td><td>25%</td><td>2 倍</td></tr>
+<tr><td>(8,9]</td><td>200%</td><td>25%</td><td>3 倍</td></tr>
+<tr><td>(9,10]</td><td>300%</td><td>50%</td><td>5 倍</td></tr></table>
+<p>每块装甲模块划分 <strong>1~10 环</strong>。</p>`},
+
+{id:"M08",cat:"rule",title:"激活灯臂数 → 持续时间（表 5-23）",src:"规则手册 表 5-23 · P98–99",tags:["增益","持续时间","灯臂"],
+body:`<table><tr><th>激活灯臂数</th><th>持续时间</th></tr>
+<tr><td>5</td><td>30 s</td></tr><tr><td>6</td><td>35 s</td></tr><tr><td>7</td><td>40 s</td></tr>
+<tr><td>8</td><td>45 s</td></tr><tr><td>9</td><td>50 s</td></tr><tr><td>10</td><td>60 s</td></tr></table>
+<div class="note">能到 10，说明大符的装甲模块总数大于 5（很可能是每臂 2 块，红蓝各一面）。这是结构上最容易画错的地方，见 <strong>存疑点</strong> 条目。</div>`},
+
+{id:"M09",cat:"rule",title:"累计激活 → 有效检测环数收窄",src:"规则手册 表 5-24 · P99",tags:["环数","衰减","规则"],
+body:`<table><tr><th>己方大符累计被激活</th><th>可继续检测的环数</th></tr>
+<tr><td>1 次</td><td>4,5,6,7,8,9,10 环</td></tr>
+<tr><td>2 次</td><td>7,8,9,10 环</td></tr></table>
+<p>每激活一次，1~3 环先失效。这意味着靶面图案必须让<strong>环的边界清晰可辨</strong>。</p>`},
+
+{id:"M10",cat:"rule",title:"状态机：未激活 / 正在激活 / 已激活 / 失败",src:"规则手册 5.6.3.1 · P99–101",tags:["状态机","灯效","控制"],
+body:`<p>四种状态：<strong>未激活 → 正在激活 → 已激活</strong>，失败则回到未激活。</p>
+<table><tr><th>状态</th><th>灯效</th><th>结构要求</th></tr>
+<tr><td>未激活</td><td>常暗 / 呼吸</td><td>灯珠可独立控制</td></tr>
+<tr><td>正在激活</td><td>2 块亮 + 中轴箭头流动 + 中部进度 1/5~5/5</td><td>独立寻址灯带</td></tr>
+<tr><td>已激活</td><td>5 臂全亮</td><td>满功率供电、散热</td></tr>
+<tr><td>失败</td><td>复位</td><td>可复位、无误触发</td></tr></table>`},
+
+{id:"M11",cat:"rule",title:"检测精度：径向 1mm",src:"规则手册 5.6.3 · P98",tags:["精度","公差","靶面"],
+body:`<p>「能量机关装甲模块对弹丸击打位置的检测精度为<strong>径向 1mm</strong>。」</p>
+<div class="note">判定是<strong>按半径</strong>而不是按面积。所以靶面同心圆图案的<strong>同心度</strong>直接决定环数——靶心偏 5mm，10 环区域整体就偏了。</div>`},
+
+{id:"M12",cat:"rule",title:"750 点经验分给步兵",src:"规则手册 5.6.3 · P98",tags:["经验","经济"],
+body:`<p>大能量机关被激活时，将有 <strong>750 点经验</strong>平均分给激活方所有存活的步兵机器人。</p>
+<p>小符增益期间，步兵获得经验时额外获得原经验 100%，单次增益期间上限 1200 点。</p>`},
+
+{id:"M13",cat:"rule",title:"红蓝共轴反转，方向开局随机",src:"规则手册 5.6.3 · P97",tags:["共轴","方向","结构"],
+body:`<p>红蓝双方能量机关<strong>共轴旋转</strong>：红方顺时针时蓝方逆时针（以面朝该方时的方向为准）。</p>
+<p>每局开始前方向随机，当局内保持一致。</p>
+<p>含义：结构上是<strong>一根轴带两个回转体</strong>，或两套同轴反转机构。</p>`},
+
+{id:"M14",cat:"rule",title:"小符：25% 防御、持续 45 秒",src:"规则手册 5.6.3 · P97",tags:["小符","小能量机关","增益"],
+body:`<p>成功激活小符后，该方所有机器人、前哨站、基地获得 <strong>25% 防御增益，持续 45 秒</strong>；增益期间步兵获得经验额外 +100%，单次上限 1200 点。</p>
+<p>小符随机点亮 5 块中<strong>的 1 块</strong>，2.5 秒内击中即点亮该灯臂，再随机点亮其余 4 块中的 1 块。</p>`},
+
+{id:"M15",cat:"rule",title:"存疑点：每臂到底几块装甲",src:"整理者标注 · 待确认",tags:["存疑","确认","装甲模块"],
+body:`<p>规则里同时出现两种说法，互相矛盾：</p>
+<ul><li>「随机点亮 <strong>5 块</strong>装甲模块中的任意 2 个」→ 总共 5 块；</li>
+<li>表 5-23 的「激活灯臂数」可以到 <strong>10</strong>。</li></ul>
+<p>可能的解释：每个灯臂正面/背面各 1 块（红蓝各打一面），共 10 块。</p>
+<div class="note">画图前必须确认。建议直接问队里师兄，或在官方答疑渠道提问（备赛期 5 个工作日内答复）。</div>`},
+
+/* ============ 结构尺寸 ============ */
+{id:"S01",cat:"size",title:"5 臂均布，夹角 72°",src:"规则手册 4.3.2.3 · 图 4-31",tags:["72度","均布","灯臂","读图"],
+body:`<p>能量机关有 <strong>5 个均匀分布</strong>的灯臂，相邻灯臂夹角 <strong>72°</strong>（5×72=360）。</p>
+<div class="note">72° 是<strong>功能尺寸</strong>，必须按图做。建模时用「圆周阵列」而不是复制 5 次。</div>`},
+
+{id:"S02",cat:"size",title:"包络直径 Ø1400",src:"规则手册 图 4-31 · P54",tags:["1400","包络","直径","读图"],
+body:`<p>灯臂端点所在圆直径 <strong>Ø1400</strong>，即整机最大回转直径，半径 R=700。</p>
+<p>这是整机设计的<strong>第一约束</strong>：任何零件超出这个圆，就是画错了。</p>
+<p>建议单独建一个 Ø1400 的草图圆作为包络检查基准。</p>`},
+
+{id:"S03",cat:"size",title:"高度：2300（台面到顶架）+ 300（底座）",src:"规则手册 图 4-31 · P54",tags:["2300","300","高度","读图"],
+body:`<p>从装配区台面到顶部横架上沿 <strong>2300mm</strong>；底座台阶高 <strong>300mm</strong>。</p>
+<p>故能量机关顶部离地约 <strong>2600mm</strong>。</p>
+<div class="note">注意：2300 的箭头止于<strong>顶部横架上沿</strong>，不是灯臂顶端。别把 2300 当整机高度用。</div>`},
+
+{id:"S04",cat:"size",title:"靶心半径实测 521.7mm",src:"官方 STEP 提取 · 2026-10-26",tags:["靶心","实测","522","定位"],
+body:`<p>从官方 <code>RMUC2027_V1.0.0.stp</code> 中提取半径 154mm（Ø308）的圆形特征，聚类后做最小二乘圆拟合：</p>
+<table><tr><th>项</th><th>值</th></tr>
+<tr><td>靶面圆心到回转轴距离 <strong>R_target</strong></td><td><strong>521.7 mm</strong>（5 处残差 &lt; 0.1mm）</td></tr>
+<tr><td>每处靶面的同心圆数量</td><td>14 个</td></tr>
+<tr><td>靶面所在高度 z</td><td>−472.1 mm（模型坐标系）</td></tr></table>
+<p><strong>交叉验证</strong>：700 − 24（臂端折边）− 154（靶半径）= <strong>522</strong>，与实测吻合。</p>
+<div class="note">这个数官方手册上没有直接标，是画图时最要紧的定位尺寸之一。</div>`},
+
+{id:"S05",cat:"size",title:"靶面 Ø308（最大）/ Ø300（有效）",src:"规则手册 P55 正文 + 图 4-32",tags:["308","300","靶面","直径"],
+body:`<p>「实际灯臂的圆靶最大直径为 <strong>308mm</strong>，实际有效检测直径为 <strong>300mm</strong>。」</p>
+<p>即靶面外缘留 4mm 边框（径向），可打区域是中间 Ø300。</p>
+<p>靶面外圈与靶框之间有 <strong>120°</strong> 的楔形过渡（图 4-32 上下各一处）。</p>`},
+
+{id:"S06",cat:"size",title:"中心标识 Ø106",src:"规则手册 图 4-33 · P55",tags:["106","中心","R标","标识"],
+body:`<p>回转体正中心有一个直径 <strong>Ø106</strong> 的圆形标识，黑底 + 红色 RM 风格「R」。</p>
+<p>训练道具可做背光版，与赛场观感一致。</p>`},
+
+{id:"S07",cat:"size",title:"灯臂尺寸表（372 / 382 / 320 …）",src:"规则手册 图 4-32 · P54",tags:["372","382","320","灯臂","尺寸表","读图"],
+body:`<table><tr><th>部位</th><th>数值</th></tr>
+<tr><td>臂端外廓总宽</td><td>372</td></tr>
+<tr><td>靶面安装框内宽</td><td>320</td></tr>
+<tr><td>灯臂长度（顶端→肩部）</td><td>382</td></tr>
+<tr><td>顶端包边</td><td>29</td></tr>
+<tr><td>靶框下沿</td><td>36</td></tr>
+<tr><td>折边 / 板厚</td><td>24（两处）</td></tr>
+<tr><td>中心加强筋宽</td><td>60</td></tr>
+<tr><td>加强筋长</td><td>330</td></tr>
+<tr><td>筋相对中心偏置</td><td>136</td></tr>
+<tr><td>肩部侧边</td><td>203</td></tr>
+<tr><td>角撑 / 折边</td><td>20</td></tr>
+<tr><td>斜撑长</td><td>215</td></tr></table>
+<p>以上均为<strong>读图值</strong>，使用前请对原图复核。</p>`},
+
+{id:"S08",cat:"size",title:"中部下坠 0~50mm",src:"规则手册 4.3.2.3 · P54",tags:["下坠","装配","间隙"],
+body:`<p>「能量机关中部由于重量较大，会出现轻微下坠的现象，下坠范围为 <strong>0~50mm</strong>。」</p>
+<p>这是官方对实物装配状态的容忍量，<strong>不要求图纸体现</strong>，但装配说明里应写清轴向间隙与支撑方式，否则做出来会晃。</p>`},
+
+{id:"S09",cat:"size",title:"建模基准：原点与阵列",src:"整理建议",tags:["建模","基准","SolidWorks"],
+body:`<table><tr><th>项</th><th>建议</th></tr>
+<tr><td>原点</td><td>回转轴线与 5 臂对称平面的交点，Z 轴向上</td></tr>
+<tr><td>方向</td><td>一条灯臂沿 +Y，其余按 72° 圆周阵列</td></tr>
+<tr><td>红蓝</td><td>建一侧，另一侧镜像 + 绕 Z 轴 36° 错位</td></tr>
+<tr><td>阵列</td><td>圆周阵列，不要复制 5 次</td></tr>
+<tr><td>配合</td><td>同心 + 端面贴合，不要用距离硬怼</td></tr>
+<tr><td>检查</td><td>干涉检查 + 最小间隙 2mm 的间隙验证</td></tr></table>`},
+
+{id:"S10",cat:"size",title:"官方 STEP 在哪、怎么用",src:"bbs.robomaster.com/article/1970956",tags:["STEP","模型","下载","官方"],
+body:`<p>组委会开源 2027 场地图纸（STEP）：</p>
+<ul><li><code>RMUC2027_V1.0.0.stp</code>　653 MB　全场，含能量机关</li>
+<li><code>能量单元.stp</code>　3 MB　注意不是能量机关本体</li></ul>
+<p>本地已在 <code>assets/models/</code>。</p>
+<div class="note">650MB 的模型别直接开装配：先另存零件 → 删除无关场地实体 → 只留中央高地 → 用「评估/测量」取尺寸。</div>`},
+
+/* ============ 场地 ============ */
+{id:"F01",cat:"field",title:"战场 28×15m，围挡高 2.4m",src:"规则手册 4.1 · P29",tags:["战场","尺寸","围挡"],
+body:`<p>战场为 <strong>28m × 15m</strong>，内部木质结构，表面 2mm PVC 地胶；外围黑色钢制围挡，上边沿距地面 <strong>2.4m</strong>。</p>`},
+
+{id:"F02",cat:"field",title:"官方尺寸公差：±5mm / ±5% / ±1°",src:"规则手册 4.1 · P29",tags:["公差","误差","标准"],
+body:`<table><tr><th>对象</th><th>误差</th></tr>
+<tr><td>&lt;100mm 的尺寸</td><td>±5mm</td></tr>
+<tr><td>≥100mm 的尺寸</td><td>±5%</td></tr>
+<tr><td>战场结构角度</td><td>±3°</td></tr>
+<tr><td><strong>场地道具角度</strong></td><td><strong>±1°</strong></td></tr></table>
+<div class="note">这是官方给场地的制造公差，<strong>不是</strong>你出图的公差。自己出图要按工艺给（激光 ±0.2mm、折弯 ±0.5°）。</div>`},
+
+{id:"F03",cat:"field",title:"装配区 / 科技核心 / 机库平台",src:"规则手册 4.3.2 · P51–53",tags:["中央高地","装配区","科技核心","机库"],
+body:`<ul><li><strong>装配区</strong>：战场中央，能量机关正下方，含 14° / 12° / 46° 坡；</li>
+<li><strong>科技核心</strong>：位于能量机关下方，重装机器人把能量单元装配进去；</li>
+<li><strong>机库平台</strong>：战场中央，红蓝各一，空中系统只能装在这里。</li></ul>
+<p>三者共处一个区域，画整机布置时要一起考虑。</p>`},
+
+{id:"F04",cat:"field",title:"S109：立柱上的 150×150 红外窗口",src:"制作规范 S109 · P50",tags:["S109","立柱","红外","检录"],
+body:`<p>「能量机关立柱上设有一处<strong>长 150mm、高 150mm 的红外发射区域</strong>。该区域沿立柱宽度方向<strong>居中</strong>布置，<strong>下边缘与机库平台底面齐平</strong>。」</p>
+<div class="note">画立柱必须先定机库平台底面标高，再反推窗口位置。这条是<strong>检录会看</strong>的硬约束。</div>`},
+
+{id:"F05",cat:"field",title:"场地道具训练的规定",src:"规则手册 第 7 章 · P140",tags:["训练","道具","安全"],
+body:`<ul><li>每队 2 次训练机会，每次 30 分钟（含进退场），提前 20 分钟候场；</li>
+<li>组委会只提供可移动道具，不提供 17/42mm 弹丸；</li>
+<li>「使用 42mm 弹丸测试时请注意避免主动击打能量机关」。</li></ul>
+<div class="note">自建大符属于「可移动道具」层级——<strong>轻、可拆、可搬</strong>应是方案的第一约束，而不是照赛场 1:1 复刻。</div>`},
+
+{id:"F06",cat:"field",title:"红线：R61 破坏道具 / R62 用 42mm 打符",src:"规则手册 R61、R62 · P134",tags:["R61","R62","违规","判罚"],
+body:`<ul><li><strong>R61</strong>　比赛过程中，机器人不得破坏战场、场地道具或弹丸，亦不可影响场地道具的正常功能。</li>
+<li><strong>R62</strong>　不得使用 42mm 弹丸、飞镖、空中机器人击打能量机关和机库。</li></ul>
+<p>含义：灯臂、靶面、灯条要能被 17mm 弹丸反复打而不脱落，固定方式优先螺栓 + 防松，别用卡扣、磁吸、双面胶。</p>`},
+
+{id:"F07",cat:"field",title:"2027 场地变更：新增机库平台、制高点",src:"规则手册 1.2 · P13",tags:["赛季变更","2027","新增"],
+body:`<ul><li>原飞坡 → <strong>隧道</strong></li><li>操作间整体布置调整</li>
+<li><strong>新增</strong>：制高点、机库平台、工作台</li><li><strong>取消</strong>：飞行区、无线充电装置放置区、停机坪</li></ul>
+<p>能量机关本身的形态（5 臂、共轴、红蓝双侧）未变。</p>`},
+
+/* ============ 制图规范 ============ */
+{id:"D01",cat:"dwg",title:"官方工程图范例：四视图 + 轴测",src:"制作规范 附录 1 · P87",tags:["范例","视图","轴测图"],
+body:`<p>官方给了一个 60×30×13.5 的铝制转接块工程图，包含：<strong>主视 + 俯视 + 左视 + 轴测图</strong>。</p>
+<ul><li>视图按第一角投影排布；</li><li>尺寸集中标注，基准统一；</li><li>配合尺寸才给公差（Ø21.00 +0.05/0）；</li><li>螺纹标注 <code>4-M3 ↧6</code>、<code>2-Ø2.50 ↧4.5 ↧3</code>。</li></ul>
+<div class="note">轴测图不是装饰，是让加工师傅 3 秒看懂零件形状的东西。</div>`},
+
+{id:"D02",cat:"dwg",title:"一张合格图纸的 9 个要素",src:"整理 · 制图规范",tags:["标题栏","要素","清单"],
+body:`<table><tr><th>#</th><th>要素</th><th>常见错误</th></tr>
+<tr><td>1</td><td>图幅与比例</td><td>缩放打印后比例失真</td></tr>
+<tr><td>2</td><td>标题栏（名称/图号/材料/数量/比例/版本/日期）</td><td>漏材料、漏版本</td></tr>
+<tr><td>3</td><td>主视 + 2 个投影 + 轴测</td><td>只有主视图</td></tr>
+<tr><td>4</td><td>尺寸完整、不重复、不封闭尺寸链</td><td>过约束</td></tr>
+<tr><td>5</td><td>配合公差 + 形位公差</td><td>全图无公差</td></tr>
+<tr><td>6</td><td>表面粗糙度</td><td>漏标</td></tr>
+<tr><td>7</td><td>技术要求（去毛刺/未注公差/表面处理）</td><td>写在备注栏</td></tr>
+<tr><td>8</td><td>BOM（标准件写型号与国标号）</td><td>标准件不写型号</td></tr>
+<tr><td>9</td><td>版本与变更记录</td><td>反复覆盖同名文件</td></tr></table>`},
+
+{id:"D03",cat:"dwg",title:"回转件的公差怎么给",src:"整理建议",tags:["公差","轴承","同轴度","H7"],
+body:`<table><tr><th>部位</th><th>建议</th></tr>
+<tr><td>轴承座内孔</td><td>H7</td></tr>
+<tr><td>主轴轴承位</td><td>h6 / k6</td></tr>
+<tr><td>轮毂与主轴同轴度</td><td>Ø0.05</td></tr>
+<tr><td>轮毂端面与轴垂直度</td><td>0.05</td></tr></table>
+<p>这四处决定了「转得正不正」。5 臂同时偏，靶心圆就歪。</p>`},
+
+{id:"D04",cat:"dwg",title:"靶面公差：同心度 ≤0.5mm",src:"整理建议 · 由 1mm 精度倒推",tags:["靶面","同心度","平面度"],
+body:`<ul><li>靶面圆心与安装孔位置度：Ø0.5</li><li>靶面平面度：0.3</li><li>靶面与轮毂同心度：<strong>≤0.5mm</strong></li></ul>
+<p>依据：「装甲模块对弹丸击打位置的检测精度为径向 1mm」，靶心偏 0.5，最外圈判定就偏半个环宽。</p>`},
+
+{id:"D05",cat:"dwg",title:"钣金件怎么标：展开图 + 折弯系数",src:"整理建议",tags:["钣金","折弯","展开","激光切割"],
+body:`<table><tr><th>项目</th><th>标法</th></tr>
+<tr><td>外形轮廓</td><td>闭合轮廓 + 总尺寸</td></tr>
+<tr><td>折弯</td><td>折弯线 + 折弯角 + 内 R（≈板厚 t）</td></tr>
+<tr><td>展开</td><td>给展开图或 K 因子</td></tr>
+<tr><td>孔到折弯边</td><td>≥ 2t + R，否则拉变形</td></tr>
+<tr><td>去毛刺</td><td>技术要求写「锐边去毛刺 C0.5」</td></tr></table>
+<div class="note">只标「折弯 90°」是不够的，必须给<strong>展开图</strong>或折弯系数，否则切出来折完尺寸不对，整批报废。</div>`},
+
+{id:"D06",cat:"dwg",title:"亚克力/PC 件的三个坑",src:"整理建议",tags:["亚克力","PC","激光","攻丝"],
+body:`<ul><li>激光切割有 <strong>0.1~0.3mm 锥度</strong>，配合孔留 0.2 余量；</li>
+<li>亚克力<strong>不能攻丝</strong>（会裂），用螺母沉孔或热熔铜螺母；</li>
+<li>灯腔用 <strong>3mm 乳白亚克力</strong>做匀光板，比直接露灯珠好看十倍。</li></ul>`},
+
+{id:"D07",cat:"dwg",title:"材料与工艺选型表",src:"整理建议",tags:["材料","选型","型材","铝板"],
+body:`<table><tr><th>零件</th><th>材料 / 工艺</th></tr>
+<tr><td>立柱/底架</td><td>2020、4040 铝型材 + 角件</td></tr>
+<tr><td>灯臂主体</td><td>2mm 5052 铝板，激光 + 折弯</td></tr>
+<tr><td>靶面基板</td><td>2mm 铝板 + 3mm 乳白亚克力</td></tr>
+<tr><td>靶面图案</td><td>哑光 PVC 贴纸 / UV 打印（必须哑光）</td></tr>
+<tr><td>轮毂</td><td>6061 铝 6~8mm，CNC</td></tr>
+<tr><td>主轴</td><td>45# 或 6061，Ø15~20，车削</td></tr></table>`},
+
+{id:"D08",cat:"dwg",title:"交付前 12 条自检",src:"整理 · 打印贴屏幕",tags:["自检","检查清单","交付"],
+body:`<ol><li>标题栏 8 个字段齐了</li><li>视图够看懂（30 秒能说出形状）</li><li>有轴测图</li>
+<li>尺寸不重复、不封闭</li><li>配合尺寸有公差</li><li>形位公差标了</li><li>粗糙度标了</li>
+<li>技术要求写了</li><li>钣金给展开图</li><li>标准件写型号国标号</li><li>BOM 与图上序号对得上</li>
+<li>文件名规范：图号_名称_V版本_日期</li></ol>`},
+
+{id:"D09",cat:"dwg",title:"电气接口：走线决定结构",src:"整理建议",tags:["走线","滑环","电池","无线"],
+body:`<table><tr><th>需求</th><th>结构应对</th></tr>
+<tr><td>5 臂独立灯控</td><td>中轴空心轴走线，或集线环</td></tr>
+<tr><td>旋转体→固定体</td><td>滑环 / 限位来回摆 / 无线</td></tr>
+<tr><td>供电</td><td>旋转体自带电池最省事</td></tr>
+<tr><td>命中检测</td><td>官方柔性压力传感器模组 495 元/套</td></tr></table>
+<div class="note">这条决定了你的图和别人的完全不一样，<strong>第一周必须拍板</strong>。</div>`},
+
+{id:"D10",cat:"dwg",title:"螺纹标注完整格式（别只写 M3）",src:"机械组常识文档 · 工程图标注小技巧",tags:["螺纹","标注","M3","工程图"],
+body:`<p><code>M20×2LH - 5g6g - S</code> 逐段含义：</p>
+<table><tr><td>M20</td><td>公称直径 20</td></tr>
+<tr><td>×2</td><td>螺距 2（细牙，粗牙不标）</td></tr>
+<tr><td>LH</td><td>左旋（右旋不标）</td></tr>
+<tr><td>5g6g</td><td>顶径公差带 5g、中径公差带 6g</td></tr>
+<tr><td>S</td><td>旋合长度（S 短 / N 中 / L 长）</td></tr></table>
+<p>梯形螺纹例：<code>Tr40×14(P7) - 7H - L</code>，导程 14、螺距 7、线数 2。</p>
+<div class="note">队里还有一张「螺纹深度选型表」和「铨洲螺纹孔规则说明」，画孔前必查。</div>`},
+
+{id:"D11",cat:"dwg",title:"加强筋的比例关系：3.4d / 2.4d",src:"机械组常识文档 · 加强筋设计规范",tags:["加强筋","比例","灯臂"],
+body:`<p>底宽 ≤ 3.4d、高度 ≤ 3.4d、两筋中心距 ≥ 2.4d（d 为筋厚）。</p>
+<p>原文注明这是塑料件规范，用在铝板上要打折，但<strong>比例关系可借鉴</strong>。</p>
+<p>对照我们的灯臂：主筋宽 60、板厚 24，比值 2.5，正好落在合理区间。</p>`},
+
+/* ============ 队伍要求 ============ */
+{id:"T01",cat:"team",title:"通知六条：每人一份图纸 + 每周发群",src:"队伍飞书群 · 林创武",tags:["任务","通知","考核"],
+body:`<ol><li>每个人都要出一份对应场地道具的<strong>图纸和方案文档</strong>；</li>
+<li><strong>每周</strong>把图纸发到对应场地道具飞书群审核，第一周没图纸也要<strong>发文档</strong>作为进度；</li>
+<li>鼓励把画图/选型的问题发群，一起解决；</li>
+<li>不能以画场地道具为由<strong>长期不来实验室</strong>，也不能忽视实践任务；</li>
+<li>每周都要有进度，<strong>严禁摆烂几周最后一周赶</strong>；</li>
+<li>本次任务、考勤、实践任务作为<strong>新人第一次考核</strong>，不合预期会严肃规劝退队。</li></ol>`},
+
+{id:"T02",cat:"team",title:"每周提交模板（直接复制）",src:"整理 · 照填即可",tags:["模板","汇报","进度"],
+body:`<p>【大符进度｜第 X 周｜姓名】</p>
+<ul><li>一、本周完成</li><li>二、本周产出（文档/图纸/模型）</li>
+<li>三、<strong>关键决策</strong>（这周定下来的事 + 理由）</li>
+<li>四、遇到的问题（需群里帮忙）</li><li>五、下周计划</li><li>六、需要谁配合</li></ul>
+<div class="note">「关键决策」是最容易被忽略、但评审最看重的一栏——它证明你在做判断，而不是在描图。</div>`},
+
+{id:"T03",cat:"team",title:"风险：26 天做完一套大符图纸",src:"整理 · 实话",tags:["风险","时间","提醒"],
+body:`<p>新人从零学 SolidWorks 到出可加工图纸，正常 6~8 周。你只有不到 4 周，所以计划里砍掉了「系统学软件」，改成「边画边学」。</p>
+<p>最大的坑不是画图，是<strong>选型</strong>：走线、驱动、材料三个决定定错，图要重画。</p>`},
+
+{id:"T04",cat:"team",title:"飞书云文档：已接入，实时可读",src:"飞书连接器 · 2026-10-26",tags:["飞书","已接入","实时"],
+body:`<p>「机械」知识空间已通过飞书连接器（你的账号身份）读取，含 8 个子页面。以后文档更新，说一句「读一下飞书那份」即可，不用再导出。</p>
+<p>详细摘录见 <code>docs/08_队伍知识库_飞书实录.md</code>。</p>
+<p>当前缺口：<code>search:docs:read</code>（全库搜索）未授权，所以还不能跨库搜关键词。</p>`},
+
+{id:"T05",cat:"team",title:"队伍知识库：8 个子页面全貌",src:"飞书「机械」空间 · 实测",tags:["知识库","目录","飞书"],
+body:`<p>根节点一句话：<strong>「对技术抱有尊重，对有技术的人抱有尊重。」</strong></p>
+<ul><li>DRAWING REVIEW MEETING（每周评审会记录，最有用）</li>
+<li>机械组常识文档（材料/螺纹/轴承/加强筋/同步带/链条/板材）</li>
+<li>海纳百川学无止境-资料汇总（7 份设计 PDF + 论文 + 教材）</li>
+<li><strong>场地道具开发维护文档</strong>（你的任务书）</li>
+<li>Taurus 雕刻机使用说明、拓竹打印机使用教程</li>
+<li>机械设计美学、佬登语录（空）</li></ul>`},
+
+{id:"T06",cat:"team",title:"关键：第 10 节「大符」是空的",src:"场地道具开发维护文档",tags:["大符","需求","空白"],
+body:`<p>《场地道具开发维护文档》共 11 节，第 10 节标题写着「大符」，<strong>正文一个字都没有</strong>。</p>
+<p>含义：你不是照着已有需求画图，而是<strong>先把需求定义出来</strong>；画完再把内容补回这一节。</p>
+<div class="note">这是唯一会留在队里的东西——明年的人打开飞书，看到的是你写的这一节。</div>`},
+
+{id:"T07",cat:"team",title:"机械组对场地道具的两条要求",src:"场地道具开发维护文档 3.1",tags:["技术要求","冗余","耐磨"],
+body:`<p><strong>高稳定性、高冗余设计；耐磨抗造。</strong></p>
+<p>配套的去年复盘：</p>
+<ul><li>抗撞击冗余不足——挡板边角、限位凸起耐冲击差，多次对抗后松动、掉漆、翘边、滑丝</li>
+<li>维护体系不完善</li></ul>
+<p>落到图纸上：边角加厚、螺栓加防松、易损件可快换。</p>`},
+
+{id:"T08",cat:"team",title:"负责人要管一整个赛季的维护",src:"场地道具开发维护文档 4 · 王奇英",tags:["维护","责任","态度"],
+body:`<p>「场地道具负责人不是说把东西设计出来装好就可以了，而是需要相关人员<strong>一整个赛季的维护</strong>，不要等到要测了，才匆匆忙忙去检查……负责人要负起相关责任，测试前提前检修，长时间测试要做到连续检修。」</p>
+<div class="note">方案文档里应该有「维护方案」一节：易损件清单、备件数量、检修周期。这一节能让你从「交作业的新人」变成「能担事的人」。</div>`},
+
+{id:"T09",cat:"team",title:"周报格式：已经学会 / 正在学习 / 疑难",src:"DRAWING REVIEW MEETING",tags:["周报","模板","汇报"],
+body:`<pre style="font-family:monospace;font-size:12px;background:#f7f8fa;padding:10px;border-radius:6px;overflow:auto">### 机械组-大符-姓名
+- 已经学会：……
+- 正在学习：……
+- 这周还干了：……
+- 预计下周需要学：……
+- 疑难：
+  1. ……
+  2. ……</pre>
+<p>这是队伍每周评审会的真实格式。<strong>「疑难」不要空着</strong>——空着等于没思考。</p>`},
+
+{id:"T10",cat:"team",title:"项目评审表：师兄只盯「验收」和「安装」",src:"DRAWING REVIEW MEETING",tags:["评审","验收","安装"],
+body:`<table><tr><th>项目</th><th>要回答什么</th></tr>
+<tr><td>整车功能点</td><td>要实现什么、给谁用</td></tr>
+<tr><td>异常</td><td>出了什么问题、怎么改的</td></tr>
+<tr><td><strong>验收</strong></td><td>做到什么程度算过（可量化）</td></tr>
+<tr><td><strong>安装</strong></td><td>哪些部位要精度（同轴度、平面度）</td></tr>
+<tr><td>已完成 / 下一周目标</td><td>进度</td></tr>
+<tr><td>阻碍 / 交付时间</td><td>卡在哪、分节点日期</td></tr></table>
+<div class="note">第一周队里明确写了：「不做硬性图纸要求，但一定要有所学习和收获。」</div>`},
+
+{id:"T11",cat:"team",title:"分组结果：能量机关 = 高荣信 + 钟自豪",src:"27机械组通知群 · 10-24",tags:["分组","搭档","任务"],
+body:`<p>六个场地道具分给 12 个新人，两人一组。你们这组负责<strong>能量机关</strong>。</p>
+<p>同一份通知里写明：每人<strong>单独出一份完整图纸</strong>，作为新人第一次考核，但"独立出图不是单打独斗"。</p>
+<p>设计流程五步：规则尺寸研讨 → 需求收集及优先级 → 方案收集及最终选型 → 结构设计及最终成型 → 跨组交流及落地装配。</p>`},
+
+{id:"T12",cat:"team",title:"周报走工作台，考勤每周 >10 小时",src:"27机械组通知群 · 10-24",tags:["周报","考勤","打卡","实践"],
+body:`<table><tr><th>制度</th><th>怎么做</th></tr>
+<tr><td>周报</td><td>飞书「更多 → 工作台 → 周报」，每周一次</td></tr>
+<tr><td>周报内容</td><td><strong>必须附实践照片</strong>（分螺丝/用雕刻机/用打印机）</td></tr>
+<tr><td>考勤</td><td>「工作台 → 考勤」，土槽楼或负二，上下班都打卡</td></tr>
+<tr><td>时长</td><td>每周 <strong>&gt; 10 小时</strong></td></tr></table>
+<div class="note">两条线并行：周报走工作台（带照片），图纸发大符群（带文件）。别只做一样。</div>`},
+
+{id:"T13",cat:"team",title:"往年大符图纸已到手（105 个文件）",src:"27炒鸡大符 · 林创武 10-25",tags:["往年图纸","SolidWorks","总装"],
+body:`<p>群里已发 <code>机械组-能量机关总装终版-林涵-20240524.7z</code>（28MB），已解压到 <code>assets/team/往年图纸_20240524/</code>。</p>
+<p>含总装 <code>a机械组-能量机关总装2-林涵-20240524.SLDASM</code>，六块结构齐全：底座机架 / 回转支撑 / 传动 / 导电 / 扇叶 / 中心。</p>
+<p>传动：M3508 + 14M 同步带，16齿→60齿，<strong>传动比 3.75</strong>。</p>
+<div class="note">这不是让你重画，是让你<strong>在这套图上修</strong>。</div>`},
+
+{id:"T14",cat:"team",title:"断头侠：头部太重，轴已经歪了",src:"王奇英 · 27炒鸡大符 10-25",tags:["减重","轴","失效","关键"],
+body:`<p>去年做大符的师兄原话：</p>
+<p>「注意头不要太重了，小心<strong>断头侠</strong>」<br>「我们现在的<strong>支撑扇叶的轴已经有点歪了</strong>」</p>
+<p>图纸佐证：2024-11-22/23 才补的 <code>扇叶加固件</code>、<code>扇叶加固管</code>、<code>骑马夹</code>——赛季中后期打的补丁。</p>
+<div class="note">你这一版第一优先级：<strong>减重 + 提高轴抗弯刚度</strong>。先量头部质量、算轴根弯矩，再定改动。</div>`},
+
+{id:"T15",cat:"team",title:"六次历史故障，四次是电气",src:"27炒鸡大符 · 8 月记录",tags:["故障","维护","电气"],
+body:`<table><tr><th>现象</th><th>原因</th></tr>
+<tr><td>大小符都不亮</td><td>环误触（螺丝松一点即可）</td></tr>
+<tr><td>灯板异常</td><td><strong>灯板弹簧掉了</strong></td></tr>
+<tr><td>上不了电</td><td><strong>电源线断了</strong>（线太短）</td></tr>
+<tr><td>靶子不亮</td><td>没插电</td></tr>
+<tr><td>亮扇叶不转</td><td>现场处理</td></tr>
+<tr><td>灯臂一直亮</td><td>未复现</td></tr></table>
+<p>维护方案里的风险表可以直接用这张——有数据支撑。</p>`},
+
+
+{id:"T16",cat:"team",title:"图纸命名规范：V1.0-Sn-姓名-日期",src:"重生之我进入Taurus机械组 · 强制",tags:["命名","版本","审核号","规范"],
+body:`<p><strong>装配体</strong>：<code>装配体名 V1.0-Sn-自己的名字-20251112</code><br>
+<strong>零件</strong>：<code>零件名（尺寸参数）-自己的名字-20251112</code></p>
+<p>例：<code>英雄 V1.0-ST-高荣信-20261118</code>　<code>深沟球轴承（5-14-5）-高荣信-20261118</code></p>
+<ul><li>初始 V1.0；<strong>大改动</strong>小数点前+1，<strong>小改动</strong>小数点后+1</li>
+<li><code>Sn</code> = 审核号，n 为审核次数，<strong>n=T 表示审图通过、可发加工</strong></li>
+<li>每个零件每个版本存盘都要改名，改动再小也要改</li></ul>`},
+
+{id:"T17",cat:"team",title:"审图走「神图群」，不是大符群",src:"重生之我进入Taurus机械组",tags:["审图","神图群","流程"],
+body:`<p>「把自己的设计图纸发到<strong>神图群（审图群）</strong>，交给经验丰富的师兄师姐帮你找漏洞……直到审图通过。」</p>
+<p>完整链路：<strong>画图 → 大符群发进度 → 神图群审图 → Sn 变 T → 发加工</strong></p>
+<div class="note">进度群和审图群是两个群、两件事。之前只知道发群审核，这一点容易漏。</div>`},
+
+{id:"T18",cat:"team",title:"设计 ≠ 画图：五类约束下找最优解",src:"重生之我进入Taurus机械组",tags:["设计方法","约束","评审"],
+body:`<table><tr><th>约束</th><th>问自己</th></tr>
+<tr><td>功能</td><td>要完成什么动作？行程、速度、负载？</td></tr>
+<tr><td>空间</td><td>空间多大？不能碰裁判系统、不能超重？</td></tr>
+<tr><td>强度</td><td>受力多大？会不会断、会不会变形？</td></tr>
+<tr><td>加工</td><td>加工得出来吗？公差达得到吗？成本？</td></tr>
+<tr><td>装配</td><td>装得进去吗？坏了方便拆吗？</td></tr></table>
+<p>好设计四标准，<strong>按此顺序</strong>：功能达标 → 可靠耐用 → 可加工 → 易装配维护。</p>`},
+
+/* ============ 学习计划 ============ */
+{id:"P01",cat:"plan",title:"第 1 周（10/26–11/1）读懂它 + 定方案",src:"学习计划 W1",tags:["第1周","方案文档","周计划"],
+body:`<p><strong>不画图，只交文档。</strong></p>
+<ul><li>读 01/02 文档，手绘结构分解图；</li><li>抄一份尺寸表（自己手打）；</li><li>装 SolidWorks 工程图模板；</li>
+<li>去实验室看实物、问师兄；</li><li>写方案文档：A/B 两套对比后选一套。</li></ul>
+<p><strong>交付</strong>：方案文档 v0.1，11/1 周日 20:00 发群。</p>
+<p><strong>必须回答</strong>：给谁用、放哪、转不转、红蓝做不做、怎么检测命中、电怎么进旋转体、什么材料、多少钱。</p>`},
+
+{id:"P02",cat:"plan",title:"第 2 周（11/2–11/8）建出来",src:"学习计划 W2",tags:["第2周","建模","周计划"],
+body:`<p><strong>一个能转、不打架、包络不超的模型。</strong></p>
+<ul><li>11/2 量 STEP 里的靶心与轴向；</li><li>11/3 建骨架草图（Ø1400 + 5×72° + 高度基准）；</li>
+<li>11/4 轮毂/主轴/轴承座，当晚截图打卡；</li><li>11/5 实验室量实物；</li>
+<li>11/6 建一条臂，阵列 5 份，镜像红蓝；</li><li>11/7 干涉检查；11/8 出 3 张预览 + BOM v1。</li></ul>
+<p><strong>交付</strong>：装配体 v1 + 关键零件 + BOM + 干涉报告。</p>`},
+
+{id:"P03",cat:"plan",title:"第 3 周（11/9–11/15）画成图",src:"学习计划 W3",tags:["第3周","工程图","周计划"],
+body:`<p><strong>8 张以上能拿去加工的图。</strong></p>
+<p>清单：总装、底架立柱、主轴、轮毂、轴承座、灯臂（展开图）、靶面板、中心 R 标、灯腔走线、电机安装板。</p>
+<p>11/11 周三先发 2 张预审，别等周日。11/14 试切一件验证图纸。</p>
+<div class="note">每张图要有标题栏、比例、材料、图号、版本；配合尺寸有公差；钣金有展开图。</div>`},
+
+{id:"P04",cat:"plan",title:"第 4 周（11/16–11/20）定稿",src:"学习计划 W4",tags:["第4周","定稿","交付"],
+body:`<p><strong>不再新增设计，只修改、核对、归档。</strong></p>
+<ul><li>11/16 收意见做闭环表（改/不改 + 理由）</li><li>11/17 改图出 v1.1</li>
+<li>11/18 组内评审</li><li>11/19 补装配说明</li><li>11/20 定稿 v1.0 + 加工文件 + 归档</li></ul>`},
+
+{id:"P05",cat:"plan",title:"时间账：平均每天 3~4 小时",src:"学习计划 · 时间预算",tags:["时间","强度","安排"],
+body:`<table><tr><th>项目</th><th>每周</th><th>4 周合计</th></tr>
+<tr><td>实验室（3 次 × 3h）</td><td>9~12h</td><td>36~48h</td></tr>
+<tr><td>线上学习 + 画图</td><td>6~8h</td><td>24~32h</td></tr>
+<tr><td>文档/出图/改图</td><td>4~6h</td><td>16~24h</td></tr>
+<tr><td><strong>合计</strong></td><td><strong>19~26h</strong></td><td><strong>76~104h</strong></td></tr></table>
+<p>建议把实验室日固定成周二/周四/周六，别临时找时间。第 3 周最累，提前空出那个周末。</p>`},
+
+{id:"P06",cat:"plan",title:"四个里程碑",src:"学习计划 · 验收",tags:["里程碑","验收","节点"],
+body:`<table><tr><th>节点</th><th>产出</th><th>及格线</th></tr>
+<tr><td>11/1</td><td>方案文档 v0.1</td><td>说清做什么、为什么、怎么装、多少钱</td></tr>
+<tr><td>11/8</td><td>3D 模型 v1 + BOM</td><td>能转、无干涉、包络 ≤Ø1400</td></tr>
+<tr><td>11/15</td><td>工程图 ≥8 张</td><td>第三方能照着加工</td></tr>
+<tr><td>11/20</td><td>全套 v1.0</td><td>可直接下单</td></tr></table>`},
+
+{id:"P07",cat:"plan",title:"七个常见坑",src:"学习计划 · 血的教训",tags:["坑","避坑","经验"],
+body:`<table><tr><th>坑</th><th>怎么躲</th></tr>
+<tr><td>第 1 周不定走线方案</td><td>第 3 周发现要滑环，结构全改</td></tr>
+<tr><td>模型画得太细（每颗螺钉）</td><td>螺钉只画孔</td></tr>
+<tr><td>图纸不标公差</td><td>配合面必标</td></tr>
+<tr><td>钣金不给展开图</td><td>整批报废</td></tr>
+<tr><td>等完美了再发群</td><td>半成品也发，注明哪里不确定</td></tr>
+<tr><td>只画图不下实验室</td><td>每周固定 3 次</td></tr>
+<tr><td>最后一周才改图</td><td>第 3 周就开始预审</td></tr></table>`},
+
+/* ============ 参考资料 ============ */
+{id:"R01",cat:"ref",title:"官方规则/资料中心（目录已抓取）",src:"bbs.robomaster.com/wiki/20204847",tags:["官方","wiki","索引"],
+body:`<p>站点正文是前端渲染，直接抓是空壳；但<strong>导航目录</strong>是服务端直出的，可以当索引查。</p>
+<p>结构：比赛规则 / 赛事产品 / 技术评审 / 品牌宣传包 / 招商指引 / 培训体系 / 语言版本说明 / 参考文献。</p>
+<p>2027 关键文件：RMUC 2027 比赛规则文件、RMUL 2027 规则、RMU 2027 通信协议、RMUC 2027 技术评审系列。</p>`},
+
+{id:"R02",cat:"ref",title:"官方开源：2027 场地图纸 STEP",src:"bbs.robomaster.com/article/1970956",tags:["STEP","开源","下载"],
+body:`<table><tr><th>文件</th><th>大小</th></tr>
+<tr><td>RMUC2027_V1.0.0.stp</td><td>653 MB</td></tr>
+<tr><td>RMUL2027_3V3_V1.0.0.stp</td><td>1.99 MB</td></tr>
+<tr><td>RMUL2027_1V1_V1.0.0.stp</td><td>1.11 MB</td></tr>
+<tr><td>能量单元.stp</td><td>3.07 MB</td></tr></table>
+<p>官方声明：仅做参考，若与规则手册或现场有出入，以手册和现场为准。</p>`},
+
+{id:"R03",cat:"ref",title:"官方出售：能量机关传感器模组 495 元",src:"robomaster.com 物资购买说明",tags:["传感器","采购","柔性压力","检测"],
+body:`<p>「能量机关传感器模组（<strong>柔性压力传感器</strong>）」，<strong>495 元/套</strong>，含税不含运费。</p>
+<p>供应商：墨现科技（东莞），联系人 刘磊星 15820434522。</p>
+<p>发货：收款后 3 个工作日。备注格式：RM+学校全称+联系人姓名。</p>
+<div class="note">方案文档里应把「买 / 自己做」列为决策点：买 = 495 元省两周；自己做 = 微动开关或键轴。</div>`},
+
+{id:"R04",cat:"ref",title:"开源方案 A：深大 RobotPilots（微动开关）",src:"bbs.robomaster.com/article/9457",tags:["开源","微动开关","深大","环数"],
+body:`<p>RM2023 可环数检测能量机关，用<strong>微动开关</strong>检测击打位置，成本低、控制简单。</p>
+<p>开源：机械图纸 + STP + F103/F407 控制板 + 代码 + 技术报告《基于微动开关的可环数检测能量机关》。</p>
+<p>网盘：<code>pan.baidu.com/s/1LJW1IKWjU96x5C280E4VeQ</code>　提取码 <code>RPNB</code>。</p>`},
+
+{id:"R05",cat:"ref",title:"开源方案 B：东大 3SE（无线键轴）",src:"github.com/ChenYuWuAi/powerrune24",tags:["开源","键轴","无线","ESP32","滑环"],
+body:`<p>RM AWARD 2024，用<strong>机械键盘键轴</strong>做击打检测 + <strong>无线（ESP32/BLE）</strong>替代滑环，带完整上位机。</p>
+<ul><li>支持大小符模式、正反方向、灯效整定</li><li>环数成绩回传、OTA 升级</li>
+<li>键轴被打坏会自动屏蔽该环</li></ul>
+<div class="note">这是「电怎么进旋转体」这个问题的现成答案：<strong>自带电池 + 无线</strong>，结构上省掉一大块。</div>`},
+
+{id:"R07",cat:"ref",title:"飞书里的 7 份设计 PDF（前三份必看）",src:"海纳百川学无止境-资料汇总",tags:["PDF","资料","设计方法"],
+body:`<table><tr><th>文件</th><th>备注</th></tr>
+<tr><td><strong>结构件设计流程经验总结.pdf</strong></td><td>7.9 MB · 第一周必看</td></tr>
+<tr><td><strong>结构设计的思维逻辑.pdf</strong></td><td>1.2 MB · 第一周必看</td></tr>
+<tr><td><strong>传动机构简述.pdf</strong></td><td>3.7 MB · 选回转方案时看</td></tr>
+<tr><td>轻量化设计指南.pdf</td><td>3.7 MB · 减重时看</td></tr>
+<tr><td>基于拓扑优化的 FSC 镂空链轮设计.pdf</td><td>2.0 MB</td></tr>
+<tr><td>悬挂方案分析.pdf</td><td>1.8 MB · 暂时不用</td></tr>
+<tr><td>机械设计（濮良贵）/ 机械原理（孙桓）</td><td>工具书</td></tr></table>
+<p>都在飞书云空间里，可直接预览下载。</p>`},
+
+{id:"R06",cat:"ref",title:"常用资源：标准件与标准",src:"整理",tags:["标准件","米思米","GB","教程"],
+body:`<table><tr><th>用途</th><th>去处</th></tr>
+<tr><td>标准件模型</td><td>米思米、怡合达</td></tr>
+<tr><td>SolidWorks 教程</td><td>B 站「国标模板」「钣金展开」</td></tr>
+<tr><td>制图标准</td><td>GB/T 14689、GB/T 1804、GB/T 1184</td></tr>
+<tr><td>规则答疑</td><td>规则手册 1.4 节问卷，备赛期 5 个工作日答复</td></tr></table>`},{"id":"A001","cat":"field","title":"官方 RMUC2027 装配体（STEP + SolidWorks）到手","src":"群聊·27机械组 史金凯 2026-10-26","tags":["自动同步"],"body":"<p>27机械组 史金凯 2026-10-26 22:39 发来 RMUC2027_V1.0.0装配体版本.zip（371MB），解压后为 RMUC2027_V1.0.0.stp 与 RMUC2027_V1.0.0装配体版本.SLDASM 两个文件。相比库中已有的 653MB 官方场地 STP（01_官方规则与规范/官方场地模型_RMUC2027.stp），这一份附带 SolidWorks 装配体，可直接在 SW 里打开做干涉检查、测量与布置基准，是大符/能量机关与底盘布置建模的首选入口。已归档到 04_往年图纸与代码/官方场地模型RMUC2027_STEP与SW装配体_V1.0.0.zip。</p>"},{"id":"A002","cat":"field","title":"27 赛季场地改造分工表：大国工匠 3 项 + 战队工匠 7 项","src":"飞书知识库·机械·27赛季Taurus场地改造指南","tags":["自动同步"],"body":"<p>《27 赛季 Taurus 场地改造指南》把活分成两半：<br>大国工匠部分（郭工制造）：a 全场改建为次新 27 场地；b 三级台阶制造；c 大飞坡块移除、起伏路段处地板保留，后建新隧道地形填平飞坡空缺。<br>战队工匠部分（Taurus 制造，7 项）：a 靶车、b 前哨站、c 飞镖基地靶、d 科技核心、e 能量机关、f 工作台、g 机库平台。<br>商讨中：便携式二级台阶（需求待定）。<br>用法：这 7 项就是本赛季场地道具的完整交付清单，也对应场地道具开发维护文档里那些还空着的章节（靶车、大符、前哨）。</p>"},{"id":"A003","cat":"field","title":"吊射靶改进方向：加一块发光装甲板 + 做成快拆","src":"飞书知识库·机械·场地道具开发维护文档","tags":["自动同步"],"body":"<p>场地道具开发维护文档第 9 节：吊射靶原来那个差不多了，改进只加两点——<br>1）安装一块发光的装甲板（便于视觉识别与命中判定）；2）结构做成能快拆的。<br>这两条是本赛季吊射靶的明确需求边界：不要重做主体，只加识别装置和快拆接口。</p>"},{"id":"A004","cat":"field","title":"场地道具开发维护文档里「靶车」「大符」两节仍是空白，这是本赛季最大的缺口","src":"飞书知识库·机械·场地道具开发维护文档","tags":["自动同步"],"body":"<p>文档结构完整，但第 7 节靶车、第 10 节大符、第 11 节场地都没有正文；第 1.1 优点、第 2.1/2.2/2.3 各兵种需求、第 3.2/3.3 电控与视觉技术要求、第 5 节维护规范都只写了零星几条。<br>这意味着：本赛季场地道具里最能拉开差距的两件东西（靶车、能量机关），队内还没有成文需求。谁先把这两节写出来，谁就掌握了定义权。<br>补写时可直接套用已有的 2.4 飞镖组需求写法：靶体与移动结构 → 整体框架 → 缓冲，三段式。</p>"},{"id":"A005","cat":"team","title":"靶车装甲板的血泪教训：插销会脱出，玻纤会失效","src":"群聊·场地道具开发维护大队","tags":["自动同步"],"body":"<p>去年靶车转动时装甲板会被甩出来，根因有两个层面：<br>1）机械：插销扛不住、会从孔里脱出来（不是从滑轨上倾出来）。<br>2）材料：玻纤（FR4）在高频交变载荷下失效——板材本身不是为反复冲击设计的。<br>视觉侧的要求：装甲板可以保留里外移动功能，但必须保证它旋转和移动时是完全固定住的。<br>结论：靶车装甲板的锁紧要做成防脱，而不是靠摩擦或靠销子塞住；选材避开纯玻纤承力。</p>"},{"id":"A006","cat":"team","title":"场地道具抗撞击冗余不足的三个遗留问题（去年复盘）","src":"飞书知识库·机械·场地道具开发维护文档","tags":["自动同步"],"body":"<p>1）抗撞击冗余不足：局部薄弱结构（挡板边角、限位凸起）耐冲击性差，大小弹丸击打后多次对抗即出现松动、掉漆、板材翘边、螺丝滑丝，需要频繁检修。<br>2）维护体系不完善（文档此条未展开）。<br>3）机械组技术要求因此定成两条硬指标：高稳定性/高冗余设计、耐磨抗造。<br>通用维护规范第一条：定期全面检查，螺丝紧固与结构形变逐项排查。</p>"},{"id":"A007","cat":"team","title":"场地道具负责人是一整个赛季的责任，不是装好就完事","src":"飞书知识库·机械·场地道具开发维护文档","tags":["自动同步"],"body":"<p>王奇英的原话（收录在场地道具开发维护文档第 4 节）：负责人不是把东西设计出来装好就完事，而是要一整个赛季维护；不要等要测了才匆匆检查，然后发现问题急急忙忙修、发现缺零件又急急忙忙发零件，所有人都要等你，拖累进度。<br>要求：测试前提前检修，长时间测试连续检修，易坏零件提前发、提前备。<br>GGBoom 的补充：备赛过程中超过半数的问题，本质是沟通协调不到位造成的信息差——电控、视觉调车出问题必须及时反馈给机械。</p>"},{"id":"A008","cat":"field","title":"2027 赛季能量机关：官方只卖「靶子」，立柱与臂架必须自研","src":"群聊·27炒鸡大符（王奇英、钟自豪、植正雄、高荣信，2026-10-28）","tags":["自动同步"],"body":"<p>大符群 10-28 明确：本赛季能买到的官方组件只有靶子（即五块圆形靶板），「剩下的整体框架要你们设计」，要求「尽量贴近场上的模样」。也就是说能量机关从『买成品』变成了『买靶板 + 自研结构』，自研范围至少覆盖立柱、臂架、旋转核心与升降支撑。<br><br>由此带来三个连锁问题：<br>1) 没有组件图纸就无法定接口——组员反馈「关于能量机关的文件只找到装配体和零件，好像没看到图纸」，即目前手上只有 3D、没有 2D 工程图与接口尺寸表；<br>2) 靶板到货前臂架无法定长度与端部安装孔位；<br>3) 自研件要自己承担强度、刚度、动平衡，而往年是照官方件抄。<br><br>行动建议：先向场地道具组索取「组件清单 + 靶板 3D/2D + 接口尺寸」，把靶板安装孔位、重心位置、法兰规格落成一页接口表，再开臂架。切勿在接口未定的情况下先画框架，返工成本极高。</p>"},{"id":"A009","cat":"size","title":"大符升降机构的真实痛点：现在靠手动松螺丝升降","src":"群聊·27炒鸡大符（王奇英、植正雄，2026-10-28）","tags":["自动同步"],"body":"<p>王奇英原话：「可以想一个方便的旋转靶升降机构，我们现在的大符升降是靠手动松螺丝升降的，非常不方便」「碰到要低一点才能进去的地方很难受」。这是往年机型在实际使用中暴露的设计缺陷，属于「设计时省事、比赛时遭罪」的典型。<br><br>痛点的本质：升降调节被做成了『装配工序』而不是『操作功能』。手动松螺丝意味着每次调节都要 2 人以上、要工具、要重新找水平、要重新锁紧，进出门洞、装车、过检录都要调一次，直接吃掉调试与转场时间。<br><br>改进方向（群内已给出的三条）：<br>1) 丝杆/梯形螺纹升降 + 导向柱：单人在侧面摇动手轮即可升降，自锁靠梯形螺纹升角小于当量摩擦角，不需额外锁紧；<br>2) 可快速拆卸：把立柱做成两段插接 + 快拆销/凸轮锁，过门洞时整段拆下而非降低；<br>3) 可拆扇叶：臂架与靶板做成快拆，运输时拆散、场地内组装，绕开『整体高度』这个约束。<br><br>设计校核要点：升降行程要覆盖场地最低通过高度到工作高度；导向柱长径比不足会晃动，建议 ≥2.5:1；升降到最高位时整机重心必须落在支撑多边形内，否则加配重或做外扩支腿。</p>"},{"id":"A010","cat":"size","title":"大符整体垫高到 2600mm 量级：升降便利性与重心稳定是一对矛盾","src":"群聊·27炒鸡大符（伍津乐、林创武、林长耿，2026-10-28）","tags":["自动同步"],"body":"<p>群内提出「这赛季能不能搞个东西把符垫高」，理由是观感与打击角度；讨论中出现 2600mm 这个数字（「要垫到 2600mm？」），并立刻引出「会不会重心不稳」。<br><br>这是一个典型的『高度—稳定性—运输性』三角约束：<br>· 垫高 → 重心抬高，倾覆力矩随高度线性增长，抗倾覆需要更大的支撑跨距或配重；<br>· 配重 / 跨距加大 → 整机重量与占地增加，货拉拉运输与场地摆放受限（「外出比赛看看有什么东西能垫一下，还方便货拉拉运的」）；<br>· 若采用可升降方案，则升降到高位时的刚度与锁止可靠性又成为新风险点。<br><br>工程判断（供参考，非队内结论）：与其做整体垫高，不如做「可升降 + 大跨距底座」——底座用铝型材做十字外扩支腿，跨距取到高度的 0.5 倍以上可显著提高抗倾覆；或用可注水/可加沙袋的配重箱，运输时空箱、到场后配重，兼顾运输与稳定。<br><br>待核实：2600mm 是否为规则/场地要求的高度值，需查官方规则与场地手册确认后再定方案，本条仅记录讨论。</p>"},{"id":"A011","cat":"size","title":"能量机关四大模块分解：立柱·减速箱·核心·灯臂（官方培训口径）","src":"群聊·27炒鸡大符（官方培训 PPT 截图，2026-10-28）","tags":["自动同步"],"body":"<p>官方培训 PPT 对一个「单侧能量机关」给出的模块划分，可直接当作自研大符的功能分解与分工依据：<br><br>1) 立柱——载体，支撑整个能量机关道具部分。承担全部倾覆力矩，是刚度链的根，接口要同时对接地面与旋转核心。<br>2) 减速箱——主动力源，为能量机关提供旋转动力以及信号、供电传输。注意它同时是「动力+信号+供电」三合一路径，选型时要留滑环/线缆走线空间。<br>3) 核心——单侧供电与信号，是单侧能量机关的圆周中心。即核心是电气枢纽，机械上要保证同心度与轴向定位。<br>4) 灯臂——检测模块，实现 mark 灯以及小弹丸击打的检测与反馈。灯臂是易损件，装甲板/灯板要按可更换设计。<br><br>这张分解图的价值在于把「一个会转的架子」翻译成四个可独立设计、独立验收的子模块，每块都能单独定接口与公差，避免整机一次性堆叠。归档图：05_整理成果_大符专题/能量机关整体方案分解_官方培训_20261028.jpg</p>"},{"id":"A012","cat":"ref","title":"往年大符总装实测：臂端中心距 1619mm，垂直落差 1544.9mm","src":"群聊·27炒鸡大符（林创武转发 SolidWorks 测量截图，2026-10-28）","tags":["自动同步"],"body":"<p>从 2024 版能量机关总装模型（林涵，文件标注 202404-202405）实测得到的两个关键尺寸：<br>· 旋转中心 → 臂端靶板中心的距离：1619.09mm（Delta X 484.50，Delta Y 1544.90，Delta Z 0，即同一水平面内）；<br>· 对应投影面积 4947.03 mm²（软件测量面板值）。<br><br>这两个数的用处：<br>1) 1619mm 是臂长基准，可用于反推臂架的悬臂弯矩——假设端部总成（靶板+灯板+线束）重 3kg，则根部弯矩约 3×9.8×1.62 ≈ 48 N·m，臂架根部截面必须按此校核；<br>2) 端点落在同一水平面（Delta Z=0）说明该版采用「平面五星」布局而非带倾角的布局，动平衡只需配平质量不需配平力矩；<br>3) 可交叉验证：若本赛季靶板尺寸变化，臂长要按比例调整，但『端部质量 × 臂长』的乘积建议控制在往年量级内，否则立柱与减速箱扭矩会超。<br><br>归档图：05_整理成果_大符专题/能量机关总装尺寸测量_中心距1619mm_20261028.jpg</p>"},{"id":"A013","cat":"ref","title":"实物参考：大符的臂架用八边形镂空框 + 铝型材支撑架，靶板端部集成电控","src":"群聊·27炒鸡大符（实物照片，2026-10-28）","tags":["自动同步"],"body":"<p>群内流出的实物照片（一台已装配完成的能量机关）暴露了几个只从 3D 看不出来的工程细节：<br><br>1) 臂架不是实心板，而是「八边形外框 + 内部三角/梯形镂空肋」的组合，边缘密布铆钉/螺栓孔——说明用的是板材拼框（薄板激光切 + 折边或叠层），而不是整块铝铣削，成本和重量都更低；<br>2) 靶板端部集中了电控（可见绿色 PCB、接线端子、电机/传感器模块），即灯臂是「机电一体件」，拆装必须留电气插拔空间，线束要走臂架内侧并用扎带固定，避免旋转时甩出；<br>3) 整机立在一个铝型材框架（40 系列或 30 系列）做的门式支撑架上，下方还有独立底架——印证了立柱/支撑是独立子系统，可以先做支撑架再上旋转体；<br>4) 臂架表面覆白色透光板（亚克力或 PC 乳白板），边缘用螺栓压条固定，这是灯效面的常见做法。<br><br>对自研的直接启示：优先用「板拼框」而非整块铣削，降低加工成本与周期；把靶板端部当成一个可整体拆换的模块；线束路径在建模阶段就要画出来。<br><br>归档图：05_整理成果_大符专题/能量机关实物参考_臂架与支撑架结构_20261028.jpg</p>"},{"id":"A014","cat":"team","title":"大符项目对接失败的教训：没落成「清单 + 图纸」就等于没对接","src":"群聊·27炒鸡大符（钟自豪、植正雄、王奇英，2026-10-28）","tags":["自动同步"],"body":"<p>10-28 大符群里的一段真实对话，几乎是项目管理的标准反面案例：<br><br>组员：「所以是买官方组件是吗，组件包括什么内容？」→「我们不知道买了什么组件，也不知道我们要设计什么」→「有没有已经买了组件的清单」→ 负责人：「其实这个我也是不知道，只知道有组件可以买」。<br><br>另一边，组长在催：「注意对接，不然他们不知道该干什么」「项目已经开始很多天了，不要拖」。<br><br>问题拆解：<br>1) 信息在「负责人」和「执行者」之间存在断点，采购清单没有下沉到设计者手里；<br>2) 关键交付物（组件图纸）缺失，导致设计无法启动——这不是态度问题，是输入不足；<br>3) 对接没有载体：口头问「进度如何」不产生任何可执行信息，必须有清单、有图纸、有截止时间。<br><br>可复用的做法：跨组对接一律落三样东西——①采购/交付清单（型号、数量、到货时间）②接口图纸（安装孔位、法兰、外形包络）③责任人 + 日期。三者缺一，视为未对接。另：组员在群里公开问「我们该设计什么」，本身就是对接失效的信号，组长应当天响应而不是继续催进度。</p>"},{"id":"A015","cat":"ref","title":"墨现科技 RM 柔性压力传感器 + PCBA：能量机关传感模组采购线索","src":"群聊·27炒鸡大符 郭卓鑫 2026-10-29 08:32","tags":["自动同步"],"body":"<p>27炒鸡大符群分享的采购线索：墨现科技出 RM 柔性压力传感器 + PCBA 套装，即 RoboMaster 大能量机关用的激光传感器模组形态，可用于能量机关（大符）的击打/触发检测。群里同时在催图纸（「图纸我还在问」），说明该模组的具体安装尺寸与接口定义尚未拿到——采购前必须先向厂家索取图纸与通信协议，不能凭商品页下单。</p>"},{"id":"A016","cat":"team","title":"场地道具新人任务六条硬要求（第一次考核口径）","src":"群聊·27炒鸡大符 / 云文档《RM2027能量机关第一次周会进度》","tags":["自动同步"],"body":"<p>王奇英在「27炒鸡大符」群发布的场地道具新人规则，共六条，直接决定新人去留：①每人必须出一份对应场地道具的图纸和方案文档；②每周把图纸发到对应场地道具飞书群审核，第一周没图纸也要发文档充当进度，不能空着；③画图或选型中遇到的问题要发群里一起解决，鼓励暴露问题而不是自己憋；④不能以画场地道具为由长期不来实验室，实践技能培养同样计入；⑤每周都要有进度，严禁摆烂几周最后一-周赶；⑥考勤要求加实践任务作为新人第一次考核，纳入考量，不合预期会严肃规劝退队。要点：考核不是只看最后那张图，而是看每周的持续产出与出勤。</p>"},{"id":"A017","cat":"team","title":"场地道具周会进度文档：四段式固定结构，每周新建一份不换标题","src":"群聊·27炒鸡大符（王奇英、植正雄）","tags":["自动同步"],"body":"<p>大符组的进度文档有固定写法，每人一节，四个小标题一个都不能少：整体设计思路 / 本周进度 / 本周遇到的问题 / 预计下周安排。负责人的要求是每周新建一个文档、标题只把「第一次」顺延成「第二次」，正文结构不动，这样翻历史就能看出一个人每周的推进曲线。文档建在飞书云文档的场地道具目录下（不是知识库空间）。提交节奏是周会前一天发群里，因为「明天要讲的」。即使当周没出图，也要写设计思路把文档填出来，不允许空白交差。</p>"},{"id":"A018","cat":"field","title":"官方 RMUC2027 场地图纸与可移动道具 STEP 全套开源（依据规则手册 V1.0.0）","src":"官方·BBS 1970956（RoboMaster 高校赛务）","tags":["自动同步"],"body":"<p>高校赛务发布，含四份 STEP：RMUC2027 全场 653MB、RMUL 3V3 1.99MB、RMUL 1V1 1.11MB、能量单元 3.07MB，按 RMUC&RMUL 2027 规则手册 V1.0.0 建模，覆盖高地、中央控制区、隧道、工作台、围挡等结构。可借鉴：用官方几何做道具干涉校核、越障行程与抬升高度估算，能量单元模型可直接用于夹爪包络与抓取姿态验证。官方注明若与手册标注或现场有出入，以手册与现场为准，关键尺寸仍须回查手册条款。已下载存档至 机械百科_数据/外部资料/2026-11/（RMUC）与 2026-10/（RMUL 三份）。</p>"},{"id":"A019","cat":"field","title":"RMUC2027 完整形态考核：五类地形增益的通过时间硬指标（3/5/20 秒）","src":"官方·规则中心 RMUC 2027 完整形态考核细则（节点 1971755）","tags":["自动同步"],"body":"<p>重装、步兵、哨兵均需按规则手册自建地形：起伏路段 20 秒内通过；穿越隧道、跨越隧道、公路增益各 3 秒内触发；高地 5 秒内触发；步兵制高点增益 7 秒内触发；每项各重复 3 次。若已成功通过穿越隧道/跨越隧道/公路/高地四项中任意一项，起伏路段项免拍直接满分。重装机器人分两种负载计分：携带至少 1 个能量单元通过得 50%，装配 42mm 模块化发射机构后通过得另 50%，两者同时携带一次通过即满分。可借鉴：把 3/5/20 秒倒推为底盘越障速度与机构行程预算，直接写进方案评审指标。</p>"},{"id":"A020","cat":"field","title":"RMUL2027 完整形态考核：200mm 台阶与 250mm 隧道连续三次通过","src":"官方·规则中心 RMUL 2027 完整形态考核细则（节点 1970940）","tags":["自动同步"],"body":"<p>RMUL 3V3 与步兵对抗的功能展示选做项：连续 3 次登上并跳下高度差 200mm 的台阶、连续 3 次穿过高度 250mm 的隧道，各 5 分；重型与步兵同口径，哨兵另有自动导航越障项。3V3 转向考核为六个点位横距 6m、纵距 1m 的绕障路线，命中率考核用 3m 处 >0.4 转/秒 旋转小装甲，步兵 15 发、重装 10 发、哨兵 50 发、步兵对抗 50 发。可借鉴：台阶 200mm 与隧道 250mm 就是底盘最小离地与云台最低高度的设计红线。</p>"},{"id":"A021","cat":"size","title":"RMUC2027 重装机器人：42mm 模块化发射机构自主拾取装配考核","src":"官方·规则中心 RMUC 2027 完整形态考核细则（节点 1971755）","tags":["自动同步"],"body":"<p>考核要求队伍自建工作台（长 75cm、宽 45cm、高 40cm，台面水平稳固，拾取安装中不得移动翻倒），把模块化 42mm 发射机构放在台面，机器人须自行完成拾取与安装，全程不得人工扶持或其它干预，装配过程必须一镜到底不可剪辑。后续接直角转弯/直线加减速/掉头三场景（各 5m/5m/2m）计时，以及 5m 打靶 10 发、5m 移动靶 10 发、20m 模拟击打基地 10 发。可借鉴：这套「公母头对接 + 自锁 + 到位检测」的机械接口是本赛季重装的核心难点，工作台 40cm 高度决定了抓取姿态与臂展下限。</p>"},{"id":"A022","cat":"field","title":"RMUC2027 能量单元抓取装配考核：资源站 2 米线、限时 5 分钟、核心位姿分档","src":"官方·规则中心 RMUC 2027 完整形态考核细则（节点 1971755）","tags":["自动同步"],"body":"<p>重装机器人必做 50 分项：队伍自建资源站与科技核心（不得临时手持），两者相距 2 米；机器人初始置于资源站 2 米外、任何部位投影不得越线，自行移动抓取能量单元并按规则手册要求在科技核心处模拟装配。科技核心位姿须按《附表1 技术评审科技核心位姿点位表》的各难度等级调整，评分看成功装配数量、装配难度、单件耗时与道具装配规范性。附表 1 页面标注「后续更新」，届时需回查。可借鉴：2 米线与 5 分钟时限直接约束底盘定位精度、夹爪开合行程与容错倒角设计。</p>"},{"id":"A023","cat":"field","title":"步兵/哨兵模拟击打大小能量机关：10 分选做项、只计一次且默认按步兵计","src":"官方·规则中心 RMUC 2027 完整形态考核细则（节点 1971755）","tags":["自动同步"],"body":"<p>RMUC 2027 技术评审中步兵与哨兵各有「模拟击打大、小能量机关，展示激活能量机关能力」的 10 分选做项。关键规则：该项目仅需完成一次，队伍可自选步兵或哨兵展示，不重复得分；若两台都提交，只按步兵计分、哨兵不计。可借鉴：把能量机关打击能力集中投在一台车上（通常是命中率更高的步兵），另一台不必为此配重或改云台；也说明官方仍把大符命中视为可量化考核项，值得单独做靶场复现。</p>"},{"id":"A024","cat":"field","title":"RMUC2027 射击精度靶场搭建参数：5m/20m 靶位、80×80cm 遮挡、装甲间距 60cm","src":"官方·规则中心 RMUC 2027 完整形态考核细则（节点 1971755）","tags":["自动同步"],"body":"<p>细则给出可直接复刻的靶场几何：5 米外圆靶打 10 发，靶纸须完整平贴、背板坚硬到按压无明显凹陷；移动靶为 A/B 两条相距 5m 的平行线，小装甲目标沿 B 线往复（平均速度 >1m/s、自转 >0.4 转/秒），A、B 线间设 2 块 ≥80×80cm 不透明遮挡，距 B 线 40cm 且外沿与往复区间两端对齐；小装甲四块受击面的相对基准平面间距不得小于 60cm（步兵/哨兵为 50cm）；20m 外模拟基地顶部装甲。可借鉴：这套参数能当自建靶场的施工图，也解释了为什么近距遮挡下的命中率才是真实水平。</p>"},{"id":"A025","cat":"field","title":"深大大符图纸已失传，现用三年前版本","src":"群聊·27炒鸡大符 王奇英 2026-11-01","tags":["自动同步"],"body":"<p>王奇英 2026-11-01 打听深圳大学的大符图纸，回复是「已经失传了」，他们现在用的是 3 年前师兄做的版本。<br><br>两个含义：<br>1. 大符这类场地道具的图纸在各队普遍没有沉淀，人员一换就断档——这正是队里《场地道具开发维护文档》第 10 节空着的原因。<br>2. 你这次做完的图纸如果归档规范、有装配说明，价值比想象中大。</p>"},{"id":"A026","cat":"field","title":"靶车（新场地道具）：电控升降 25–30cm","src":"群文件·靶车进度文档 王家祚 2026-11-01","tags":["自动同步"],"body":"<p>王家祚 2026-11-01 在群里发的《靶车进度文档》，是今年新增的场地道具。<br><br>需求：在去年基础上做两项改进——<br>1. 主动电控升降，升降幅度 25–30cm<br>2. 提升装甲板稳定性<br><br>设计构思：参考学长小车的 X 型升降结构，放在滑环电机所在板下方的箱体中，顺带优化箱内空间；装甲板用等距限位 + 螺丝水平固定。难点在于高度抬升时限位板也要跟着装甲板一起动，作者提出两种方案（联动抬升板 / 等距孔+长螺丝卡位）。<br><br>本地路径：E:/workbuddy/robomaster/03_群聊与任务记录/靶车进度文档_20261101.docx</p>"},{"id":"A027","cat":"size","title":"大符方案的第一原则：先问「最本质目标」，别把需求直接翻译成机构","src":"群聊·27炒鸡大符 2026-11-02（植正雄、林创武）","tags":["自动同步"],"body":"<p>11-02 晚大符群的讨论是从「做个升降机构」开始的，直到植正雄连问三句才拐回来：「最本质目标是什么」→「是不是只是为了好带」→「如果是，那么有很多方案：快拆、升降都可以」。<br><br>这个提问方式值得抄下来当模板。伍津乐的真实需求是「外出比赛找个东西垫高大符，又方便搬运」，林创武的约束是「中心离地 2m6」。需求一旦被翻译成「升降机构」，后面所有讨论（丝杆还是同步带、自锁怎么做、导向柱多长）都变成替手段服务，而手段本身没被检验过。<br><br>植正雄的补充是经验判据：「我个人经验。升降机构太复杂，所以不好维护」。也就是说，在「好带」这个目标下，升降是成本最高的一条路——不是不能做，而是不该作为默认解。<br><br>可复用动作：接到「做一个 X 机构」的需求时，先反问「要解决哪个具体动作/痛点」，把目标写在方案第一行，再列 2–3 条互斥路线做比较，而不是直接深化第一条想到的路。</p>"},{"id":"A028","cat":"size","title":"大符运输的三条路线：缩小支架垫桌 / 自研升降 / 拆五片快拆","src":"群聊·27炒鸡大符 2026-11-02（林创武、植正雄、高荣信）","tags":["自动同步"],"body":"<p>同一目标（把 2600mm 的大符弄上车、过门洞）下的三条互斥路线，群里都摆到了桌面上：<br><br>【A 缩小支架 + 标准折叠桌】林创武：「有一定升降就行了」「然后买一张比如 1m 高的标准尺寸的桌子，配合上能达到那个高度就行」，附加要求是轻便、能折叠、方便带去备场。植正雄进一步说「大幅支架部分搞小一些就好了，然后放在买的桌子上，这样高度就足够」「搬运的话也可以分开搬运」——支架与桌子分离运输，到场合体。这是目前倾向的路线，因为把「高度」这件难事外包给了一件几十块钱的成品。<br><br>【B 整机升降】高荣信自评方案「挺简单」，答应做一版给群里看。反方意见是复杂、难维护。旁证：深大买了成品升降机，但那是采购不是自研。<br><br>【C 拆五片叶片现场装】林创武：「能不能五个扇叶都分开，到那里再装」。高荣信原本想用合页做折叠，自评「强度应该很低」，转向拆片。<br><br>取舍要点：A 牺牲外观一致性（桌腿露在外面）；B 牺牲维护性；C 牺牲现场装配工时与重复定位精度。选哪条取决于你要优化的是「首次装配时间」还是「每次转场时间」——比赛期间转场次数远多于首次装配，所以 A/C 的实际收益比 B 大。</p>"},{"id":"A029","cat":"size","title":"折叠方案的隐藏代价：纵向空间只是换成横向空间，铰链还是刚度短板","src":"群聊·27炒鸡大符 2026-11-02（林创武、高荣信）","tags":["自动同步"],"body":"<p>林创武对大符「往前折叠」方案的两句判断，是这个方案被否掉的直接原因：<br><br>1）「往前折叠的方案要考虑强度」——折叠必然引入铰链，铰链是有间隙的单自由度连接，在悬臂末端（扇叶外缘）会放大成可观的位移，还带来定位重复性问题；<br>2）「空间也没减少多少，纵向空间改为横向空间罢了」——折叠并没有减少体积，只是把占地方向换了。车宽/车高受限时，换方向等于没解决问题。<br><br>推而广之：折叠适用于「细长杆件」（三脚架、灯架），因为折叠能把长度减半；不适用于「面状/环形大件」，因为折叠后的包络仍是原来的面积。判断要不要做折叠，先算折叠后包络的长宽高三个数，再和运输工具内腔比，别凭感觉。<br><br>高荣信的原话佐证了这个判断过程：「我一开始还想用合页结构，但是强度应该很低」，说明他自己也意识到刚度问题，最终转向拆五片。</p>"},{"id":"A030","cat":"field","title":"航空箱一物两用：既是运输容器，也是垫高基座","src":"群聊·27炒鸡大符 2026-11-03（谭嘉豪、伍津乐、高荣信）","tags":["自动同步"],"body":"<p>伍津乐说桌子「不方便上货拉拉」，谭嘉豪直接给了「航空箱」三个字，伍津乐确认：「去赛场要用航空箱，搬来搬去」。<br><br>这条建议的价值在于它把两个需求合并了：大符本来就要装航空箱运输（防撞、防尘、可堆叠），而航空箱本身是一个规整的、有足够强度的立方体——把箱子留到赛场当垫高基座，等于把「运输容器」直接复用成「高度来源」，不需要额外带一张桌子。<br><br>工程上要注意三点：①箱体承压能力（五块靶板 + 支架的重量集中在四个底脚，箱盖/箱壁需能承受，必要时加一块胶合板分散载荷）；②箱底防滑（光滑箱底在打靶振动时会爬行，需垫橡胶或加地脚）；③箱内衬棉会吃掉净空，选购时按「内腔尺寸」而不是「外尺寸」算能否装下支架。<br><br>待办：高荣信问「有标准航空箱的尺寸吗」，群内未答，需自行查常规规格（常见 1200×800×H、1000×600×H 系列）。</p>"},{"id":"A031","cat":"ref","title":"深大符的两个做法：粗螺丝直连铝管，升降直接买成品","src":"群聊·27炒鸡大符 2026-11-02/03（王奇英、伍津乐）","tags":["自动同步"],"body":"<p>王奇英转述的友校（深大）做法，两条都很务实：<br><br>1）结构连接：「深大符叶是简单螺丝固定在骨架上面的」「用较粗的螺丝固定在铝管上」。即扇叶与骨架不做精巧过渡件、不做定位销+卡扣，用大直径螺丝直接锁在铝型材/铝管上。好处是零件少、装配快、失效模式单一（松了就紧）；代价是每次拆装都会在原孔位磨损，所以铝管上要么用通孔+螺母，要么加预埋件。<br><br>2）高度方案：「深大买了升降机」——注意是买成品，不是自研。这与队内「升降太复杂不好维护」的判断互相印证：需要升降的话，采购成熟机构比自己设计更省事，自研升降的收益只在「必须集成到既有立柱里」时才成立。<br><br>启发：本赛季官方只卖靶板，立柱臂架自研。在自研件里，凡是有成熟成品的功能（升降、脚轮、锁扣）优先外购，把自研精力留给接口和骨架这些没有成品可买的部分。</p>"},{"id":"A032","cat":"size","title":"靶板叶片上有三类孔，画图时不能混：结构孔 / 扎带保险孔 / 电控板孔","src":"群聊·27炒鸡大符 2026-11-03（王奇英答高荣信）","tags":["自动同步"],"body":"<p>对着 2024 版总装（a机械组-能量机关总装2-林雨-20240524.SLD）的截图，王奇英把靶板叶片的孔分成三类，这是本轮最具体的一条结构知识：<br><br>1）叶片中部那两颗孔——与骨架固定，「只有中间是用来跟铝管固定的」，配「较粗的螺丝」；<br>2）叶片两侧的孔——「左右不是螺丝孔」，是扎带的过孔，用途是「防止灯板的魔术贴用太久脱落」。即魔术贴是主固定，扎带是保险，两者并用；<br>3）其余孔位——固定开发板/灯板本体。<br><br>为什么这个区分重要：如果按「所有孔都是螺丝孔」去画和加工，两侧的孔会被当成 M3/M4 螺纹孔处理（打螺纹、算有效深度），既浪费工序，又可能在装配时被误锁螺丝顶到灯板。正确做法是图纸上用不同图层/注释区分，或在 BOM 里标注「扎带孔 φ3 通孔，无螺纹」。<br><br>另外，魔术贴长期使用会因温度与振动失去粘性，扎带做二次保险是这个方案能撑住一整个赛季的原因——这类「主固定 + 保险」的双重设计，值得用到所有靠胶粘/魔术贴固定的部件上。</p>"},{"id":"A033","cat":"size","title":"大符超重的根因是五块靶板本体，不是支架","src":"群聊·27炒鸡大符 2026-11-02（王奇英）","tags":["自动同步"],"body":"<p>王奇英：「目前大符重的原因是 5 个靶部分太重了」，并反问植正雄「这会真重心不稳了吧」。<br><br>这条纠正了一个容易走偏的优化方向。讨论前期大家都把重心问题归到「支架太高/底盘太小」，解法自然滑向「加大底座跨距」「加配重」——但那是在用一个更重的方案去救一个本来就超重的方案。真正的杠杆在靶板：五块靶板处于悬臂最远端，力臂最长，减 1kg 靶板的效果远大于在内侧减 1kg。<br><br>可执行减重顺序：①靶板本体（材料/厚度/镂空，注意保留打击面刚度）→ ②灯板与线束（减板、走线槽化）→ ③叶片与骨架的连接件（零件合并、去掉过渡板）→ ④最后才是底座配重。<br><br>减重边界：靶板是被弹丸持续打击的面，减重不能以牺牲抗凹坑能力和平面度为代价，否则打靶环数会掉——这是「性能件减重」与「结构件减重」的区别。</p>"},{"id":"A034","cat":"team","title":"本赛季大符方案的第一道关口是王奇英，方案要先过他再上评审会","src":"群聊·27炒鸡大符 + 27机械组 2026-11-02（林创武）","tags":["自动同步"],"body":"<p>林创武 2026-11-02 22:25 在 27炒鸡大符 群里的任命：「@王奇英 光荣任命你为今年大符的方案负责人，负责审核新人方案和进度审核」。<br><br>配套的两条工作方式要求（同日 27机械组群）：<br>1）「新人可以拿电脑到土槽或者负二，把图纸或方案线下给师兄师姐审核，不要闭门造车，线下交流效率也更高」；<br>2）「可以到对应场地道具群和师兄师姐约时间审图和方案」。<br><br>也就是说，本赛季审图不是「提交文档等回复」的异步流程，而要求面对面过图。对新人的实际影响：方案文档写完后先约王奇英线下看，改完再进正式评审会；不要指望在群里发个链接就得到有效反馈。<br><br>时间成本：一次线下审图通常 30 分钟以上，且要带可编辑源文件（不是截图）。提前把「我想解决什么问题 / 我考虑了哪几条路 / 我为什么选这条」三句话准备好，能显著提高过图效率。</p>"},{"id":"A035","cat":"field","title":"吉林大学 TARS-GO 可调装甲靶车开源（导轨滑块三向调节＋四轮移动底盘）","src":"来源·BBS 1971842","tags":["自动同步"],"body":"<p>供队内步兵/哨兵实弹打靶与视觉调试用的自制靶车。核心是装甲支架用直线导轨加 SGR 锁紧滑块，可手动调整装甲的 xyz 三个方向位置，用来模拟对手机器人不同站位与姿态；四轮移动底盘便于在训练场任意摆放；主体为铝合金（铨洲加工）＋玻纤板＋3D 打印件，优先选用市面易采标准件以降低复刻门槛，整体重心压低防倾倒。MIT 协议，含完整 SolidWorks 装配模型。可借鉴点：用现成导轨滑块做靶标位姿调节的廉价方案、靶车重心与轮距的稳定裕度、自制训练道具的模块化机架。</p>"},{"id":"A036","cat":"field","title":"能量机关传感器模组：加硅胶软垫后抗 5000 发 17mm@30m/s，套装不含灯板","src":"飞书·27炒鸡大符群 谭嘉豪转发官方文件截图 2026-11-04","tags":["自动同步"],"body":"<p>官方《2027 机甲大师高校系列赛场地道具出售方式》第四部分给出能量机关传感器模组的完整口径：495 元/套，含税不含运费（运费到付，可寄港澳台及海外），收到货款 3 个工作日内发出；一次性订 5 套及以上享 8 折。供应商墨现科技（东莞）有限公司，收款行招商银行东莞松山湖支行，账号 769910231610888，联系人刘露星 15820434522 / leixing.liu@mxkj.net.cn；对公转账或个人付款均可，汇款备注「RM+学校全称+联系人姓名」，付款人与收件人须一致。每套只含一个压感检测传感器 + 一块传感器控制板，不含安装框架、显示灯板、灯板控制板，即结构件与灯板仍要自研。最关键的性能边界：在传感器上增加保护措施（如硅胶软垫）的情况下，抗打击寿命为 5000 发、17mm 弹丸、法向速度 30m/s 的打击；不建议使用 42mm 弹丸打。无库存时发货延长 7–10 个工作日；安装方式与检测算法不同会使实际效果与真场存在差异，需自行调试适配。</p>"},{"id":"A037","cat":"team","title":"传感器直接双面胶贴灯板会打坏——深大队伍的踩坑反馈","src":"飞书·27炒鸡大符群 2026-11-04 11:41","tags":["自动同步"],"body":"<p>谭嘉豪转述深大队伍反馈：他们的能量机关传感器很容易坏，原因是把传感器直接用双面胶贴在灯板上，中间没有任何缓冲层。结合官方「加硅胶软垫后抗 5000 发」的口径可知，正确做法是传感器底部做弹性过渡（硅胶垫或泡棉），不能硬贴在刚性灯板上。设计靶板时要把传感器安装位当成独立弹性层来设计，而不是灯板上的一个附件；采购前应直接向商家索要保护措施的推荐做法。</p>"},{"id":"A038","cat":"dwg","title":"大符图纸分阶段交：有进展就发，灯带只填色示意位置","src":"飞书·27炒鸡大符群 2026-11-03 21:35–23:25","tags":["自动同步"],"body":"<p>王奇英在 27炒鸡大符群给出的审图口径：不必等整机装好才发图纸，有阶段性进展就先发过来审。两处具体画法：其一，灯带是贴在靶板下面的一条条 LED 灯带，不需要建模，只要在图上用填色或色块标出灯带的位置与走向即可，不要因为「没有灯带尺寸」卡住出图；其二，U 型槽这类标准件队内 SolidWorks 零件库里没有，最实际的办法是去淘宝找同规格件、按商家给的尺寸自建简化模型（外形与安装孔位即可，不必画螺纹牙型）。</p>"},{"id":"A039","cat":"field","title":"官方能量机关检测模块九层叠层组成：盖板到外壳的完整顺序与各层材料厚度","src":"飞书·27炒鸡大符群 2026-11-05 20:28 谭嘉豪转发官方培训材料","tags":["自动同步"],"body":"<p>官方培训材料「检测方案·模块组成」爆炸图给出能量机关靶板检测端的完整叠层，从迎弹面往内依次为：盖板 → 压感传感器 → 1mm 软胶 → 10mm PC 板 → 3mm 缓震泡棉 → 分光板 → LED 灯板 → 控制板 → 外壳。官方在图上用红圈特别圈出两处：一是 10mm PC 板，二是分光板，这两块是自建或维修时最容易被省掉、也最容易导致判分异常的零件。工程解读：1mm 软胶是压感传感器与 PC 板之间的界面层，作用是让打击力均匀传递、避免硬对硬把传感器压裂；10mm PC 板是主要承力与透光板，PC 而非亚克力是因为要抗 17mm 弹丸反复冲击不开裂；3mm 缓震泡棉贴在分光板一侧，吸收冲击余量、保护分光板与 LED 灯板；分光板位于 LED 灯板与控制板之间，负责把灯板光路与检测光路分开，缺了它会出现「灯亮但打不中判定」的怪现象。队内 11-05 在 27炒鸡大符群讨论该图时，负责人谭嘉豪的结论是「照着官方的来做吧」，即 27 赛季检测端不做结构改良，按官方叠层复刻。图已存 01_官方规则与规范\\官方_能量机关检测模块叠层组成_20261105.png。</p>"},{"id":"A040","cat":"field","title":"官方场地模型 V1.0.0 版本核对：群内再传的 STP 与 SLDPRT 与本地 371MB 存档同源","src":"飞书·场地道具开发维护大队 2026-11-05 14:25、27机械组 18:20","tags":["自动同步"],"body":"<p>11-05 场地道具开发维护大队徐奕昊从官方论坛找到并上传 RMUC2027_V1.0.0 (1).stp，配文「这是我在官方论坛找到的场地模型，可能有用」；同日 27机械组李开弘另发 RMUC2027_V1.0.0.SLDPRT 单个零件文件。经核对，本地 04_往年图纸与代码\\官方场地模型RMUC2027_STEP与SW装配体_V1.0.0.zip（371MB，10-26 入库）已同时包含 STEP 与 SolidWorks 装配体，01_官方规则与规范\\官方场地模型_RMUC2027.stp 也已有独立 STP，故本轮不重复下载这两个大文件。提醒后来人：场地模型有 STP/SLDASM/SLDPRT 三种个头，STP 通用但无特征树、SLDASM 可编辑但版本敏感、SLDPRT 只是单体零件不能当总装用，下载前先看清名字。</p>"},{"id":"A041","cat":"field","title":"官方社区《你也想做能量机关吗？》：自建训练能量机关的官方指引（正文待补抓）","src":"飞书·27炒鸡大符群 2026-11-05 19:44 谭嘉豪","tags":["自动同步"],"body":"<p>谭嘉豪 11-05 19:44 在 27炒鸡大符群转发官方社区文档《你也想做能量机关吗？》，属 RoboMaster 高校赛务 2024-10-15 发布，链接 https://bbs.robomaster.com/wiki/697214/55020 。从标题与栏目归属判断，这是官方给出的自建能量机关（训练用大符）指引，正是队内做练习道具最需要的材料。本轮未能取到正文：该页面为客户端渲染的单页应用，直接抓 HTML 只能得到栏目目录，正文需浏览器渲染后才可见，故此处只记录线索、不臆测内容。下一步可用浏览器打开该页取全文，再拆成结构尺寸与制作工艺条目。</p>"},{"id":"A042","cat":"size","title":"大符检测端选型：官方为什么弃红外而用压感","src":"群聊·27炒鸡大符 2026-11-05/06（谭嘉豪、张墉、植正雄）","tags":["自动同步"],"body":"<p>官方技术视频里明确说过「考虑过红外传感器，最终选了压力传感器」，但没有给理由。队内复盘出的理由链条是：红外光电的定位精度天然低于压感，而能量机关靶面每环宽度只有约 15mm，精度不够就直接判错环。官方的取舍是把「判环准确率」放在「成本与寿命」之前——压感模组虽然贵（495 元/套）且会被弹丸直接击打，但坐标解算是接触式的，没有光路遮挡与斜射偏差问题。<br><br>对应到自研：如果只是做训练靶、不追求判环精度，红外路线成本极低（单靶 100–120 元）且寿命长；但凡涉及正式判环，必须压感。11-06 组内结论是本赛季沿用官方压感方案，红外只作预研支线。</p>"},{"id":"A043","cat":"team","title":"红外光电条自研靶的三个致命误差来源","src":"群聊·27炒鸡大符 2026-11-05 22:37 张墉","tags":["自动同步"],"body":"<p>张墉给出的实测级判断，三条都会直接毁掉判环：<br><br>1）**装不下**：常见直插式红外对管直径约 6mm，靶面每环宽度约 15mm，**一环最多塞两个**，环内分辨率被物理尺寸锁死。<br>2）**斜向击打坐标偏移**：弹丸斜着打进靶面时，光路被截获的位置不等于实际着弹点，入射角越大偏差越大。这是原理性误差，调不出来。<br>3）**贴片式的焊接公差被放大**：换贴片式光电管可以提精度，但只要焊接稍微歪一点，对射光路就不交叉（漏检）；300mm 直径靶面上这点角度误差被放大成毫米级坐标误差。<br><br>成本参考：单块靶子只算红外检测部分约 100–120 元。**最大优势是不被弹丸直接击打，所以不会经常坏**（对比压感模组被反复砸）。<br><br>结论：红外路线适合做「打没打中」的二值检测，不适合做「打在第几环」的坐标检测。</p>"},{"id":"A044","cat":"size","title":"用成品红外触摸框改大符靶面：258 元换 3mm 线性精度","src":"群聊·27炒鸡大符 2026-11-06 12:49 郭卓鑫 / 13:11 张墉","tags":["自动同步"],"body":"<p>郭卓鑫提出的路线：**不自己做光路，直接买成品红外触摸框**（淘宝「电视改触摸屏」那种，贴在显示器上、USB 供电即可）。这是本轮最被低估的方案。<br><br>之所以成立，是因为触摸框本身就是一圈红外对射阵列 + 高速扫描 + 坐标解算，等于把「光路设计、对管选型、标定」全部外包。张墉认可并补充：**买 17 寸正屏，尺寸和 300mm 靶面差不多**。<br><br>价格：17/18.5/19 寸统一 **258 元包邮**（贴屏即用，插 USB 连电脑）。<br><br>附带价值（张墉）：**淘一块二手屏幕改造，可以直接做弹道散射测试**——把靶面当坐标采集板，统计弹着点散布，这是队内目前没有的测试手段。<br><br>参考：B 站《当 RoboMaster 机甲大师遇上弹道检测神器红外电子靶》BV1zm4y1A7UX。</p>"},{"id":"A045","cat":"dwg","title":"红外触摸框硬指标与 17 寸正屏对 300mm 靶面的尺寸对位","src":"群聊·27炒鸡大符 2026-11-06 张墉供图（红外触摸屏规格表）","tags":["自动同步"],"body":"<p>成品红外触摸屏（15–24 寸系列）关键参数，可直接用于方案论证：<br><br>- 插值分辨率 32767×32767；**线性误差 3mm**；响应 7–15ms；扫描 50 scans/s<br>- **最小触摸体 ≥5mm**（17mm 弹丸远大于此，能稳定识别）<br>- 触摸介质：手指、触摸笔等**不透明物体**都行——弹丸属不透明，适配<br>- 透光率 >96%（无玻璃时 100%），可整块盖在靶面前而不挡视觉<br>- 表面耐久：硬度等同玻璃（维氏 5.0–7.0 GN/m²）；63.5mm 钢球 1m 自由落体不破<br>- 抗干扰：无静电干扰、无漂移；DC5V USB 供电，功耗 <1W<br>- 安规：CE / ISO9001:2008 / RoHS；静电防护 EN61000-4-2 接触 8kV、空气 15kV<br><br>**尺寸表关键行（17 寸正屏 4:3）**：边框 19.6，厚度 9.8，**触摸区域 340.8×272.8**，外框 380×312。与 300mm 直径靶面基本吻合，多出的 40mm 是边框与走线空间——这是「17 寸正屏」结论的量化依据，不是拍脑袋。<br><br>注意：17 寸还有 16:10 版本（触摸区 372.8×231.8），**必须选 4:3 那个**，否则纵向压不住 300mm 靶面。</p>"},{"id":"A046","cat":"field","title":"哈工大威海HERO低质量能量机关V2（键轴触发、600元造一台调试用大符）","src":"BBS 9100","tags":["自动同步"],"body":"<p>为视觉组自制的廉价大符，除铝架与驱动3508外成本极低（灯条250、控制板100、12V电源50）。三个可直接复用的做法：一是击打检测用机械键盘键轴加键帽，键轴不必压到底即可触发，单次击打可给出2至3ms低电平，单片机好抓，且可无缝换成振动传感器（需做震动隔离并改释抑时间）；二是灯效不用SK6812数控灯珠，用三色RGB灯带按扇叶分两个灯区指示熄灭、待激活、已激活，PWM约5kHz即无频闪；三是3508自身减速箱不够，需按风车重量再加同步带轮二次减速。长途大巴颠簸后仍可用，皮实。</p>"},{"id":"A047","cat":"field","title":"RoboMaster交流赛技术方案指南：战场与道具的自建参数","src":"BBS 1316686","tags":["自动同步"],"body":"<p>官方给的自建场地施工口径，比规则手册更具体：战场内部用9至18mm阻燃胶合板，表面2或3mm定制复合PVC地胶，木质部分需承载300kg每平方米；包角角铁角铝用自攻螺丝两面固定、间距30cm，螺丝尾不得超出角铝平面。围挡两方案：木质底座加金属围挡（钢方管0.8mm厚，金属网网眼12mm、铁丝1.2mm，网装外侧防划伤），或金属围挡加沙袋。道具侧给了前哨站与基地的裁判系统物料清单及机器人类型编号（R10/R11/B10/B11），增益点用喷绘布加场地交互模块做RFID地毯再覆地胶。</p>"},{"id":"A048","cat":"field","title":"RM2019能量机关尺寸更新补充说明（历史版本尺寸链参考）","src":"BBS 5498","tags":["自动同步"],"body":"<p>官方对能量机关外形尺寸的修订记录，价值在于看清哪些尺寸会随迭代变、哪些不变。变更项：上部宽度由230mm改为260mm，其余外形与装甲尺寸不变，装甲板中心仍分布在半径700mm的圆上；能量机关中心高度整体加200mm；因桥梁中部重量大，桥梁中心有0至50mm下坠，仿制或视觉标定时必须把这段下垂算进去。灯带侧：单臂周围细灯带宽度均16mm、误差5mm内，中部点阵7×60，灯珠为SK6812 mini（单颗7.2mm），上方用Plexiglas黑白板遮挡。</p>"},{"id":"A049","cat":"field","title":"「塌陷」是官方的「有效检测环数收窄」，不是机械动作","src":"群聊·27炒鸡大符 2026-11-07（高荣信/罗嘉毅/陈圳灏/林长耿）＋官方《能量机关改动》培训页＋规则手册表 5-24","tags":["自动同步"],"body":"<p>27炒鸡大符群里高荣信问「塌陷怎么实现，要做结构上的向下塌吗」，答案是**不用做任何机构**。<br><br>塌陷是检测判定层的机制，官方原文（2026 赛季《能量机关改动》培训页）：「①新增：对于大能量机关，每次成功的激活都会让低环数『塌陷』。第一次激活后：1-3 环塌陷，此后命中 1-3 环不视为命中（但也不视为错误击打导致失败）；第二次激活后：4-6 环塌陷，此后命中 4-6 环不视为命中。」官方给的设计意图是「保证一定程度向下兼容的前提下，提高多次激活的技术难度，鼓励关注『高精度打击』主题」。<br><br>2027 规则手册把同一机制写成表 5-24：累计激活 1 次 → 可继续检测 4~10 环；2 次 → 7~10 环。两份文本逐环对得上，所以这张「上赛季」的页面今年依然有效。<br><br>机械侧真正要落地的只有一条：靶面环界线必须在官方径向 1mm 的检测精度下清晰可辨。队内 11-07 定调「不用管，视觉那边有要求电控再做」。</p>"},{"id":"A050","cat":"size","title":"2027 大符改版需求优先级：先换靶子，再谈轻量化，垫高最后","src":"群聊·27炒鸡大符 2026-11-07（林创武、王奇英）","tags":["自动同步"],"body":"<p>林创武 11-07 11:51 要求「列个大符的需求优先级」，并先给了自己的判断：「机械传动和底座改动要求不是很高吧，主要是更换传感器」。王奇英当天拍板四条：<br><br>1. 更换新靶子（传感器）——「最重要的就是靶子，就算其他不改问题都不大」<br>2. 五块扇叶做可拆卸结构，要保证可用性<br>3. r 标突出、仿制官方<br>4. 轻量化<br><br>最后补一条：「高度问题，要一个能承受整个大符的垫高的东西」。<br><br>工时含义：本赛季力气压在靶板（含传感器模组）与五片可拆卸扇叶上，传动与底座沿用往年即可；垫高件是独立子任务，主要约束是**承重**而不是精度。</p>"},{"id":"A051","cat":"team","title":"大符滑环选型仍是空白：三条走电路线，没有型号","src":"群聊·27炒鸡大符 2026-11-07（高荣信）＋库内 D09/R05 条目","tags":["自动同步"],"body":"<p>高荣信 11-07 10:53 连问「滑环这里应该如何设计」「有没有我们用的滑环的模型」，全组当天没给出型号或模型，只指向官方视频里提到过（官方课程《你也想做能量机关吗？》）。<br><br>库里现有的是方案级线索，不是选型：<br>- 5 臂独立灯控 → 中轴空心轴走线，或集线环；<br>- 旋转体 → 固定体三选一：滑环 / 限位来回摆 / 无线；<br>- 旋转体自带电池最省事，直接省掉滑环；<br>- 东大 3SE 开源（RM AWARD 2024）用机械键盘键轴做击打检测 + ESP32/BLE 无线，整块绕开滑环。<br><br>**按「待补」记录：定中轴结构前必须先拿到滑环的通路数、额定电流/电压、过孔内径、允许转速与寿命。**没有这五个数，中轴空心轴的内径与轴承跨距都定不下来。</p>"},{"id":"A052","cat":"size","title":"靶板那个「槽」卡住哪几层？检测模块的装配边界还没定","src":"群聊·27炒鸡大符 2026-11-07（钟自豪）＋官方检测方案爆炸图","tags":["自动同步"],"body":"<p>钟自豪 11-07 18:45 在官方「检测方案·模块组成」爆炸图上圈出一处凸起的小槽，问：「这个槽会卡住下面哪几个部分，是视频里说的传感器、软胶、PC 板这三个组成的模块，还是也包括下面的分光板和灯板？」当天群里没给结论（后续回复都跑去讲塌陷机制了）。<br><br>官方叠层顺序（从外到内）：盖板 → 压感传感器 → 1mm 软胶 → 10mm PC 板 → 3mm 缓震泡棉 → 分光板 → LED 灯板 → 控制板 → 外壳。<br><br>从爆炸图看，红圈位置在盖板外框上沿、贴着 1mm 软胶环那一侧。**推断**（未证实）：若这个槽只是压感模块的定位/让位槽，它只约束「传感器 + 软胶 + PC 板」三段；只有贯穿到泡棉层，才会连带约束分光板与灯板。<br><br>为什么要先问清：自研靶板的分层顺序一旦画反，PC 板与泡棉的让位关系就全错，返工要重开模。归档图：01_官方规则与规范/官方_能量机关检测模块_槽位标注_20261107.png</p>"},{"id":"A053","cat":"field","title":"官方课程《你也想做能量机关吗？》的三段结构","src":"群聊·27炒鸡大符 2026-11-07（植正雄转发截图）","tags":["自动同步"],"body":"<p>这篇正文一直抓不到的官方课（bbs.robomaster.com/wiki/697214/55020，Nuxt SPA，curl/WebFetch 只能拿到栏目目录），本轮从群里转发的截图拿到了目录：<br><br>1. 能量机关整体方案<br>2. 检测模块与灯效呈现方案<br>3. Q&A<br><br>发布方 RoboMaster 高校赛务，2024-10-15。群里是在讨论「滑环怎么走线」时被当作「官方视频里提过」的出处引出来的。<br><br>价值在第 2 部分：检测模块与灯效呈现，正好对上靶板叠层结构与灯板选型。但**正文仍未抓到，只有目录**，别当已收录。归档图：03_群聊与任务记录/图_飞书群_20261107/官方课程_你也想做能量机关吗_目录截图_20261107.png</p>"},{"id":"A054","cat":"field","title":"大符 2027 需求优先级（王奇英定）","src":"群聊·27炒鸡大符 王奇英 2026-11-07","tags":["自动同步"],"body":"<p>2026-11-07 林创武要求列需求优先级，王奇英给出排序：<br><br>1. **更换新靶子（传感器）** —— 最重要，就算其他不改问题都不大<br>2. **五块扇叶做可拆卸结构**，要保证可用性<br>3. **R 标突出，仿制官方**<br>4. **轻量化**<br>5. 最后才是高度问题：要一个能承受整个大符的垫高方案<br><br>林创武补充：机械传动和底座改动要求不高，主要是换传感器。<br><br>王奇英另指出：目前大符重的根本原因是 5 个靶部分太重。</p>"},{"id":"A055","cat":"size","title":"靶面检测方案对比：压力 / 红外 / 触摸框","src":"群聊·27炒鸡大符 2026-11-04~06 张墉、郭卓鑫、谭嘉豪","tags":["自动同步"],"body":"<p>**压力传感器**（现方案）：官方录像里说考虑过红外，最终仍选压力，精度高。问题是不耐打——深大直接把传感器用双面胶贴在灯板上，很容易坏。<br><br>**红外对管**（张墉分析）：<br>- 常见直插式直径约 6mm，每环宽 15mm 大概放两个<br>- 弹丸斜向击打时坐标会有偏差<br>- 贴片式精度更高，但焊接歪一点光路就不交叉，300mm 靶面上误差被放大<br>- 成本约 100~120 元/块靶<br>- 优点：不被弹丸直接击打，不容易坏<br><br>**红外触摸框**（郭卓鑫提议）：精度够，17 寸正屏尺寸差不多；张墉补充可以淘二手屏幕改造，顺带做弹道散射测试。<br><br>结论：先按压力传感器方案走（摩现科技答复「就按这样做」），红外触摸框作为备选。</p>"},{"id":"A056","cat":"size","title":"升降方案结论：不做高升降，改快拆 + 垫高","src":"群聊·27炒鸡大符 2026-11-02 林创武、植正雄、伍津乐","tags":["自动同步"],"body":"<p>原方案想把大符升到中心离地 2.6m，被否。<br><br>林创武：有一定升降就行，买一张 1m 高的标准尺寸桌子垫高，最好轻便可折叠，方便带去比赛备场。<br><br>植正雄：升降机构太复杂，不好维护；围绕最本质目的想——如果只是为了搬运方便，把支架做小、放在买的桌子上就行。<br><br>伍津乐（提需求的人）：目的是外出比赛能垫高，又要方便上货拉拉；桌子不方便上货拉拉。谭嘉豪补充：用航空箱。<br><br>**最终方案**：四根立柱做成快拆，五片扇叶可拆卸，到场再装；垫高交给桌子/航空箱。</p>"},{"id":"A057","cat":"dwg","title":"灯板孔位与灯带的画法约定","src":"群聊·27炒鸡大符 王奇英 2026-11-03","tags":["自动同步"],"body":"<p>王奇英 2026-11-03 逐条确认灯板画法：<br><br>- 灯板**中间的孔**才是与铝管固定的<br>- 左右两边的孔是**绑扎带用的**，防止灯板魔术贴用久了脱落<br>- 灯带在板子下面，**不用画实际灯带**，用填色表示位置即可<br><br>另：深大的扇叶是简单用较粗螺丝固定在铝管骨架上。</p>"},{"id":"A058","cat":"field","title":"太原科技大学 NewMaker 老版能量机关机械结构图纸补档（STEP/RAR 232MB）","src":"来源·BBS 1884187","tags":["自动同步"],"body":"<p>能量机关整机图纸压缩包，含新旧两版：命名为「总装」的是老版，命名为「能量机关」的是新版，驱动部分两版相同。作者注明该实物已淘汰，改用可识别环数的新设计。可借鉴：直接拿到接近官方外形的靶板、转臂与支架几何，用于自建打符场地与视觉标定。</p>"},{"id":"A059","cat":"field","title":"哈工大威海 HERO RM2019 大风车能量机关自制开源：用加速度传感器判环","src":"来源·BBS 8217","tags":["自动同步"],"body":"<p>完整记录自制大符的过程：铝架焊框、灯带与叶片，与官方细节差距主要在叶片灯带形态与中央 logo。核心难点是判定打中哪一片——振动传感器会被相邻叶片串扰，最终改用加速度传感器加滤波区分，作者认为限位开关亦可。文中附灯与传感器选型清单。</p>"},{"id":"A060","cat":"field","title":"南京理工 Alliance RM2026 能量机关硬件与嵌入式开源：双超时窗口约束击打节奏","src":"来源·BBS 1936201","tags":["自动同步"],"body":"<p>状态机按未激活、小符待机/激活、大符待机/两拍激活、大小符成功共 8 态组织。500ms 窗口内二次触发判为大符，单次判为小符；大符拆成 2.5s 与 1s 两个超时窗口，强制击打间隔上限，防止慢速磨血；错误击打或超时则整机重置。可借鉴：自建符的判定逻辑与灯控硬件框架。</p>"},{"id":"A061","cat":"field","title":"2026 全国总决赛赛事调研反馈答复：场地道具公差与科技核心问题官方回应","src":"来源·BBS 1970801","tags":["自动同步"],"body":"<p>官方逐条回应各队反馈：场地为木结构、尺寸公差已在规则手册内说明；有队伍实测二级台阶中央接近 210mm；科技核心磁吸力后期衰减，规范为除重力外额外至多 10N；飞镖发射站 roll 倾角偏大；大弹丸击打基地顶部需法向速度大于 10m/s 否则误判；能量机关扇叶亮度不均将逐环校核。可借鉴：自建场地该按什么公差做。</p>"},{"id":"A062","cat":"size","title":"靶车装甲板「相对高度机械限位」是一整套六件，不是画一个限位块就完事","src":"飞书群文件·靶车 上 主体_尹嘉玮_20261108.zip（17 件）","tags":["自动同步"],"body":"<p>尹嘉玮靶车上主体里，装甲板的相对高度限位拆成六个零件协同：装甲板 相对高度机械限位导轨、相对高度机械限位靠里模块、相对高度限位块、装甲板 上下限位部件1、上下限位部件2、装甲板 固定板。<br>拆开的原因：装甲板要在竖直方向有两个极限位（上极限=判罚用的合法高度，下极限=缩回保护），导轨定轨迹、靠里模块定侧向基准、上下限位部件定两个死点、固定板把装甲模块整体锁在滑台上。只做一个限位块，受力全压在那一个零件上，撞一次就变形，而且无法分别调上下两个极限。<br>配套的还有小型弹簧插销 + 弹簧插销垫片2 做快拆定位 —— 与 10-27 记录过的「靶车装甲板插销会脱出」是同一处，这版加垫片正是为了压住脱出。<br>直接复用往年件：AM02 装甲模块、AH02 支撑架、陈秋杰 2023 版装甲模块装配、2021 版装甲板限围、橡胶垫。</p>"},{"id":"A063","cat":"size","title":"靶车用 2.8 米长导轨 MGN12H2R2800 做直线往复，双滑块分散弯矩","src":"飞书群文件·靶车_尹嘉玮_20261108.zip（6 件）","tags":["自动同步"],"body":"<p>尹嘉玮靶车底盘件只有 6 个：bc 轨道、bc 轨道底座、滑轨、可定万向轮、靶车装配体，加一根 MGN12H2R2800（2.8 m、双滑块）和一根 MGN12C1R112（单滑块短导轨）。<br>选型逻辑：靶车要沿场地直线往返，用一根 2.8 m 长导轨 + 双滑块（H2R）而不是两条短轨对接——双滑块分摊倾覆力矩，且长轨一次装夹保证直线度；短的那根 C1R112 单滑块只用在辅助导向位。<br>万向轮用「可定」（可锁定）型，调车时锁死防漂移。<br>注意：MGN12 系列 2.8 m 已经是超长规格，安装面平面度必须靠底座（bc 轨道底座）保证，直接贴铝型材会憋导轨。</p>"},{"id":"A064","cat":"size","title":"基地靶 V1.1：4040 型材+角码搭骨架，靶与护甲拆成两套装配分别送审","src":"飞书群文件·基地靶V1.1_徐奕昊_20261106.zip（18 件）","tags":["自动同步"],"body":"<p>徐奕昊的基地靶只有 18 件，但组织方式值得学：<br>① 骨架全用 4040 铝型材 + 三种长度角码（4040、4040-45、4040-135），零自定义结构件，改尺寸只换型材长度。<br>② 分成两个独立装配体：基地靶-V1.0（底部支撑板/底部铝型材/支撑铝型材/顶部铝型材/顶部玻纤板/拟飞镖靶）与 基地护甲装配体-V1.0（装甲板护甲1、护甲2、装甲板支撑板及其镜像、装甲板底板、装甲板）。靶面和护甲互不牵连，审图和改图可以并行，谁改坏了不连带另一套。<br>③ 顶面用玻纤板，靶面件单独叫「拟飞镖靶」，说明靶面形态还没定死（在模拟飞镖靶而非真靶）。<br>④ 全案零件 100% 遵守 名V1.0-姓名-日期，是本批唯一一份零件层零违规的提交。</p>"},{"id":"A065","cat":"size","title":"飞机基地：合页翻转式开合护甲，7 块装甲板分件建模各带固定板","src":"飞书群文件·飞机基地_梁孜瀚_20261108.zip（55 件）","tags":["自动同步"],"body":"<p>梁孜瀚飞机基地 55 件，核心是「开合护甲」这条链：合页 → 合页模块 → 开合护甲平台（1/2 两版）→ 开合护甲模块，再配连杆、连杆2、连杆固定、固定柱底座、开合护甲固定柱。<br>机构逻辑：护甲靠合页翻转开合，连杆把多片护甲的转角联动起来（一片转、其余跟着转），固定柱底座做闭合位的机械锁点。用连杆联动而不是每片一个舵机，是为了省执行器、保证同步。<br>装甲板拆成 7 块分件建模（基地装甲板 1/2/3/4/6/7，缺 5），每块各配一个固定板（固定板 2~8），便于单块损坏单独重做。<br>骨架仍是 4040-2.0 型材七种长度（250/350/500/600/630/800/1000）+ 角码 4040-30/60/120。电气侧 TB48 电池（M100）+ 大疆电池座 + C620 + PM01 + AM02；底部复用刘俊锋 2025-12-13 全向轮。</p>"},{"id":"A066","cat":"size","title":"大符 V1.0（钟自豪）：支架 7 件 + 靶子 13 件，两层目录分开管","src":"群聊·27神图群 2026-11-08 12:02 钟自豪提交","tags":["自动同步"],"body":"<p>钟自豪的大符 V1.0 用飞书文件夹上传（两层：支架 7 件、靶子 13 件），装配体名 大符V1.0-Sn-钟自豪-202621520229 —— 日期字段写成 202621520229，明显笔误（应为 20261108 之类），需本人更正后才好检索。<br>值得肯定的是结构分层：支架与靶子分成两个子目录，等于把「承力骨架」和「靶面/灯板」解耦，与大符靶板本体是重量主要来源这一结论一致（五块靶板本体才是超重根因，支架不是）。<br>未拿到文件实体（folder 类型不可下载），结构细节待补。</p>"},{"id":"A067","cat":"ref","title":"飞镖靶 V2.0 与基地飞镖靶：齿条+导轨做靶面平移，微动开关做命中触发","src":"群聊·27神图群 2026-11-08 11:24 冯昭荣、钟湃予提交","tags":["自动同步"],"body":"<p>两份飞镖靶方案（冯昭荣 38 件、钟湃予 28 件）都指向同一套机电方案：<br>① 平移：2 模 6mm 齿条（900mm 长）+ MGN12 导轨/MGN12H 滑块，齿条做长行程直线驱动，导轨承担侧向力。<br>② 电机：M2006 P36 + 2006 联轴器（冯版）／M2006 + 微动开关（钟版）。<br>③ 触发：钟湃予版用「机械组 微动开关主体 + 微动开关滚轮」做靶面到位/命中的物理检测，滚轮式比直压式耐磨。<br>④ 结构件：2mm 玻纤电机座及延长件、PLA 撞击件及延长件、PU 板、40×40 角码。玻纤做电机座是为了减重且抗振，PLA 撞击件是耗材位——撞坏了直接换打印件。<br>两份都没走 zip，未能下载实体，方案细节以文件名与目录结构推断为主。</p>"},{"id":"A068","cat":"field","title":"五条最容易搞错的判定：胜负先比控制度、同阵地双点激活暂停、大能量环数管强度灯臂管时长","src":"群聊·我能当操作手？ 2026-11-08 操作手样卷A解析","tags":["自动同步"],"body":"<p>从操作手样卷里挑出的、机械与战术都容易误判的五条（均带手册出处）：<br>① 时间耗尽、双方基地都未被击毁：先比累计控制度，控制度高的直接赢，不再比基地血量、也不比攻击伤害（§5.8，P114/PDF115）。<br>② 同一前哨阵地内，红方激活前哨站增益点、蓝方同时激活该阵地中央高地增益点：占领进度「暂停」，不是清零、也不是初始拥有方继续涨（§5.6.2 表5-21）。关键在「同一阵地」而非「同一个点」。<br>③ 大能量（能量机关）一次成功激活：增益效果强弱由平均命中环数决定，持续时间由激活灯臂数决定 —— 两者是分开的两个变量，打环数和开灯臂是两件事。<br>④ 重装存活但允许发弹量已耗尽仍打 42mm：会触发对方装甲的 42mm 伤害屏蔽，但 17mm 不被屏蔽。<br>⑤ 战亡时：地形跨越增益消除，能量机关增益不因战亡消除。<br>另：自适应装甲加固是双刃——加固区减伤，未加固区反而增加弹丸伤害。</p>"},{"id":"A069","cat":"field","title":"华东理工起源压感膜能量机关靶面：单叶568颗灯珠与动态基准检测","src":"来源·BBS 1938358","tags":["自动同步"],"body":"<p>华理起源 2026 用压感膜做能量机关靶面的整套设计。每扇叶 312+256=568 颗 WS2812，显存 568×24×2≈26.6KB，故选 STM32G474CBT6（170MHz、128K RAM，双 ADC 以「5+5」采 10 路压感）；击打检测用「ADC 原始值变化量＋动态基准」，未受击时每 1s 刷新基准以抗漂移。机械侧可借鉴靶面叠层与维护性：检测片贴在灯板上方、单叶独立成模块，坏了整片换。附原理图、PCB 与代码。</p>"},{"id":"A070","cat":"size","title":"27 能量机关审图六条：轴向定位、导轨冗余、CNC 角码成本、顶丝带轮、分体带轮、单一预紧","src":"飞书文档《27能量机关审图》(docx VKWGdCc90o3WQNxiWhXc8k7NnN2)，林创武 2026-11-09 01:24 发在 27炒鸡大符","tags":["自动同步"],"body":"<p>2026-11-09 凌晨林创武把《27能量机关审图》写成文档公开，高荣信给出 6 条意见，是本赛季大符第一份成文的审图结论。<br><br>**① 1m 长轴没有任何轴向定位** —— 会脱出；且「没必要做 1m 且这么大直径的轴」。轴系铁律：靠过盈/顶丝/夹紧传扭的轴，至少一端要做轴向定位（轴肩台阶+端盖、卡簧、挡圈三选一）。<br><br>**② 铝型材里塞 T 形螺母固定导轨** —— 「你怎么保证螺母不掉下去，而且你怎么放这些螺母？」两个死结：垂直安装时螺母在槽内自由下落、锁不紧；中段位置的螺母只能从型材端头滑入，两端一封角码就再也塞不进去。结论：「不能这样固定导轨」，且**导轨方案对能量机关属冗余**，应参考去年前哨站的升降固定方案。<br><br>**③ 巨大的 CNC 角码造价太高** —— 未考虑成本。CNC 按体积/工时计价，大块角码是成本黑洞，等效功能用型材角件+钣金折弯即可。<br><br>**④ 带轮不能做顶丝设计**、**⑤ 不要分体式带轮且太宽**、**⑥ 纯靠螺丝预紧力张紧太容易松**（可参考步兵 yaw 的张紧方式，或轴承张紧）。<br><br>附一句装配可达性质问：「这颗螺丝怎么装？」——设计时没留扳手空间。<br><br>全文档已归档：`05_整理成果_大符专题/13_27能量机关审图意见_20261109.md`。</p>"},{"id":"A071","cat":"dwg","title":"审图检查项 9 条：把一次图纸评审反推成可复用的验收清单","src":"飞书文档《27能量机关审图》+ 27炒鸡大符群 2026-11-09","tags":["自动同步"],"body":"<p>从 2026-11-09《27能量机关审图》暴露的问题反推出的 9 条检查项，可直接当审图第一关：<br><br>1. 轴系是否双向轴向定位（本次：1m 轴无定位，有脱出风险）<br>2. 紧固件能不能装进去、会不会掉（本次：型材槽内 T 型螺母）<br>3. 是否用了冗余的高成本机构（本次：导轨方案冗余）<br>4. CNC 件体积是否合理（本次：巨大角码）<br>5. 轮/带轮与轴的连接方式（本次：顶丝、分体式带轮）<br>6. 张紧是否只靠单一预紧力（本次：螺钉预紧张紧）<br>7. 装配可达性——扳手空间（本次：「这颗螺丝怎么装？」）<br>8. 摩擦/过盈类连接的长期可靠性（本次：橡胶套摩擦固定）<br>9. 发图前是否 Pack and Go 打包（本次：打开装配体满屏报错，原因就是零件没搬进上交文件夹）<br><br>第 9 条是新手最常犯的：SW 装配体发出去必须「打包」，否则对方打开全是报错，评审直接卡在第一步。</p>"},{"id":"A072","cat":"size","title":"V 轮 + 铝型材替代直线导轨：立柱自己当导轨的 2400mm 升降方案","src":"27炒鸡大符群 2026-11-09 13:45–15:57（高荣信/植正雄/林创武）","tags":["自动同步"],"body":"<p>2026-11-09 大符支撑结构的关键方案切换，由高荣信提出、林创武当天拍板「低成本的话可以」。<br><br>**做法**：不买直线导轨（「太贵了」），**四根立柱直接充当导轨**；立柱上穿 V 型包胶轮/偏心轮，四边轮子夹住型材；角件装 3 个轮、螺栓+螺母调预紧。<br><br>**三个好处**：① 省掉导轨+滑块的采购成本；② 对装配精度要求更低（偏心轮可调预紧，容差大）；③ 型材本身是结构件，不用另设导向件。<br><br>**参考原型**：龙门式 FDM 打印机（CR-10/Ender 类）的 X 轴滑块就是这套 V 轮结构，电商整机参考价 2463.55 元，可直接买件测绘。<br><br>**代价**：V 轮是滚动摩擦+点/线接触，刚度不如导轨，长行程（2400mm）要防中段下垂与偏摆；偏心轮需要留调节量，四边预紧要能分别调。<br><br>图：`05_整理成果_大符专题/大符支撑_V轮导向方案_参考机型电商图_20261109.png`、`大符支撑_V轮导向滑块实物_20261109.png`</p>"},{"id":"A073","cat":"size","title":"V 轮选型卡点：成品只有 4020 配套，4040 要自己画轮","src":"27炒鸡大符群 2026-11-09 15:48–15:57","tags":["自动同步"],"body":"<p>V 轮方案的落地卡点在标准件可得性上，不是结构本身：<br><br>· 网上能买到的铝型材 V 型/包胶滑轮**只有 4020 规格**；<br>· 大符立柱现在用的是 **4040**，没有配套成品轮；<br>· 为了强度硬上 4040，「这个轮子就得自己画」——自开模/自制轮的成本与周期不划算。<br><br>**结论（15:52）**：把那 4 根立柱换成 **4020** 铝型材，用成品轮；强度不足靠增加根数或壁厚解决，而不是靠加大单根截面。<br><br>通用经验：**选标准件之前先查配套件有没有货**。截面尺寸一旦定死，后面所有导向/连接件都得跟着定制；「先定结构再找件」是新人最常见的成本陷阱。</p>"},{"id":"A074","cat":"size","title":"带轮不能用顶丝传扭：改张紧套或轴承定位（步兵 yaw 的做法）","src":"飞书文档《27能量机关审图》高荣信意见 4/5/6","tags":["自动同步"],"body":"<p>审图意见里「带轮不能这样做顶丝设计」背后的机理：<br><br>顶丝（紧定螺钉）压在光轴上，靠**单点接触**传扭：<br>· 接触面积近似一个点，扭矩稍大就打滑，并在轴上压出凹坑；<br>· 反复拆装后孔径扩大，彻底失效；<br>· 无法承受正反转冲击。<br><br>**替代方案**（按优先级）：① 成品带轮自带锥套/张紧套（免键连接，摩擦面大、同心度好）；② 轴肩+轴承定位，带轮只传扭不定位；③ 键槽/花键（要加工能力）；④ DD 直驱省掉这一级。<br><br>同批意见还有「不要分体式带轮（两片拼合+螺钉夹紧）」——自制分体件等于多一组配合面、多一倍同轴度误差，且「太宽」会增加悬臂弯矩。优先买成品标准带轮。<br><br>图：`05_整理成果_大符专题/能量机关审图_带轮顶丝固定不可用_20261109.png`</p>"},{"id":"A075","cat":"team","title":"L 型钣金靠橡胶套摩擦固定被否：摩擦连接不能做承力主连接","src":"27炒鸡大符群 2026-11-09 20:23–20:28；对应《27能量机关审图》钟自豪答复 2","tags":["自动同步"],"body":"<p>原设计：「黑色橡胶套的宽度略大于 L 型钣金和盖板距离，通过橡胶变形的压力和与盖板之间较大的摩擦力固定」。<br><br>2026-11-09 20:23 林创武当场否掉：「靠摩擦力吗？感觉这种连接好不可靠的样子，换一种吧。」<br><br>**为什么不可靠**：<br>· 没有正向止挡，载荷方向一变就靠摩擦系数硬扛；<br>· 橡胶压缩量会随振动、温升、反复拆装衰减（应力松弛）；<br>· 橡胶老化后摩擦系数和弹性同时下降，属于「装得上、跑不住」；<br>· 失效是渐进的，赛前检查看不出来。<br><br>**判据**：凡是靠摩擦/过盈承担主载荷的连接，必须至少补一个机械止挡（卡扣、螺钉、销、合页），摩擦只能做防松、减振、消隙的辅助手段。</p>"},{"id":"A076","cat":"size","title":"能量机关靶子总装的零件级 BOM：合页×5、橡胶套、9.5mm 钢珠","src":"27炒鸡大符群 2026-11-09 20:28 截图","tags":["自动同步"],"body":"<p>从钟自豪 2026-11-09 20:28 的 SW 特征树（`靶子V1.0-S0-钟自豪-202621520229.SLDASM`）读出的零件清单，可当靶子装配的骨架：<br><br>**检测模块叠层**（与官方九层结构对应）：靶面 → 10mm PC 板 → 分光板 → LED 灯板 → 灯罩 → 1mm 软胶 → 压感传感器；<br>**结构件**：合页 ×5（对应五片扇叶可拆卸）、L 型卡扣、橡胶套、钢珠 9.5mm（多颗，用于定位/减摩）；另有「快拆弹簧-钟自」自定义件。<br><br>**两个可直接用的判断**：<br>· 合页 ×5 正好对上「五块扇叶做可拆卸结构」这条需求，说明扇叶是用合页+卡扣实现翻转而非整片拆下；<br>· 9.5mm 钢珠大概率做四点/多点浮动定位或滚动减摩，成本极低但要注意保持架——散放会掉。<br><br>另：装配体文件名仍是 `202621520229`（日期笔误），命名规范关还没过。<br><br>图：`05_整理成果_大符专题/能量机关靶子总装_钟自豪_零件特征树_20261109.png`</p>"},{"id":"A077","cat":"dwg","title":"能量机关盖板：ABS 塑料板 + 板材原厂辊压花","src":"飞书文档《27能量机关审图》钟自豪答复 3","tags":["自动同步"],"body":"<p>审图中被问「这个盖板是什么材料，什么工艺做的」，答复：**ABS 塑料板，板材原厂辊压花**。<br><br>· ABS 板：易 CNC/激光切割、韧性好、成本低、可粘接，适合非承力盖板与外观件；缺点是不耐 UV（户外会黄变）、耐温低（约 80℃ 软化）、刚度差需加筋或加厚。<br>· **辊压花**是板材出厂时压出的表面纹理，不是后道加工——采购时直接选带纹理的板，省一道工序和一笔表面处理费。<br><br>选材逻辑：盖板只要挡屑、挡光、遮丑，不必上铝板/CNC；重量和成本都能降一个量级。</p>"},{"id":"A078","cat":"field","title":"能量机关四条需求优先级（文档落定版，即验收顺序）","src":"飞书文档《27能量机关审图》开头；27炒鸡大符 2026-11-07 王奇英","tags":["自动同步"],"body":"<p>《27能量机关审图》开头把优先级写成文档，与 11-07 王奇英口述的四条一致，这是第一次成文：<br><br>1. **更换新靶子（传感器）**<br>2. **五块扇叶做可拆卸结构**，要保证可用性<br>3. **r 标突出、仿制官方**<br>4. **轻量化**<br><br>用法：评审时按这个顺序问，前一条不满足就不往后看；「要保证可用性」是对第 2 条的附加约束——可拆不能拆到装不回去/装回去不准。</p>"},{"id":"A079","cat":"field","title":"东北农大TCP：四路应变桥自制装甲板（可粗定位击打点，四块串成无线靶车）","src":"来源·BBS 1985479","tags":["自动同步"],"body":"<p>因完整形态考核早于裁判系统发放、贴复写纸又干扰自瞄，做了一块替代装甲板：RGB 灯可换色，四角各一个应变桥配 INA828 仪表放大器和 STM32F103 采 ADC，靠压力脉冲持续时间区分击打与碰撞，并借四角受力不均粗算命中位置；支持 24V、Type-C、内置电池三种供电，板载 CAN 回传击打数据。外壳打印能硬抗上百发，板面铨洲单件 11.8 元。不足也写明：HX711 仅 80Hz 抓不到脉冲、DCDC 3A 与 2A 充电同时工作发热严重、地未分割致底噪、CAN ID 烧死不能自动分配。四块串起来即无线遥控靶车。</p>"},{"id":"A080","cat":"size","title":"大符扇叶做可拆卸后，接线要不要同步做快拆（本轮未定论）","src":"群聊·27炒鸡大符 2026-11-10 21:23-21:26","tags":["自动同步"],"body":"<p>钟自豪 11-10 21:23 提出：扇叶既然要做成可拆卸结构，拆的时候接线也得拆，是不是要给接线做快拆。植正雄答“理论上要”，但补了两句“可行性怎么样”“问问硬件”（大符硬件负责人当时没点名），截至本次巡检没有结论。技术要点：五片可拆卸扇叶若沿用固定走线，每次拆装都要拔插端子并重新理线，拆装工时从“拧螺丝”变成“拧螺丝＋插拔＋理线”，而反复插拔本身是电气接触失效的高发点；若做快拆，应选可盲插的接口并把线缆做成带余量的“服务环”，避免拆装时直接扯焊点。与 K0435（大符运输三条路线，含拆五片快拆）、K0439（叶片三类孔：结构孔／扎带保险孔／电控板孔）是同一条线上的问题。</p>"},{"id":"A081","cat":"field","title":"官方 RMU2026 场地图纸与可移动道具开源：能量单元 STEP 与三版场地模型","src":"来源·官网/BBS 814728（2025-10-22）","tags":["自动同步"],"body":"<p>官方场地与道具 STEP 图纸汇总，按规则手册版本分档：RMUC2026 有 V2.0.0（1.25GB）、V1.2.0（993MB）、V1.0.0（649MB）三版，RMUL2026 3V3 场地图 1.68MB，另有能量单元 STEP 仅 0.84MB。可借鉴处有二：能量单元图纸可直接量取抓取接口与外形尺寸，用来核对夹爪开口与收纳仓容积；场地按规则版本分档也说明尺寸会随手册修订变，自建场地必须锁定与备赛一致的那一版。</p>"},{"id":"A082","cat":"team","title":"大符支撑张紧器被返的三条审图意见（带轮顶丝/分体带轮/纯螺丝预紧）","src":"群聊·27炒鸡大符 2026-11-11 14:37–15:03（高荣信×林创武）","tags":["自动同步"],"body":"<p>2026-11-11 14:37 高荣信把大符支撑张紧器拿去评审，被按成文清单返了三条（图上编号 4/5/6）：<br>4）「带轮不能这样做顶丝设计」——顶丝孔开在齿槽上会破坏齿形，顶丝头还可能蹭皮带。正确画法是顶丝落在轮毂实心段，拧紧后整根藏在轮毂内孔里、端面不外露，一把内六角就能拆装。高荣信原以为「常见惰轮不就是用顶丝」，林创武看过剖面后认可，说明顶丝方案本身不错，错的是开孔位置。<br>5）「不要分体式带轮（中间那个），且太宽」——轮毂+齿圈分体在自制件上同心度和轴向定位都难保证；林创武要求「上中下分三块至少中间的齿部分做整体打印件」，即齿形段必须一体。<br>6）「纯靠螺丝的预紧力张紧太容易松了，可以参考步兵 yaw 上的张紧方式，或者轴承张紧」——螺纹自锁不足，振动下会退扣。<br>可复用规则：顶丝孔只在轮毂实心段；同步带轮齿形段一体成型；纯螺纹预紧张紧器必退扣，改用偏心轴承张紧或加防松件。另林创武要求「把你用到的成品件写进文档」，成品件登记是采购与替换的前提。</p>"},{"id":"A083","cat":"size","title":"张紧器螺纹调节件最小 M4、队内统一 M5，手调改蝶形螺母","src":"群聊·27炒鸡大符 2026-11-11 15:00–15:03","tags":["自动同步"],"body":"<p>同一次评审里，张紧器的调节螺纹规格被定了口径：<br>· 林创武：自制张紧器「把这颗螺丝型号换大点，至少 M4 以上」；<br>· 高荣信：设计里用的就是 M5，「基本上都是用 M5」→ 通过。<br>→ 记为队内默认值：张紧器调节螺杆 ≥M4，实际统一 M5。<br>手调方案：15:01 高荣信贴出 304 不锈钢蝶形螺母（羊角螺母，M4/M5/M6/M8 齐全，单价 1~4 元）「打算用这种」，即把调节螺母换成可手拧件，现场调张力不用扳手。<br>风险提示（群里未讨论，需补）：蝶形螺母防松比普通螺母更差，与「纯螺丝预紧会退扣」那条意见直接冲突，实际应配双螺母对锁或加弹垫/尼龙嵌件。<br>参考原型：Ender-3 的 2040Y 轴同步带张紧器（成品 37.8 元/套，ELVES 产），但它是「固定在铝型材上」的结构，大符支架那个位置用不了现成件，只能自研。</p>"},{"id":"A084","cat":"size","title":"扇叶可拆卸的接线走「快拆板+人工拔插连接器」，不做自动对接","src":"群聊·27炒鸡大符 2026-11-10 21:51–22:03","tags":["自动同步"],"body":"<p>11-10 21:23 提的「扇叶可拆后接线要不要做快拆」，11-10 21:51 起有结论：<br>· 张墉：这块大部分是苏伯伟（电控）负责；<br>· 苏伯伟：在连接部分用快拆板，要拆的时候直接把线从连接器上拔掉就好；<br>· 苏伯伟：先去问电控接口需求，然后估计要预留的孔位，再告诉结构侧（@钟自豪）。<br>→ 结论：不做带触点的自动对接机构，走「机械快拆板 + 人工拔插连接器」。结构侧只需按电控给的接口尺寸预留过线孔/让位孔，不必为电气插接设计浮动或导向。<br>判断依据：扇叶拆装是赛前/维护动作，不是场上自动动作，人力插拔更划算。这与 2026-11-06 重装组「连接机构最后只留 z 轴做电气插接」的思路相反，两者按「是否场上自动」来分。</p>"},{"id":"A085","cat":"field","title":"2027 上台阶难度升级：从大台阶变小台阶，从机器人上台阶变「人」上台阶","src":"飞书知识库·27赛季机械组周会分享·第二次周会","tags":["自动同步"],"body":"<p>队内周会文档的原话判断：27 赛季上台阶任务进一步变难——「从大台阶变成小台阶，从机器人上的台阶变成『人』上的台阶」。<br><br>含义解读：台阶尺寸变小意味着单个台阶跨越余量更小、对落点精度与足端包络要求更高（过去靠大轮径一次冲上去的做法失效）；「人上的台阶」指规则把通行能力从机器人自身越障转成对操作/机构配合的要求。<br><br>对机械组的直接影响：底盘方案要在设计初期就按「小台阶＋高精度落点」评估，摆腿/轮腿的行程、足端接触面积、抬升时的重心转移都要重算，不能沿用 26 赛季的大轮径冲坡思路。<br><br>提醒：这是队内周会文档的表述，具体尺寸条款仍需回查规则手册对应章节后再定方案。</p>"},{"id":"A086","cat":"size","title":"飞机基地 V2.0：合页＋连杆联动开合护甲，装甲/护甲双层分件（梁孜瀚）","src":"群聊·27神图群 2026-11-11 梁孜瀚提交","tags":["自动同步"],"body":"<p>27 赛季空中机器人基地第二版，52 件、15MB，2026-11-11 提交，包名合规（V2.0-S1-梁孜瀚-20261111）。<br><br>结构要点：<br>· 开合护甲：以「合页模块」「护甲模块」「护甲加开合模块」三个子装配为核心，靠合页转轴＋连杆（连杆/连杆2/连杆底座/连杆底座2）实现护甲联动开合——一处驱动、多片护甲同步翻转。<br>· 装甲与护甲分两层：基地装甲板 2/3/9、护甲 1/2/6 分别建件，配「装甲板固定板2-梁孜瀚」「装甲板固定板3」与「装甲板模块」子装配，可单独更换。<br>· 骨架：铝型材 4040-2.0（100/250 两种长度）＋角码 4040 系列（30/60/120/150 五种）＋垂直角件、连接件 1/2/3，属型材框架路线。<br>· 导向：光轴＋光轴固定座构成护甲翻转导向。<br>· 复用：包内含「机械组-全向轮-刘俊锋-20251213」「机械组-合页1/2」等往年件。<br><br>相对 V1.0（11-08 提交，55 件、45.6MB）：件数 55→52，新增独立的「开合护甲平台」与光轴导向件，装甲/护甲拆得更细。<br><br>本地：04_往年图纸与代码/飞机基地V2.0-S1-梁孜瀚-20261111.zip</p>"},{"id":"A087","cat":"field","title":"吉大TARS Go RM2026 科技核心/兑换站机械结构开源（玻纤板+PLA·磁吸锁定）","src":"来源·BBS 2001719","tags":["自动同步"],"body":"<p>为完整形态考核、操作手训练和可能的视觉识别方案自制科技核心，各处尺寸与外观与官方件基本一致。整体用玻纤板加 PLA 搭建，材料便宜、加工周期短；背面靠现成电脑支架固定，可自行改固定方式；能量单元与科技核心之间的吸力、各步骤完成后的锁定全部由磁铁实现；灯带表面覆均光纸与薄 TPU。作者复盘：柱子附近与旋转单元出现过打印件断裂，换 PETG 或 ABS 后效果较好，图纸制作较早仍有优化空间。可借鉴：低频使用的场地道具可用板材+打印件快速复刻，并把“吸力+过程锁定”合并到磁铁这一处实现，减少机构件。</p>"},{"id":"A088","cat":"field","title":"南理工Alliance RM2026 五自由度科技核心/兑换站机械开源（啮合铝盘9°一格调角）","src":"来源·BBS 1938962","tags":["自动同步"],"body":"<p>为完整形态考核与操作手装配训练自制科技核心，目标基本免维护，各装配步骤与外观高度还原官方件，步骤阻力与磁铁吸力也对齐官方制作手册。大臂关节用啮合铝盘做 9° 一格的角度调节（更细的角度会让 CNC 成本指数级上升），调角时通常需两人操作更省力；大臂铝管壁厚当时选了 3、冗余很大，可自行减薄；末端用三个 MG-8010E-i36，摆好位姿后给电机上力即可；图中预留了磁编码器、微动开关、光电门的位置与孔位。图纸走网盘（pwd 1397），含总装打包与部分步骤演示视频，灯带固定打印件藏在盾面零件的隐藏特征里。</p>"},{"id":"A089","cat":"field","title":"能量机关压感传感器实物参数：φ310×0.3mm、不含LED、必须自配灯板","src":"群聊·27炒鸡大符 2026-11-13 / 2026-11-19","tags":["自动同步"],"body":"<p>郭卓鑫 11-13 电话问到供应商：传感器直径 310mm、厚度 0.3mm，驱动板约 20×30mm，厂家默认用双面胶固定；传感器本身「上面没有 LED」，只负责判断击打，膜片是半透明的。→ 意味着灯板必须自己做，且传感器、分光板、灯板三者要叠合定位。王奇英问「这两块板子怎么合到一起、总得发光吧」之后，郭卓鑫给的叠法是：背面一块灯板，中间一层透明亚克力，亚克力最上面贴传感器。苏伯伟补：控制板只需一路 PWM 控灯，传感器信号经灯板连接器回扇叶控制板；传感器延伸段是柔性材料，能弯不能折。</p>"},{"id":"A090","cat":"field","title":"官方能量机关资料包到手：《RM大能量机关相关资料.7z》与 jq011 受控传感器图纸","src":"群聊·27炒鸡大符 2026-11-14 / 2026-11-21","tags":["自动同步"],"body":"<p>郭卓鑫 11-14 16:24 从供应商处拿到《RM大能量机关相关资料.7z》（16.9MB）；苏伯伟 11-21 16:25 又发《00-jq011-sensor_V02_260129-BP-WG-CG00038(已受控).pdf》（A2 图幅、4.5MB，扫描件无文字层，pypdf 提不出字符）。这是队内第一次拿到传感器厂商的受控图纸，靶面叠层尺寸以后应以它为准，不再靠官方宣传视频截图推算。两份都已存 机械百科_数据/设计资料/。注意：本机没有 7-Zip/WinRAR，7z 内容暂未解开（header 压缩，无库可读）。</p>"},{"id":"A091","cat":"size","title":"大符滑环定案：内径 25.4、18 路、必须 20A 版本","src":"群聊·27炒鸡大符 2026-11-13~14；图纸·大符总装V2.1","tags":["自动同步"],"body":"<p>11-14 定（陈圳灏/庄汇杰/高荣信）。线数算法：电机电源+CAN、灯板 5×2 电源+CAN（板间通信）、R标一路信号 = 18 路。内径 21mm 不够——「我们最少也要上到 18 线，18 线没有 21，感觉要 25.4」。同规格 10A 版本带不动：「20a 的 18 线够，10a 的 18 线不行」。总装里落的型号是 MT2586-P1810（SLDPRT 与 STEP 各一份）。选型归电控负责，机械只留安装空间与轴孔径。这条填掉了库内「大符滑环选型仍是空白」的坑。</p>"},{"id":"A092","cat":"size","title":"大符中心轴改为 φ25×φ19×620 空心钢轴，配 25×47×12 顶丝轴承","src":"群聊·27炒鸡大符 2026-11-13 / 11-18 / 11-22","tags":["自动同步"],"body":"<p>最早按「没有滑环、从轴心走线」画成中空管并留了 1m 长；确定用滑环后轴长缩到 620mm，外径 25（配 25.4 内径滑环）、内径 19，文件名即轴_25x19x620-高荣信-11.7。材质最后定钢：铝管约 100 元更便宜，但林创武「还是用钢吧，保险点」；单独买轴约 140 元。轴承用顶丝轴承_25x47x12。同步带 HTD 5M，11-22 01:12 实测周长 568mm。卡点：钢管商家「不好打孔」，需另找能带加工服务的供应商。</p>"},{"id":"A093","cat":"size","title":"大符灯效层做减法：去掉黑色外壳，灯带入铝槽＋乳白均光板（参考港科大）","src":"群聊·27炒鸡大符 2026-11-13","tags":["自动同步"],"body":"<p>官方只给灯板长度，不给角度，也不给外面那圈黑色外壳的尺寸。高荣信方案：把黑色外壳整去掉，红色灯带直接放进铝槽、上面盖乳白均光板，其余位置灯效的形状与位置做到与官方一致，整体显著减重；参考港科大做法。争议点在「不发光时要看起来是黑色」：深大用灰黑透光板，官方更黑，队里旧符是乳白板。林长耿倾向「找接近官方的」。植正雄的补强要求：单单一层铝管壁不抗弯，转角处要加，「薄弱地方记得补强」。</p>"},{"id":"A094","cat":"dwg","title":"分光板是整块黑色 PC 铣出来的，所有镂空必须带圆角才加工得了","src":"群聊·27炒鸡大符 2026-11-18~19","tags":["自动同步"],"body":"<p>王奇英 11-18/19 两次确认：官方分光板是一块黑色 PC 板铣出、本身没有凹凸；若用打印件做凹凸结构强度不够——去年分光板就是打印件，最后碎裂到用不了，且当时是分件式一圈圈打出来的。11-19 定：PC 分光板用铝柱连底板、灯板直接连底板，中间间距靠铝柱保证。审图硬要求原话：「分光板的镂空要加圆角，不然加工不了」「所有挖槽的地方都记得加圆角」「这两处空隙要加填充物，不能空着」。</p>"},{"id":"A095","cat":"dwg","title":"灯臂面板改亚克力＋PC 双层均光（官方 4+4，队内议 5mm）","src":"群聊·27炒鸡大符 2026-11-18 / 11-21","tags":["自动同步"],"body":"<p>去年单层 PC 板被打坏，王奇英查官方灯臂是「一层亚克力加一层 PC 均光板」，官方厚度 4+4。讨论结论：跟着官方加亚克力，钟自豪提 5mm；植正雄判断「小弹丸还好，厚一点应该没问题」，林长耿认为对视觉影响不大，暂不改结构、只把厚度加上去。另一条视觉相关：最上面的包边才用黑色，因为黑色不透光，透明的均光 PC 能让 LED 灯珠扩散，圈出的部分必须能看到光。</p>"},{"id":"A096","cat":"dwg","title":"符上所有零件中心都要留定位孔（官方视频明确要求）","src":"群聊·27炒鸡大符 2026-11-22","tags":["自动同步"],"body":"<p>谭嘉豪 11-22 16:37：「幅上的所有东西中心要留一个定位孔，官方视频说过，用于定位所有东西（传感器）」。高荣信问是不是只指扇叶，答复是「你仔细看看视频」，即整机层面统一要求。→ 审图应把「中心定位孔」列成检查项：靶面九层（10mm PC、1mm 软胶、3mm 泡棉、灯板、分光板、压感传感器等）全靠这一个孔对齐。</p>"},{"id":"A097","cat":"size","title":"大符搬到 2.9m：航空箱垫高＋钢索四角拉，替代大铝型材支架","src":"群聊·27炒鸡大符 2026-11-15","tags":["自动同步"],"body":"<p>植正雄 11-15 凌晨给新方向：扇叶做快拆，整机高度与现有旧符基本一致，买几个航空箱垫高凑到官方 2.9m；比赛时航空箱装货，到备场后常驻当垫高基座。提醒旧航空箱有几个上表面已塌陷，不能拿来垫，要买质量好的。高荣信反案：与其在底下堆大铝型材，不如把大符底座做小、改装航空箱上表面与底座契合，再用钢索把符顶端与箱体四角拉住，靠拉索而不是靠型材获得刚度，不用时整机从箱上吊下来即可。植正雄：「改装航空箱这个没想过」。这条把库内「运输三条路线」与「航空箱一物两用」推进到了具体结构。</p>"},{"id":"A098","cat":"ref","title":"大符总装 V2.1 的九层靶面与底座 BOM（103 件，本地已归档）","src":"图纸·大符v2.1-Sn-钟自豪高荣信-20261121.zip","tags":["自动同步"],"body":"<p>靶面按官方叠层逐件建：10mm PC 板 / 1mm 软胶 / 3mm 缓震泡棉 / LED 灯板 / PC 分光板（改）/ PC 垫片 4mm / 亚克力板 1~4 / 压感传感器 / 外壳 1~2 与外壳连接 1~4 / 2020 铝方管。底座：4040 型材 1000·1750·360·280mm + 45 度 4040 300mm + 60 度重型挤压角件 + CNC 固定角码 + 内置连接件 + 电气走线槽。驱动：M3508、MT2586 滑环、齿形惰轮 16 齿 S5M150、皮带、两个张紧器、五角环氧板顶/底、r标 1~3（PLA 与亚克力）、主动/从动轮（PLA）、轴 25×19×620、轴承法兰/轴法兰、全金属锁紧螺母 WNCU-M5/M6。装配体：总装 v2.0-Sn、大符（精致版）V1.2-S1、底座2、张紧器、驱动2、r标。</p>"},{"id":"A099","cat":"size","title":"蝶形螺母的防松替代：改用全金属锁紧螺母 WNCU-M5/M6","src":"图纸·大符v2.1 驱动目录；群聊 2026-11-11 / 11-21","tags":["自动同步"],"body":"<p>11-11 支撑张紧器曾定「手拧 304 羊角蝶形螺母」，但蝶形螺母本身没有防松结构、会退扣。11-21 的总装里张紧器已换成全金属锁紧螺母 WNCU-M5-B / WNCU-M6-B（含 STEP）。→ 需要手拧又怕松的场合，正确解法是「锁紧螺母 + 可手拧的头部」，而不是裸蝶形螺母。</p>"},{"id":"A100","cat":"dwg","title":"大符审图暴露的四类硬伤：缺件、无孔、钣金当拉伸、交付格式不对","src":"群聊·27炒鸡大符 2026-11-18~21","tags":["自动同步"],"body":"<p>①钟自豪符叶装配体缺零件（其余零件被压缩后打包发出），王奇英「打开零件被压缩了，打包的时候少了？」；②连接板、铝方管都没打孔，林创武「这个铝方管没孔位咋装的，塞进去?」；③该做钣金的件直接用拉伸做，王奇英：「钣金有钣金的画法，你这个零件这样发是做不了的，硬发做出来有可能不适配，钣金加工要展平图的」；④日期笔误成 202621520229。交付格式：苏伯伟先发 .x_t，高荣信打不开，改 STEP 才行——跨软件交付优先 STEP。</p>"},{"id":"A101","cat":"size","title":"大符驱动随符旋转，滑环必须预留电机线（与去年不同）","src":"群聊·27炒鸡大符 2026-11-13","tags":["自动同步"],"body":"<p>高荣信 11-13 向电控交底：「跟之前设计的不同就是电机是在大符上的，需要预留电机的线」。去年电机不在符上，滑环只走灯板与信号；今年电机随符旋转，滑环必须把电机电源与 CAN 一起留出来——这是 18 路够不够的直接来源。谭嘉豪一度反问「为啥有电机线，电机不是在大幅后面吗」，确认后按新方案走。</p>"},{"id":"A102","cat":"team","title":"大符 V2.1 十天返工的根因：外购件没模型就先画死了轴系","src":"群聊·27炒鸡大符 2026-11-13~22","tags":["自动同步"],"body":"<p>这条线反复卡在「没有滑环模型」→「内径 21 不够要 25.4」→「10A 带不动要 20A」→「轴从 1m 空心中管改 620 实心钢轴」→「灯板模型 11-21 才到手」。同步带 568mm 到 11-22 01:12 才测出。教训：外购件（滑环、灯板）没拿到模型与接口尺寸之前，不要先画死轴系与走线；「灯板归硬件画、机械按它留孔位与间距」这条分工要在开工前说清，否则反复返工。另：所有件中心留定位孔是官方硬要求，审图要单独查这一项。</p>"},{"id":"A103","cat":"field","title":"压感板 RM-1X10 上行协议：1ms 周期、460800 波特、18 字节定长帧","src":"官方资料包·RM1X10_协议.xlsx + RM_1X10_open_version/Project/main.c","tags":["自动同步"],"body":"<p>官方《RM1X10_协议.xlsx》与开源 main.c 对照后的完整口径。方向为压感主控 → 上层，周期 1ms（即 1000Hz，与文件名 RM_1x10_1000hz.hex 一致）。串口 USART0，波特率 460800，引脚 PA9=TX / PA10=RX。帧结构按 #pragma pack(1) 紧凑排列共 18 字节：uint16 sof + uint8 tran_type(0x01 上行) + uint16 len(=sizeof-2=16) + uint8 type(0x01 压感数据) + uint8 adc_value[10] + uint16 checksum。校验和是「除最后 2 字节外全帧按 uint8 逐字节累加」，不是 CRC，uint16 保存会回绕。带宽核算：18B×1000Hz=18kB/s，460800bps 约合 46kB/s，占约 39%，余量足够。注意代码里 sof 字面量写 0x5aa5，而协议表写 0xA55A——小端存储后线上字节序为 A5 5A，两者指的是同一帧头，写解析器时按字节比较不要按字面量比较。</p>"},{"id":"A104","cat":"team","title":"压感板第 5~9 路通道在发送时被倒序，按索引直接映射几何位置会左右错位","src":"官方资料包·RM_1X10_open_version/Project/main.c","tags":["自动同步"],"body":"<p>这是官方开源代码里真实存在的一处反序，不是笔误。main.c 组包时 adc_value[0..4] 直接取 raw[0..4]，但 adc_value[5]=raw[9]、[6]=raw[8]、[7]=raw[7]、[8]=raw[6]、[9]=raw[5]，即第 5~9 路整体倒过来发送。原因应是对应靶板上这几颗传感器在 PCB 上的物理排布与 0~4 相反。后果：上位机若把 adc_value 下标当作物料位置直接用，5~9 号传感器的打击点会左右镜像，打左边判成右边。正确做法是按 raw 下标建映射表，或解包后先做一次 reverse(5..9) 还原再送算法。调试单点时用「只敲一颗传感器、看哪一路跳」的办法核对映射，别信下标。</p>"},{"id":"A105","cat":"team","title":"压感值是 12 位 ADC 压成 8 位且 255 饱和，判定阈值不能按原始 ADC 量程设","src":"官方资料包·RM_1X10_open_version/Bsp/sampling.c","tags":["自动同步"],"body":"<p>sampling.c 里转换式为 value[i] = 255 * GetAdcValue(i) / 4095，随后 if(value>=255) value=255。含义有三层：一是传感器原始输出是 12 位（0~4095），但协议只传 8 位（0~255），分辨率被压掉 16 倍，相邻一级代表约 16 个原始码值；二是上限被硬钳在 255，打出重击时波形会平顶饱和，此时无法区分「刚过阈值」和「打得很狠」，做力度分级（比如区分有效击打与超强击打）在 8 位域里做不到，必须回读原始 ADC；三是轻击时量化噪声占比大，阈值附近的抖动主要来自 8 位量化而非传感器本身。所以定阈值要用实测分布的中位数加裕量，而不是拍一个「看起来像」的数。</p>"},{"id":"A106","cat":"ref","title":"RM-1X10 压感板硬件构成：GD32E103CBT6 + AMS1117 + 74HC4051 扩到 10 路","src":"官方资料包·PCBA原理图/RM_1x10.pdf","tags":["自动同步"],"body":"<p>从官方原理图 RM_1x10.pdf（3 页：mcu.SchDoc / Power&Peripheral.SchDoc / 第三页为图形页无文字层）读出的事实：主控 GD32E103CBT6（Cortex-M4，LQFP48），电源用 AMS1117 线性稳压，模拟通道靠 74HC4051 多路复用开关扩展（源码 sampling.h 的宏名 __74HC4051B_h 与 Hc4051Delay 延时函数可证），最终对上提供 10 路通道（adc.h 中 ADC_NUM=10）。AD 采集走 ADC0 规则通道加 DMA 搬运。原理图源工程路径显示为 D:\\墨现-工作资料\\RM_1X10，与 K0411 记录的墨现科技供应线索吻合，可确认这家既是传感器膜片供应商也是这块 PCBA 的设计方。本地已归档：原理图 PDF、Altium 源文件 RM_1x10_V2.PcbDoc、两张 PCB 显微实物照。</p>"},{"id":"A107","cat":"ref","title":"官方压感板开源包里 adc/led/uart 是 .lib 预编译库，没有源码，二次开发只能改 main.c","src":"官方资料包·RM_1X10_open_version.zip","tags":["自动同步"],"body":"<p>RM_1X10_open_version.zip 共 277 个文件，但其中 260 余个是 GD32E10x 标准外设库与 CMSIS 的原始文件，真正属于本项目的只有 14 个。关键限制：Bsp 目录下的 adc、led、uart 三项以 .lib 二进制形式提供（只有 .h 头文件加 .lib 实体），只有 sampling.c/h 给了完整源码。这意味着采样时序、ADC 通道扫描顺序、串口初始化细节都无法修改，能动的只有 main.c 里的调用与组包逻辑、sampling.c 的换算公式，以及 Bsp 的 .h 里暴露的参数。想改波特率或加自定义帧，只能在 main.c 层重写，或放弃 .lib 自己重写 Bsp。工程为 Keil（Project/Keil_project），芯片 GD32E103，编译链需装 GigaDevice 器件支持包。结论：这包适合照抄协议加改上层，不适合当完整参考设计来学底层。</p>"},{"id":"A108","cat":"field","title":"西浦太仓OmniX-3D打印+铁砂自制能量单元（实验室测试道具）","src":"来源·BBS 1316665","tags":["自动同步"],"body":"<p>官方只给能量单元 STEP，实体道具贵且难买，该队用 3D 打印壳体＋铁砂（或沙子）＋铁片配重，做出可自制的训练用能量单元，开源总装模型 3.82MB。作者声明一切以官方道具为准，此件仅用于实验室复现抓取与装配手感。可借鉴：以极低成本做出外形与重量接近官方的能量单元，用于重装机器人装配训练、夹持力与重心验证；注意配重分布会直接改变抓取重心，需按官方参数校准。</p>"},{"id":"A109","cat":"field","title":"RMUC2027 科技核心位姿定义与四级难度参数（规则手册表5-10）","src":"来源·官网 规则手册V1.0.0 §5.4.3（BBS 1971755）","tags":["自动同步"],"body":"<p>考核细则的《附表1 科技核心位姿点位表》至今仍标“后续更新”，但位姿口径已写在规则手册 5.4.3：以底座正面与地面交线中点为原点 O、法线反向为 X 负、竖直向上为 Z 正建立装配坐标系，位姿=(x,y,z,θ,φ,α)，初始为 -200,200,800,0,90,0。表5-10 给四级难度：x∈[-100,0]、y∈[100,300]、z∈[500,700]；二至四级 θ∈[-90,90]、φ∈[0,90]、α∈[-45,45]；二级起放入后平移 100mm，三级再绕 Q 轴以 5° 精度旋至指定角，四级对方核心临时移近(y-y'≤400)且限 45 秒完成。可借鉴：自制考核用科技核心按此做可调位姿台，不必等附表1。</p>"}
+];
+
+/* ---------- state ---------- */
+let state = {cat:"all", q:"", sel:0, list:[]};
+
+const $ = s => document.querySelector(s);
+const listEl = $("#list"), countEl = $("#count"), catsEl = $("#cats"), chipsEl = $("#chips");
+
+/* ---------- init ---------- */
+document.getElementById("total").textContent = DATA.length;
+
+function countBy(cat){ return cat==="all" ? DATA.length : DATA.filter(d=>d.cat===cat).length; }
+
+function buildCats(){
+  const items = [["all","全部"]].concat(Object.keys(CATS).map(k=>[k,CATS[k].name]));
+  catsEl.innerHTML = items.map(([k,n])=>{
+    return `<li><button data-cat="${k}" class="${k===state.cat?"on":""}">
+      <span>${n}</span><span class="n">${countBy(k)}</span></button></li>`;
+  }).join("");
+}
+
+const strip = h => h.replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+
+function snipOf(d){
+  const s = d.body.replace(/<table[\s\S]*?<\/table>/g,"");
+  const p = s.match(/<p>([\s\S]*?)<\/p>/);
+  if(p){ const t = strip(p[1]); if(t.length > 6) return t.slice(0,110); }
+  const li = s.match(/<li>([\s\S]*?)<\/li>/);
+  if(li){ const t = strip(li[1]); if(t.length > 6) return t.slice(0,110); }
+  const rows = [...d.body.matchAll(/<tr>([\s\S]*?)<\/tr>/g)].slice(1,3).map(m =>
+    [...m[1].matchAll(/<t[dh]>([\s\S]*?)<\/t[dh]>/g)].map(x=>strip(x[1])).join(" · ")
+  );
+  if(rows.length) return rows.join(" ／ ").slice(0,110);
+  return strip(d.body).slice(0,110);
+}
+
+function score(item, q){
+  if(!q) return 1;
+  const t = item.title.toLowerCase();
+  const b = strip(item.body).toLowerCase();
+  const tg = item.tags.join(" ").toLowerCase();
+  let s = 0;
+  if(t.includes(q)) s += 100 + (t.startsWith(q)?40:0);
+  if(tg.includes(q)) s += 45;
+  if(b.includes(q)) s += 20;
+  // 逐字（应对 "72°" 之类）
+  const chars=[...q];
+  if(chars.length>2){
+    let hit=0; chars.forEach(c=>{ if(t.includes(c)||b.includes(c)||tg.includes(c)) hit++; });
+    if(hit===chars.length) s += 8;
+  }
+  return s;
+}
+
+function hi(text, q){
+  if(!q) return text;
+  const safe = q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  return text.replace(new RegExp(`(${safe})`,"gi"), "<mark>$1</mark>");
+}
+
+function render(){
+  const q = state.q.trim().toLowerCase();
+  let arr = DATA.filter(d => state.cat==="all" || d.cat===state.cat);
+  if(q){
+    arr = arr.map(d=>({d, s:score(d,q)})).filter(x=>x.s>0)
+             .sort((a,b)=>b.s-a.s).map(x=>x.d);
+  }
+  state.list = arr;
+  if(state.sel >= arr.length) state.sel = 0;
+
+  countEl.innerHTML = q
+    ? `找到 <b>${arr.length}</b> 条 · 关键词「${state.q.trim()}」`
+    : `共 <b>${arr.length}</b> 条`;
+
+  if(!arr.length){
+    listEl.innerHTML = `<div class="empty"><b>没有匹配的条目</b>换个说法试试，比如「折弯」「72」「增益」</div>`;
+    return;
+  }
+
+  listEl.innerHTML = arr.map((d,i)=>{
+    const c = CATS[d.cat];
+    const snippet = snipOf(d);
+    return `<article class="card ${i===state.sel?"sel":""}" data-i="${i}">
+      <div class="top">
+        <h3>${hi(d.title,q)}</h3>
+        <span class="badge ${c.cls}">${c.name}</span>
+      </div>
+      <p>${hi(snippet,q)}…</p>
+      <div class="src">${d.src}</div>
+    </article>`;
+  }).join("");
+}
+
+/* ---------- drawer ---------- */
+function open(i){
+  const d = state.list[i]; if(!d) return;
+  const c = CATS[d.cat];
+  $("#dbadge").className = "badge "+c.cls;
+  $("#dbadge").textContent = c.name;
+  $("#dtitle").textContent = d.title;
+  $("#dsrc").textContent = "来源：" + d.src;
+  $("#dbody").innerHTML = d.body +
+    `<div class="tagrow">${d.tags.map(t=>`<span># ${t}</span>`).join("")}</div>`;
+  $("#drawer").classList.add("on");
+  $("#scrim").classList.add("on");
+  document.body.style.overflow="hidden";
+}
+function close(){
+  $("#drawer").classList.remove("on");
+  $("#scrim").classList.remove("on");
+  document.body.style.overflow="";
+}
+
+/* ---------- events ---------- */
+catsEl.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  state.cat = b.dataset.cat; state.sel=0;
+  [...catsEl.querySelectorAll("button")].forEach(x=>x.classList.toggle("on", x===b));
+  render();
+});
+
+listEl.addEventListener("click", e=>{
+  const card = e.target.closest(".card"); if(!card) return;
+  open(+card.dataset.i);
+});
+
+$("#dclose").addEventListener("click", close);
+$("#scrim").addEventListener("click", close);
+
+const qEl = $("#q");
+qEl.addEventListener("input", ()=>{ state.q = qEl.value; state.sel=0; render(); });
+
+document.addEventListener("keydown", e=>{
+  if(e.key==="/" && document.activeElement!==qEl){ e.preventDefault(); qEl.focus(); qEl.select(); return; }
+  if(e.key==="Escape"){ close(); qEl.blur(); return; }
+  if(document.activeElement===qEl && e.key!=="ArrowDown" && e.key!=="ArrowUp") return;
+  if(e.key==="ArrowDown"){ e.preventDefault(); state.sel=Math.min(state.sel+1, state.list.length-1); render(); scrollSel(); }
+  if(e.key==="ArrowUp"){ e.preventDefault(); state.sel=Math.max(state.sel-1,0); render(); scrollSel(); }
+  if(e.key==="Enter"){ e.preventDefault(); open(state.sel); }
+});
+
+function scrollSel(){
+  const el = listEl.querySelector(".card.sel");
+  if(el) el.scrollIntoView({block:"nearest", behavior:"smooth"});
+}
+
+document.querySelectorAll(".quick a").forEach(a=>{
+  a.addEventListener("click", e=>{
+    e.preventDefault();
+    qEl.value = a.dataset.q; state.q = a.dataset.q; state.sel=0;
+    state.cat="all"; [...catsEl.querySelectorAll("button")].forEach(x=>x.classList.toggle("on", x.dataset.cat==="all"));
+    render(); qEl.focus();
+  });
+});
+
+/* ---------- tracker ---------- */
+const TKEY = "rm2027-tracker";
+function loadTracker(){
+  let s = {};
+  try{ s = JSON.parse(localStorage.getItem(TKEY)||"{}"); }catch(e){}
+  document.querySelectorAll("#tracker input").forEach(inp=>{
+    inp.checked = !!s[inp.dataset.w];
+    inp.closest("label").classList.toggle("done", inp.checked);
+  });
+  updateTracker();
+}
+function updateTracker(){
+  const ins = [...document.querySelectorAll("#tracker input")];
+  const n = ins.filter(i=>i.checked).length;
+  const pct = Math.round(n/ins.length*100);
+  $("#pbar").style.width = pct+"%";
+  $("#ppct").textContent = pct+"%";
+}
+$("#tracker").addEventListener("change", e=>{
+  if(e.target.tagName!=="INPUT") return;
+  e.target.closest("label").classList.toggle("done", e.target.checked);
+  const s = {};
+  document.querySelectorAll("#tracker input").forEach(i=>{ if(i.checked) s[i.dataset.w]=1; });
+  try{ localStorage.setItem(TKEY, JSON.stringify(s)); }catch(err){}
+  updateTracker();
+});
+
+/* ---------- boot ---------- */
+const HOT = ["72°","Ø1400","靶心","公差","折弯","走线","每周","增益"];
+chipsEl.innerHTML = HOT.map(k=>`<button class="chip" data-k="${k}">${k}</button>`).join("");
+chipsEl.addEventListener("click", e=>{
+  const b=e.target.closest(".chip"); if(!b) return;
+  const on = b.classList.contains("on");
+  [...chipsEl.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
+  if(on){ qEl.value=""; state.q=""; }
+  else { b.classList.add("on"); qEl.value=b.dataset.k; state.q=b.dataset.k; state.cat="all";
+    [...catsEl.querySelectorAll("button")].forEach(x=>x.classList.toggle("on", x.dataset.cat==="all")); }
+  state.sel=0; render();
+});
+
+buildCats();
+loadTracker();
+const usp = new URLSearchParams(location.search);
+if(usp.get("q")){ qEl.value = usp.get("q"); state.q = usp.get("q"); }
+render();
+const hid = (location.hash||"").replace("#","");
+if(hid){
+  const idx = state.list.findIndex(d=>d.id===hid);
+  if(idx>=0){ state.sel = idx; render(); open(idx); }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RM2027 大符资料检索 · 能量机关</title>
+<style>
+:root{
+  --bg:#f4f5f7;
+  --panel:#ffffff;
+  --ink:#14161a;
+  --ink-2:#4a4f57;
+  --ink-3:#8a9099;
+  --line:#e4e6ea;
+  --line-2:#eef0f3;
+  --red:#d9232e;
+  --red-soft:#fdecec;
+  --amber:#b8761a;
+  --amber-soft:#fdf3e3;
+  --blue:#2c5f9e;
+  --blue-soft:#eaf1fa;
+  --green:#2f7a52;
+  --green-soft:#e9f5ee;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(20,22,26,.05), 0 8px 24px rgba(20,22,26,.05);
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:14px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:#ffe0b2}
+
+/* ---------- header ---------- */
+header{
+  position:sticky;top:0;z-index:30;
+  background:rgba(255,255,255,.86);
+  backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.hwrap{max-width:1180px;margin:0 auto;padding:14px 20px 12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;flex:none}
+.brand .mark{
+  width:26px;height:26px;border-radius:6px;background:var(--ink);color:#fff;
+  display:grid;place-items:center;font-weight:800;font-size:13px;letter-spacing:-.5px;
+  position:relative;top:3px;
+}
+.brand h1{font-size:15px;margin:0;font-weight:700;letter-spacing:.2px}
+.brand span{font-size:12px;color:var(--ink-3)}
+.searchbox{flex:1;min-width:260px;position:relative}
+.searchbox input{
+  width:100%;height:40px;border:1px solid var(--line);border-radius:var(--radius);
+  background:#fff;padding:0 78px 0 38px;font-size:14px;color:var(--ink);outline:none;
+  transition:.18s;
+  font-family:inherit;
+}
+.searchbox input:focus{border-color:#c9ced6;box-shadow:0 0 0 3px rgba(20,22,26,.05)}
+.searchbox .ico{position:absolute;left:13px;top:11px;width:16px;height:16px;opacity:.45}
+.searchbox .hint{
+  position:absolute;right:10px;top:9px;font-size:11px;color:var(--ink-3);
+  border:1px solid var(--line);border-radius:5px;padding:1px 6px;background:#fafbfc;
+  font-family:var(--mono);
+}
+.meta-line{max-width:1180px;margin:0 auto;padding:0 20px 12px;font-size:12px;color:var(--ink-3);display:flex;gap:14px;flex-wrap:wrap}
+
+/* ---------- tracker ---------- */
+.tracker{max-width:1180px;margin:0 auto;padding:14px 20px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tracker .tl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.tracker label{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2);
+  background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px 11px 3px 8px;cursor:pointer;transition:.15s}
+.tracker label:hover{border-color:#cfd4db}
+.tracker label.done{background:var(--green-soft);border-color:#cfe7da;color:var(--green)}
+.tracker input{accent-color:#2f7a52;margin:0;width:13px;height:13px}
+.tracker .bar{flex:1;min-width:120px;height:4px;background:var(--line);border-radius:99px;overflow:hidden}
+.tracker .bar i{display:block;height:100%;width:0;background:var(--green);transition:.3s}
+.tracker .pct{font-family:var(--mono);font-size:11px;color:var(--ink-3);min-width:34px;text-align:right}
+
+/* ---------- layout ---------- */
+main{max-width:1180px;margin:0 auto;padding:20px;display:grid;grid-template-columns:196px 1fr;gap:22px;align-items:start}
+@media (max-width:820px){ main{grid-template-columns:1fr} }
+
+/* ---------- sidebar ---------- */
+aside{position:sticky;top:104px}
+@media (max-width:820px){ aside{position:static} }
+.catlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.catlist button{
+  width:100%;text-align:left;border:0;background:transparent;cursor:pointer;
+  padding:7px 10px;border-radius:7px;font-size:13px;color:var(--ink-2);
+  display:flex;justify-content:space-between;align-items:center;font-family:inherit;
+  transition:.14s;
+}
+.catlist button:hover{background:#fff;color:var(--ink)}
+.catlist button.on{background:var(--ink);color:#fff}
+.catlist button.on .n{color:rgba(255,255,255,.6)}
+.catlist .n{font-size:11px;color:var(--ink-3);font-family:var(--mono)}
+.side-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px 10px;font-weight:600}
+.side-block{margin-bottom:22px}
+.quick{display:flex;flex-direction:column;gap:6px}
+.quick a{
+  display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink-2);
+  font-size:12.5px;padding:7px 10px;border-radius:7px;background:#fff;border:1px solid var(--line-2);
+  transition:.14s;
+}
+.quick a:hover{border-color:var(--line);color:var(--ink);transform:translateX(2px)}
+.quick .dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex:none}
+.quick .dot.b{background:var(--blue)}
+.quick .dot.g{background:var(--green)}
+
+/* ---------- results ---------- */
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px;flex-wrap:wrap}
+.count{font-size:12.5px;color:var(--ink-3)}
+.count b{color:var(--ink);font-family:var(--mono);font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{
+  font-size:12px;border:1px solid var(--line);background:#fff;color:var(--ink-2);
+  padding:4px 10px;border-radius:99px;cursor:pointer;font-family:inherit;transition:.14s;
+}
+.chip:hover{border-color:#cfd4db}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.list{display:flex;flex-direction:column;gap:8px}
+.card{
+  background:var(--panel);border:1px solid var(--line-2);border-radius:var(--radius);
+  padding:13px 16px;cursor:pointer;transition:.16s;position:relative;overflow:hidden;
+}
+.card:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:transparent;transition:.16s;
+}
+.card:hover{border-color:#d8dce2;box-shadow:var(--shadow);transform:translateY(-1px)}
+.card:hover:before{background:var(--red)}
+.card.sel{border-color:#c9ced6;box-shadow:var(--shadow)}
+.card.sel:before{background:var(--red)}
+.card .top{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+.card h3{margin:0;font-size:14.5px;font-weight:650;letter-spacing:.1px;line-height:1.45}
+.badge{
+  font-size:10.5px;padding:1px 7px;border-radius:4px;font-weight:600;letter-spacing:.02em;
+  flex:none;
+}
+.badge.rule{background:var(--red-soft);color:var(--red)}
+.badge.size{background:var(--blue-soft);color:var(--blue)}
+.badge.field{background:var(--green-soft);color:var(--green)}
+.badge.dwg{background:var(--amber-soft);color:var(--amber)}
+.badge.team{background:#f0edf8;color:#5b4a9e}
+.badge.plan{background:#e9f4f6;color:#256b78}
+.badge.ref{background:#f0f1f3;color:#5d636b}
+.card p{margin:0;font-size:12.8px;color:var(--ink-2);line-height:1.6;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .src{font-size:11px;color:var(--ink-3);margin-top:6px;font-family:var(--mono)}
+mark{background:#ffe9a8;color:inherit;padding:0 1px;border-radius:2px}
+.empty{padding:60px 20px;text-align:center;color:var(--ink-3)}
+.empty b{display:block;color:var(--ink-2);margin-bottom:6px;font-size:15px}
+
+/* ---------- drawer ---------- */
+.scrim{
+  position:fixed;inset:0;background:rgba(20,22,26,.28);opacity:0;pointer-events:none;
+  transition:.22s;z-index:40;backdrop-filter:blur(1px);
+}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(640px,94vw);background:#fff;z-index:50;
+  transform:translateX(102%);transition:.26s cubic-bezier(.22,.61,.36,1);
+  display:flex;flex-direction:column;box-shadow:-24px 0 60px rgba(20,22,26,.14);
+}
+.drawer.on{transform:none}
+.dhead{padding:18px 24px 14px;border-bottom:1px solid var(--line-2);display:flex;gap:12px;align-items:flex-start}
+.dhead .txt{flex:1}
+.dhead h2{margin:6px 0 4px;font-size:19px;line-height:1.4;letter-spacing:.1px}
+.dhead .src{font-size:11.5px;color:var(--ink-3);font-family:var(--mono)}
+.close{
+  border:1px solid var(--line);background:#fff;border-radius:7px;width:30px;height:30px;
+  cursor:pointer;color:var(--ink-3);font-size:16px;line-height:1;flex:none;
+}
+.close:hover{color:var(--ink);border-color:#cfd4db}
+.dbody{padding:20px 24px 60px;overflow:auto;font-size:14px;line-height:1.8;color:var(--ink-2)}
+.dbody h3{font-size:14px;color:var(--ink);margin:22px 0 8px;letter-spacing:.2px}
+.dbody h3:first-child{margin-top:0}
+.dbody p{margin:0 0 10px}
+.dbody ul,.dbody ol{margin:0 0 12px;padding-left:20px}
+.dbody li{margin:3px 0}
+.dbody strong{color:var(--ink);font-weight:650}
+.dbody code{font-family:var(--mono);background:#f4f5f7;padding:1px 5px;border-radius:4px;font-size:12.5px}
+.dbody table{border-collapse:collapse;width:100%;margin:10px 0 14px;font-size:12.8px}
+.dbody th,.dbody td{border:1px solid var(--line);padding:6px 9px;text-align:left}
+.dbody th{background:#fafbfc;color:var(--ink);font-weight:600}
+.dbody .note{
+  background:#fafbfc;border-left:3px solid var(--red);padding:10px 14px;border-radius:0 6px 6px 0;
+  font-size:13px;color:var(--ink-2);margin:12px 0;
+}
+.dbody .tagrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:24px;padding-top:16px;border-top:1px solid var(--line-2)}
+.dbody .tagrow span{font-size:11px;color:var(--ink-3);background:#f4f5f7;padding:2px 8px;border-radius:99px}
+
+/* ---------- footer ---------- */
+footer{max-width:1180px;margin:0 auto;padding:28px 20px 60px;color:var(--ink-3);font-size:12px;
+  border-top:1px solid var(--line);margin-top:30px}
+footer b{color:var(--ink-2);font-weight:600}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="brand">
+      <div class="mark">R</div>
+      <div>
+        <h1>RM2027 大符资料检索</h1>
+        <span>RoboMaster 超级对抗赛 · 能量机关</span>
+      </div>
+    </div>
+    <div class="searchbox">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="搜尺寸、条款、工艺…  例如：72° / 增益 / 折弯 / 每周" autocomplete="off" spellcheck="false">
+      <span class="hint">/</span>
+    </div>
+  </div>
+  <div class="meta-line">
+    <span>资料截至 2026-10-26</span>
+    <span>·</span>
+    <span>来源：规则手册 V1.0.0、制作规范 V1.0.0、官方 STEP、队群通知</span>
+    <span>·</span>
+    <span>共 <b id="total">0</b> 条</span>
+  </div>
+</header>
+  <div class="tracker standalone" id="tracker">
+    <span class="tl">进度</span>
+    <label><input type="checkbox" data-w="1"><span>W1 10/26–11/1 方案</span></label>
+    <label><input type="checkbox" data-w="2"><span>W2 11/2–11/8 建模</span></label>
+    <label><input type="checkbox" data-w="3"><span>W3 11/9–11/15 出图</span></label>
+    <label><input type="checkbox" data-w="4"><span>W4 11/16–11/20 定稿</span></label>
+    <div class="bar"><i id="pbar"></i></div>
+    <span class="pct" id="ppct">0%</span>
+  </div>
+
+<main>
+  <aside>
+    <div class="side-block">
+      <p class="side-title">分类</p>
+      <ul class="catlist" id="cats"></ul>
+    </div>
+    <div class="side-block">
+      <p class="side-title">快捷入口</p>
+      <div class="quick">
+        <a href="#" data-q="72°"><span class="dot"></span>核心尺寸一览</a>
+        <a href="#" data-q="增益"><span class="dot b"></span>增益与环数</a>
+        <a href="#" data-q="每周"><span class="dot g"></span>每周要交什么</a>
+      </div>
+    </div>
+    <div class="side-block">
+      <p class="side-title">说明</p>
+      <p style="font-size:11.5px;color:var(--ink-3);line-height:1.7;padding:0 10px;margin:0">
+        数值带「读图」字样者，为从官方图纸读出，使用前请对原图复核。带「实测」者为从官方 STEP 提取。
+      </p>
+    </div>
+  </aside>
+
+  <section>
+    <div class="toolbar">
+      <div class="count" id="count"></div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+</main>
+
+<footer>
+  <b>使用说明</b>　按 <code style="font-family:monospace">/</code> 聚焦搜索，<code style="font-family:monospace">↑↓</code> 选择，<code style="font-family:monospace">Enter</code> 打开，<code style="font-family:monospace">Esc</code> 关闭。<br>
+  数据整理自官方规则手册与制作规范（V1.0.0，2026-10-15）、官方开源场地 STEP、队伍群通知。官方声明「渲染图仅供示意」，所有尺寸以图纸标注与现场实物为准。
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <div class="dhead">
+    <div class="txt">
+      <span class="badge" id="dbadge"></span>
+      <h2 id="dtitle"></h2>
+      <div class="src" id="dsrc"></div>
+    </div>
+    <button class="close" id="dclose">✕</button>
+  </div>
+  <div class="dbody" id="dbody"></div>
+</aside>
+
+<script>
+const CATS = {
+  rule:  {name:"规则机制", cls:"rule"},
+  size:  {name:"结构尺寸", cls:"size"},
+  field: {name:"场地",     cls:"field"},
+  dwg:   {name:"制图规范", cls:"dwg"},
+  team:  {name:"队伍要求", cls:"team"},
+  plan:  {name:"学习计划", cls:"plan"},
+  ref:   {name:"参考资料", cls:"ref"}
+};
+
+const DATA = [
+/* ============ 规则机制 ============ */
+{id:"M01",cat:"rule",title:"大符是什么：5 臂旋转靶盘",src:"规则手册 5.6.3 · P97",tags:["概述","大小符","能量机关"],
+body:`<p>能量机关是一个持续旋转的 <strong>5 臂靶盘</strong>，机器人用 17mm 弹丸击打被点亮的装甲模块，按<strong>平均环数</strong>与<strong>激活灯臂数</strong>换取攻击、防御、热量冷却增益。</p>
+<p>按比赛时间分两个阶段：</p>
+<ul><li><strong>0:00 – 3:00</strong>　小能量机关</li><li><strong>3:00 之后</strong>　大能量机关（我们画的就是这个）</li></ul>
+<div class="note">红蓝两侧是<strong>共轴、背靠背</strong>的两套回转体。观察一方时可能看到对方的一部分。</div>`},
+
+{id:"M02",cat:"rule",title:"转速：6 秒一圈 / 10 rpm",src:"规则手册 5.6.3 · P97",tags:["转速","电机","选型","转速公式"],
+body:`<table><tr><th>状态</th><th>转速</th></tr>
+<tr><td>小能量机关</td><td>固定 π/3 rad/s ≈ 1.047 rad/s（6 秒一圈 / 10 rpm）</td></tr>
+<tr><td>大能量机关（非激活）</td><td>固定 π/3 rad/s</td></tr>
+<tr><td>大能量机关（激活态）</td><td>按正弦周期变化</td></tr></table>
+<p>灯臂端点线速度（r=700mm）：v = 1.047 × 0.7 ≈ <strong>0.73 m/s</strong>。</p>
+<div class="note">这是判断电机选型对不对的硬指标：必须能稳在 10 rpm，且能跟随 0~20 rpm 的正弦加减速。</div>`},
+
+{id:"M03",cat:"rule",title:"激活态速度函数 spd = a·sin(ωt) + b",src:"规则手册 5.6.3 · P97",tags:["转速","正弦","参数","频率"],
+body:`<p><code>spd = a · sin(ω · t) + b</code>，单位 rad/s。</p>
+<ul><li>a ∈ [0.780, 1.045]</li><li>ω ∈ [1.884, 2.000]</li><li><strong>b = 2.090 − a</strong>（始终成立）</li></ul>
+<p>每次进入可激活状态时 t 重置为 0，a 与 ω 在区间内随机；实际转速与目标函数的时间误差 ≤ 500ms。</p>
+<p>代入可得区间 <code>[2.090−2a, 2.090]</code>：a=0.78 时约 0.53~2.09 rad/s；a=1.045 时最低<strong>会瞬间停住</strong>。</p>`},
+
+{id:"M04",cat:"rule",title:"激活机会：3 分钟、4:15、5:30",src:"规则手册 5.6.3 · P97–98",tags:["时间轴","激活","机会","累积"],
+body:`<ul><li>比赛开始 3 分钟、4 分 15 秒、5 分 30 秒，双方各获得 1 次激活大符机会，<strong>可累积</strong>。</li>
+<li>步兵操作手通过裁判系统选手端、或哨兵通过串口触发。</li>
+<li>进入「正在激活」后 <strong>20 秒</strong>未完成，自动退回未激活（机会消耗）。</li></ul>
+<p>小符：0:00 与 1:30 各 1 次。</p>`},
+
+{id:"M05",cat:"rule",title:"大符激活流程：2 块亮、2.5 秒、1 秒",src:"规则手册 5.6.3.1 · P100",tags:["流程","灯效","时序","瞄准"],
+body:`<ol><li>随机点亮 5 块装甲模块中的 <strong>2 块</strong>，对应灯臂中轴出现箭头状流动灯效；</li>
+<li>须在 <strong>2.5 秒</strong>内击中<strong>被点亮</strong>模块的可检测区域；</li>
+<li>命中后该臂改变灯效，此后 <strong>1 秒</strong>内可再击中另一块被点亮的模块；不论是否成功，立刻重新随机点亮 2 块；</li>
+<li>一组 = 2 块，<strong>击中该组第一块即视为该组成功</strong>；</li>
+<li>5 组完成 → 已激活；灯臂中部灯效显示进度（1/5、2/5 …）。</li></ol>
+<p>重新点亮下一组前，灯效会<strong>熄灭至多 200ms</strong>。</p>`},
+
+{id:"M06",cat:"rule",title:"激活失败的两种情形",src:"规则手册 5.6.3.1 · P101",tags:["失败","判定","规则"],
+body:`<ul><li>未能在 2.5 秒内击中点亮的装甲模块；</li><li>击中了<strong>非</strong>随机点亮的装甲模块。</li></ul>
+<p>任一情况即本次激活失败，能量机关重置为未激活状态。</p>`},
+
+{id:"M07",cat:"rule",title:"平均环数 → 增益（表 5-22）",src:"规则手册 表 5-22 · P98",tags:["增益","环数","攻击","防御","冷却"],
+body:`<table><tr><th>平均环数</th><th>攻击</th><th>防御</th><th>冷却</th></tr>
+<tr><td>[1,3]</td><td>150%</td><td>25%</td><td>无</td></tr>
+<tr><td>(3,7]</td><td>150%</td><td>25%</td><td>2 倍</td></tr>
+<tr><td>(7,8]</td><td>200%</td><td>25%</td><td>2 倍</td></tr>
+<tr><td>(8,9]</td><td>200%</td><td>25%</td><td>3 倍</td></tr>
+<tr><td>(9,10]</td><td>300%</td><td>50%</td><td>5 倍</td></tr></table>
+<p>每块装甲模块划分 <strong>1~10 环</strong>。</p>`},
+
+{id:"M08",cat:"rule",title:"激活灯臂数 → 持续时间（表 5-23）",src:"规则手册 表 5-23 · P98–99",tags:["增益","持续时间","灯臂"],
+body:`<table><tr><th>激活灯臂数</th><th>持续时间</th></tr>
+<tr><td>5</td><td>30 s</td></tr><tr><td>6</td><td>35 s</td></tr><tr><td>7</td><td>40 s</td></tr>
+<tr><td>8</td><td>45 s</td></tr><tr><td>9</td><td>50 s</td></tr><tr><td>10</td><td>60 s</td></tr></table>
+<div class="note">能到 10，说明大符的装甲模块总数大于 5（很可能是每臂 2 块，红蓝各一面）。这是结构上最容易画错的地方，见 <strong>存疑点</strong> 条目。</div>`},
+
+{id:"M09",cat:"rule",title:"累计激活 → 有效检测环数收窄",src:"规则手册 表 5-24 · P99",tags:["环数","衰减","规则"],
+body:`<table><tr><th>己方大符累计被激活</th><th>可继续检测的环数</th></tr>
+<tr><td>1 次</td><td>4,5,6,7,8,9,10 环</td></tr>
+<tr><td>2 次</td><td>7,8,9,10 环</td></tr></table>
+<p>每激活一次，1~3 环先失效。这意味着靶面图案必须让<strong>环的边界清晰可辨</strong>。</p>`},
+
+{id:"M10",cat:"rule",title:"状态机：未激活 / 正在激活 / 已激活 / 失败",src:"规则手册 5.6.3.1 · P99–101",tags:["状态机","灯效","控制"],
+body:`<p>四种状态：<strong>未激活 → 正在激活 → 已激活</strong>，失败则回到未激活。</p>
+<table><tr><th>状态</th><th>灯效</th><th>结构要求</th></tr>
+<tr><td>未激活</td><td>常暗 / 呼吸</td><td>灯珠可独立控制</td></tr>
+<tr><td>正在激活</td><td>2 块亮 + 中轴箭头流动 + 中部进度 1/5~5/5</td><td>独立寻址灯带</td></tr>
+<tr><td>已激活</td><td>5 臂全亮</td><td>满功率供电、散热</td></tr>
+<tr><td>失败</td><td>复位</td><td>可复位、无误触发</td></tr></table>`},
+
+{id:"M11",cat:"rule",title:"检测精度：径向 1mm",src:"规则手册 5.6.3 · P98",tags:["精度","公差","靶面"],
+body:`<p>「能量机关装甲模块对弹丸击打位置的检测精度为<strong>径向 1mm</strong>。」</p>
+<div class="note">判定是<strong>按半径</strong>而不是按面积。所以靶面同心圆图案的<strong>同心度</strong>直接决定环数——靶心偏 5mm，10 环区域整体就偏了。</div>`},
+
+{id:"M12",cat:"rule",title:"750 点经验分给步兵",src:"规则手册 5.6.3 · P98",tags:["经验","经济"],
+body:`<p>大能量机关被激活时，将有 <strong>750 点经验</strong>平均分给激活方所有存活的步兵机器人。</p>
+<p>小符增益期间，步兵获得经验时额外获得原经验 100%，单次增益期间上限 1200 点。</p>`},
+
+{id:"M13",cat:"rule",title:"红蓝共轴反转，方向开局随机",src:"规则手册 5.6.3 · P97",tags:["共轴","方向","结构"],
+body:`<p>红蓝双方能量机关<strong>共轴旋转</strong>：红方顺时针时蓝方逆时针（以面朝该方时的方向为准）。</p>
+<p>每局开始前方向随机，当局内保持一致。</p>
+<p>含义：结构上是<strong>一根轴带两个回转体</strong>，或两套同轴反转机构。</p>`},
+
+{id:"M14",cat:"rule",title:"小符：25% 防御、持续 45 秒",src:"规则手册 5.6.3 · P97",tags:["小符","小能量机关","增益"],
+body:`<p>成功激活小符后，该方所有机器人、前哨站、基地获得 <strong>25% 防御增益，持续 45 秒</strong>；增益期间步兵获得经验额外 +100%，单次上限 1200 点。</p>
+<p>小符随机点亮 5 块中<strong>的 1 块</strong>，2.5 秒内击中即点亮该灯臂，再随机点亮其余 4 块中的 1 块。</p>`},
+
+{id:"M15",cat:"rule",title:"存疑点：每臂到底几块装甲",src:"整理者标注 · 待确认",tags:["存疑","确认","装甲模块"],
+body:`<p>规则里同时出现两种说法，互相矛盾：</p>
+<ul><li>「随机点亮 <strong>5 块</strong>装甲模块中的任意 2 个」→ 总共 5 块；</li>
+<li>表 5-23 的「激活灯臂数」可以到 <strong>10</strong>。</li></ul>
+<p>可能的解释：每个灯臂正面/背面各 1 块（红蓝各打一面），共 10 块。</p>
+<div class="note">画图前必须确认。建议直接问队里师兄，或在官方答疑渠道提问（备赛期 5 个工作日内答复）。</div>`},
+
+/* ============ 结构尺寸 ============ */
+{id:"S01",cat:"size",title:"5 臂均布，夹角 72°",src:"规则手册 4.3.2.3 · 图 4-31",tags:["72度","均布","灯臂","读图"],
+body:`<p>能量机关有 <strong>5 个均匀分布</strong>的灯臂，相邻灯臂夹角 <strong>72°</strong>（5×72=360）。</p>
+<div class="note">72° 是<strong>功能尺寸</strong>，必须按图做。建模时用「圆周阵列」而不是复制 5 次。</div>`},
+
+{id:"S02",cat:"size",title:"包络直径 Ø1400",src:"规则手册 图 4-31 · P54",tags:["1400","包络","直径","读图"],
+body:`<p>灯臂端点所在圆直径 <strong>Ø1400</strong>，即整机最大回转直径，半径 R=700。</p>
+<p>这是整机设计的<strong>第一约束</strong>：任何零件超出这个圆，就是画错了。</p>
+<p>建议单独建一个 Ø1400 的草图圆作为包络检查基准。</p>`},
+
+{id:"S03",cat:"size",title:"高度：2300（台面到顶架）+ 300（底座）",src:"规则手册 图 4-31 · P54",tags:["2300","300","高度","读图"],
+body:`<p>从装配区台面到顶部横架上沿 <strong>2300mm</strong>；底座台阶高 <strong>300mm</strong>。</p>
+<p>故能量机关顶部离地约 <strong>2600mm</strong>。</p>
+<div class="note">注意：2300 的箭头止于<strong>顶部横架上沿</strong>，不是灯臂顶端。别把 2300 当整机高度用。</div>`},
+
+{id:"S04",cat:"size",title:"靶心半径实测 521.7mm",src:"官方 STEP 提取 · 2026-10-26",tags:["靶心","实测","522","定位"],
+body:`<p>从官方 <code>RMUC2027_V1.0.0.stp</code> 中提取半径 154mm（Ø308）的圆形特征，聚类后做最小二乘圆拟合：</p>
+<table><tr><th>项</th><th>值</th></tr>
+<tr><td>靶面圆心到回转轴距离 <strong>R_target</strong></td><td><strong>521.7 mm</strong>（5 处残差 &lt; 0.1mm）</td></tr>
+<tr><td>每处靶面的同心圆数量</td><td>14 个</td></tr>
+<tr><td>靶面所在高度 z</td><td>−472.1 mm（模型坐标系）</td></tr></table>
+<p><strong>交叉验证</strong>：700 − 24（臂端折边）− 154（靶半径）= <strong>522</strong>，与实测吻合。</p>
+<div class="note">这个数官方手册上没有直接标，是画图时最要紧的定位尺寸之一。</div>`},
+
+{id:"S05",cat:"size",title:"靶面 Ø308（最大）/ Ø300（有效）",src:"规则手册 P55 正文 + 图 4-32",tags:["308","300","靶面","直径"],
+body:`<p>「实际灯臂的圆靶最大直径为 <strong>308mm</strong>，实际有效检测直径为 <strong>300mm</strong>。」</p>
+<p>即靶面外缘留 4mm 边框（径向），可打区域是中间 Ø300。</p>
+<p>靶面外圈与靶框之间有 <strong>120°</strong> 的楔形过渡（图 4-32 上下各一处）。</p>`},
+
+{id:"S06",cat:"size",title:"中心标识 Ø106",src:"规则手册 图 4-33 · P55",tags:["106","中心","R标","标识"],
+body:`<p>回转体正中心有一个直径 <strong>Ø106</strong> 的圆形标识，黑底 + 红色 RM 风格「R」。</p>
+<p>训练道具可做背光版，与赛场观感一致。</p>`},
+
+{id:"S07",cat:"size",title:"灯臂尺寸表（372 / 382 / 320 …）",src:"规则手册 图 4-32 · P54",tags:["372","382","320","灯臂","尺寸表","读图"],
+body:`<table><tr><th>部位</th><th>数值</th></tr>
+<tr><td>臂端外廓总宽</td><td>372</td></tr>
+<tr><td>靶面安装框内宽</td><td>320</td></tr>
+<tr><td>灯臂长度（顶端→肩部）</td><td>382</td></tr>
+<tr><td>顶端包边</td><td>29</td></tr>
+<tr><td>靶框下沿</td><td>36</td></tr>
+<tr><td>折边 / 板厚</td><td>24（两处）</td></tr>
+<tr><td>中心加强筋宽</td><td>60</td></tr>
+<tr><td>加强筋长</td><td>330</td></tr>
+<tr><td>筋相对中心偏置</td><td>136</td></tr>
+<tr><td>肩部侧边</td><td>203</td></tr>
+<tr><td>角撑 / 折边</td><td>20</td></tr>
+<tr><td>斜撑长</td><td>215</td></tr></table>
+<p>以上均为<strong>读图值</strong>，使用前请对原图复核。</p>`},
+
+{id:"S08",cat:"size",title:"中部下坠 0~50mm",src:"规则手册 4.3.2.3 · P54",tags:["下坠","装配","间隙"],
+body:`<p>「能量机关中部由于重量较大，会出现轻微下坠的现象，下坠范围为 <strong>0~50mm</strong>。」</p>
+<p>这是官方对实物装配状态的容忍量，<strong>不要求图纸体现</strong>，但装配说明里应写清轴向间隙与支撑方式，否则做出来会晃。</p>`},
+
+{id:"S09",cat:"size",title:"建模基准：原点与阵列",src:"整理建议",tags:["建模","基准","SolidWorks"],
+body:`<table><tr><th>项</th><th>建议</th></tr>
+<tr><td>原点</td><td>回转轴线与 5 臂对称平面的交点，Z 轴向上</td></tr>
+<tr><td>方向</td><td>一条灯臂沿 +Y，其余按 72° 圆周阵列</td></tr>
+<tr><td>红蓝</td><td>建一侧，另一侧镜像 + 绕 Z 轴 36° 错位</td></tr>
+<tr><td>阵列</td><td>圆周阵列，不要复制 5 次</td></tr>
+<tr><td>配合</td><td>同心 + 端面贴合，不要用距离硬怼</td></tr>
+<tr><td>检查</td><td>干涉检查 + 最小间隙 2mm 的间隙验证</td></tr></table>`},
+
+{id:"S10",cat:"size",title:"官方 STEP 在哪、怎么用",src:"bbs.robomaster.com/article/1970956",tags:["STEP","模型","下载","官方"],
+body:`<p>组委会开源 2027 场地图纸（STEP）：</p>
+<ul><li><code>RMUC2027_V1.0.0.stp</code>　653 MB　全场，含能量机关</li>
+<li><code>能量单元.stp</code>　3 MB　注意不是能量机关本体</li></ul>
+<p>本地已在 <code>assets/models/</code>。</p>
+<div class="note">650MB 的模型别直接开装配：先另存零件 → 删除无关场地实体 → 只留中央高地 → 用「评估/测量」取尺寸。</div>`},
+
+/* ============ 场地 ============ */
+{id:"F01",cat:"field",title:"战场 28×15m，围挡高 2.4m",src:"规则手册 4.1 · P29",tags:["战场","尺寸","围挡"],
+body:`<p>战场为 <strong>28m × 15m</strong>，内部木质结构，表面 2mm PVC 地胶；外围黑色钢制围挡，上边沿距地面 <strong>2.4m</strong>。</p>`},
+
+{id:"F02",cat:"field",title:"官方尺寸公差：±5mm / ±5% / ±1°",src:"规则手册 4.1 · P29",tags:["公差","误差","标准"],
+body:`<table><tr><th>对象</th><th>误差</th></tr>
+<tr><td>&lt;100mm 的尺寸</td><td>±5mm</td></tr>
+<tr><td>≥100mm 的尺寸</td><td>±5%</td></tr>
+<tr><td>战场结构角度</td><td>±3°</td></tr>
+<tr><td><strong>场地道具角度</strong></td><td><strong>±1°</strong></td></tr></table>
+<div class="note">这是官方给场地的制造公差，<strong>不是</strong>你出图的公差。自己出图要按工艺给（激光 ±0.2mm、折弯 ±0.5°）。</div>`},
+
+{id:"F03",cat:"field",title:"装配区 / 科技核心 / 机库平台",src:"规则手册 4.3.2 · P51–53",tags:["中央高地","装配区","科技核心","机库"],
+body:`<ul><li><strong>装配区</strong>：战场中央，能量机关正下方，含 14° / 12° / 46° 坡；</li>
+<li><strong>科技核心</strong>：位于能量机关下方，重装机器人把能量单元装配进去；</li>
+<li><strong>机库平台</strong>：战场中央，红蓝各一，空中系统只能装在这里。</li></ul>
+<p>三者共处一个区域，画整机布置时要一起考虑。</p>`},
+
+{id:"F04",cat:"field",title:"S109：立柱上的 150×150 红外窗口",src:"制作规范 S109 · P50",tags:["S109","立柱","红外","检录"],
+body:`<p>「能量机关立柱上设有一处<strong>长 150mm、高 150mm 的红外发射区域</strong>。该区域沿立柱宽度方向<strong>居中</strong>布置，<strong>下边缘与机库平台底面齐平</strong>。」</p>
+<div class="note">画立柱必须先定机库平台底面标高，再反推窗口位置。这条是<strong>检录会看</strong>的硬约束。</div>`},
+
+{id:"F05",cat:"field",title:"场地道具训练的规定",src:"规则手册 第 7 章 · P140",tags:["训练","道具","安全"],
+body:`<ul><li>每队 2 次训练机会，每次 30 分钟（含进退场），提前 20 分钟候场；</li>
+<li>组委会只提供可移动道具，不提供 17/42mm 弹丸；</li>
+<li>「使用 42mm 弹丸测试时请注意避免主动击打能量机关」。</li></ul>
+<div class="note">自建大符属于「可移动道具」层级——<strong>轻、可拆、可搬</strong>应是方案的第一约束，而不是照赛场 1:1 复刻。</div>`},
+
+{id:"F06",cat:"field",title:"红线：R61 破坏道具 / R62 用 42mm 打符",src:"规则手册 R61、R62 · P134",tags:["R61","R62","违规","判罚"],
+body:`<ul><li><strong>R61</strong>　比赛过程中，机器人不得破坏战场、场地道具或弹丸，亦不可影响场地道具的正常功能。</li>
+<li><strong>R62</strong>　不得使用 42mm 弹丸、飞镖、空中机器人击打能量机关和机库。</li></ul>
+<p>含义：灯臂、靶面、灯条要能被 17mm 弹丸反复打而不脱落，固定方式优先螺栓 + 防松，别用卡扣、磁吸、双面胶。</p>`},
+
+{id:"F07",cat:"field",title:"2027 场地变更：新增机库平台、制高点",src:"规则手册 1.2 · P13",tags:["赛季变更","2027","新增"],
+body:`<ul><li>原飞坡 → <strong>隧道</strong></li><li>操作间整体布置调整</li>
+<li><strong>新增</strong>：制高点、机库平台、工作台</li><li><strong>取消</strong>：飞行区、无线充电装置放置区、停机坪</li></ul>
+<p>能量机关本身的形态（5 臂、共轴、红蓝双侧）未变。</p>`},
+
+/* ============ 制图规范 ============ */
+{id:"D01",cat:"dwg",title:"官方工程图范例：四视图 + 轴测",src:"制作规范 附录 1 · P87",tags:["范例","视图","轴测图"],
+body:`<p>官方给了一个 60×30×13.5 的铝制转接块工程图，包含：<strong>主视 + 俯视 + 左视 + 轴测图</strong>。</p>
+<ul><li>视图按第一角投影排布；</li><li>尺寸集中标注，基准统一；</li><li>配合尺寸才给公差（Ø21.00 +0.05/0）；</li><li>螺纹标注 <code>4-M3 ↧6</code>、<code>2-Ø2.50 ↧4.5 ↧3</code>。</li></ul>
+<div class="note">轴测图不是装饰，是让加工师傅 3 秒看懂零件形状的东西。</div>`},
+
+{id:"D02",cat:"dwg",title:"一张合格图纸的 9 个要素",src:"整理 · 制图规范",tags:["标题栏","要素","清单"],
+body:`<table><tr><th>#</th><th>要素</th><th>常见错误</th></tr>
+<tr><td>1</td><td>图幅与比例</td><td>缩放打印后比例失真</td></tr>
+<tr><td>2</td><td>标题栏（名称/图号/材料/数量/比例/版本/日期）</td><td>漏材料、漏版本</td></tr>
+<tr><td>3</td><td>主视 + 2 个投影 + 轴测</td><td>只有主视图</td></tr>
+<tr><td>4</td><td>尺寸完整、不重复、不封闭尺寸链</td><td>过约束</td></tr>
+<tr><td>5</td><td>配合公差 + 形位公差</td><td>全图无公差</td></tr>
+<tr><td>6</td><td>表面粗糙度</td><td>漏标</td></tr>
+<tr><td>7</td><td>技术要求（去毛刺/未注公差/表面处理）</td><td>写在备注栏</td></tr>
+<tr><td>8</td><td>BOM（标准件写型号与国标号）</td><td>标准件不写型号</td></tr>
+<tr><td>9</td><td>版本与变更记录</td><td>反复覆盖同名文件</td></tr></table>`},
+
+{id:"D03",cat:"dwg",title:"回转件的公差怎么给",src:"整理建议",tags:["公差","轴承","同轴度","H7"],
+body:`<table><tr><th>部位</th><th>建议</th></tr>
+<tr><td>轴承座内孔</td><td>H7</td></tr>
+<tr><td>主轴轴承位</td><td>h6 / k6</td></tr>
+<tr><td>轮毂与主轴同轴度</td><td>Ø0.05</td></tr>
+<tr><td>轮毂端面与轴垂直度</td><td>0.05</td></tr></table>
+<p>这四处决定了「转得正不正」。5 臂同时偏，靶心圆就歪。</p>`},
+
+{id:"D04",cat:"dwg",title:"靶面公差：同心度 ≤0.5mm",src:"整理建议 · 由 1mm 精度倒推",tags:["靶面","同心度","平面度"],
+body:`<ul><li>靶面圆心与安装孔位置度：Ø0.5</li><li>靶面平面度：0.3</li><li>靶面与轮毂同心度：<strong>≤0.5mm</strong></li></ul>
+<p>依据：「装甲模块对弹丸击打位置的检测精度为径向 1mm」，靶心偏 0.5，最外圈判定就偏半个环宽。</p>`},
+
+{id:"D05",cat:"dwg",title:"钣金件怎么标：展开图 + 折弯系数",src:"整理建议",tags:["钣金","折弯","展开","激光切割"],
+body:`<table><tr><th>项目</th><th>标法</th></tr>
+<tr><td>外形轮廓</td><td>闭合轮廓 + 总尺寸</td></tr>
+<tr><td>折弯</td><td>折弯线 + 折弯角 + 内 R（≈板厚 t）</td></tr>
+<tr><td>展开</td><td>给展开图或 K 因子</td></tr>
+<tr><td>孔到折弯边</td><td>≥ 2t + R，否则拉变形</td></tr>
+<tr><td>去毛刺</td><td>技术要求写「锐边去毛刺 C0.5」</td></tr></table>
+<div class="note">只标「折弯 90°」是不够的，必须给<strong>展开图</strong>或折弯系数，否则切出来折完尺寸不对，整批报废。</div>`},
+
+{id:"D06",cat:"dwg",title:"亚克力/PC 件的三个坑",src:"整理建议",tags:["亚克力","PC","激光","攻丝"],
+body:`<ul><li>激光切割有 <strong>0.1~0.3mm 锥度</strong>，配合孔留 0.2 余量；</li>
+<li>亚克力<strong>不能攻丝</strong>（会裂），用螺母沉孔或热熔铜螺母；</li>
+<li>灯腔用 <strong>3mm 乳白亚克力</strong>做匀光板，比直接露灯珠好看十倍。</li></ul>`},
+
+{id:"D07",cat:"dwg",title:"材料与工艺选型表",src:"整理建议",tags:["材料","选型","型材","铝板"],
+body:`<table><tr><th>零件</th><th>材料 / 工艺</th></tr>
+<tr><td>立柱/底架</td><td>2020、4040 铝型材 + 角件</td></tr>
+<tr><td>灯臂主体</td><td>2mm 5052 铝板，激光 + 折弯</td></tr>
+<tr><td>靶面基板</td><td>2mm 铝板 + 3mm 乳白亚克力</td></tr>
+<tr><td>靶面图案</td><td>哑光 PVC 贴纸 / UV 打印（必须哑光）</td></tr>
+<tr><td>轮毂</td><td>6061 铝 6~8mm，CNC</td></tr>
+<tr><td>主轴</td><td>45# 或 6061，Ø15~20，车削</td></tr></table>`},
+
+{id:"D08",cat:"dwg",title:"交付前 12 条自检",src:"整理 · 打印贴屏幕",tags:["自检","检查清单","交付"],
+body:`<ol><li>标题栏 8 个字段齐了</li><li>视图够看懂（30 秒能说出形状）</li><li>有轴测图</li>
+<li>尺寸不重复、不封闭</li><li>配合尺寸有公差</li><li>形位公差标了</li><li>粗糙度标了</li>
+<li>技术要求写了</li><li>钣金给展开图</li><li>标准件写型号国标号</li><li>BOM 与图上序号对得上</li>
+<li>文件名规范：图号_名称_V版本_日期</li></ol>`},
+
+{id:"D09",cat:"dwg",title:"电气接口：走线决定结构",src:"整理建议",tags:["走线","滑环","电池","无线"],
+body:`<table><tr><th>需求</th><th>结构应对</th></tr>
+<tr><td>5 臂独立灯控</td><td>中轴空心轴走线，或集线环</td></tr>
+<tr><td>旋转体→固定体</td><td>滑环 / 限位来回摆 / 无线</td></tr>
+<tr><td>供电</td><td>旋转体自带电池最省事</td></tr>
+<tr><td>命中检测</td><td>官方柔性压力传感器模组 495 元/套</td></tr></table>
+<div class="note">这条决定了你的图和别人的完全不一样，<strong>第一周必须拍板</strong>。</div>`},
+
+{id:"D10",cat:"dwg",title:"螺纹标注完整格式（别只写 M3）",src:"机械组常识文档 · 工程图标注小技巧",tags:["螺纹","标注","M3","工程图"],
+body:`<p><code>M20×2LH - 5g6g - S</code> 逐段含义：</p>
+<table><tr><td>M20</td><td>公称直径 20</td></tr>
+<tr><td>×2</td><td>螺距 2（细牙，粗牙不标）</td></tr>
+<tr><td>LH</td><td>左旋（右旋不标）</td></tr>
+<tr><td>5g6g</td><td>顶径公差带 5g、中径公差带 6g</td></tr>
+<tr><td>S</td><td>旋合长度（S 短 / N 中 / L 长）</td></tr></table>
+<p>梯形螺纹例：<code>Tr40×14(P7) - 7H - L</code>，导程 14、螺距 7、线数 2。</p>
+<div class="note">队里还有一张「螺纹深度选型表」和「铨洲螺纹孔规则说明」，画孔前必查。</div>`},
+
+{id:"D11",cat:"dwg",title:"加强筋的比例关系：3.4d / 2.4d",src:"机械组常识文档 · 加强筋设计规范",tags:["加强筋","比例","灯臂"],
+body:`<p>底宽 ≤ 3.4d、高度 ≤ 3.4d、两筋中心距 ≥ 2.4d（d 为筋厚）。</p>
+<p>原文注明这是塑料件规范，用在铝板上要打折，但<strong>比例关系可借鉴</strong>。</p>
+<p>对照我们的灯臂：主筋宽 60、板厚 24，比值 2.5，正好落在合理区间。</p>`},
+
+/* ============ 队伍要求 ============ */
+{id:"T01",cat:"team",title:"通知六条：每人一份图纸 + 每周发群",src:"队伍飞书群 · 林创武",tags:["任务","通知","考核"],
+body:`<ol><li>每个人都要出一份对应场地道具的<strong>图纸和方案文档</strong>；</li>
+<li><strong>每周</strong>把图纸发到对应场地道具飞书群审核，第一周没图纸也要<strong>发文档</strong>作为进度；</li>
+<li>鼓励把画图/选型的问题发群，一起解决；</li>
+<li>不能以画场地道具为由<strong>长期不来实验室</strong>，也不能忽视实践任务；</li>
+<li>每周都要有进度，<strong>严禁摆烂几周最后一周赶</strong>；</li>
+<li>本次任务、考勤、实践任务作为<strong>新人第一次考核</strong>，不合预期会严肃规劝退队。</li></ol>`},
+
+{id:"T02",cat:"team",title:"每周提交模板（直接复制）",src:"整理 · 照填即可",tags:["模板","汇报","进度"],
+body:`<p>【大符进度｜第 X 周｜姓名】</p>
+<ul><li>一、本周完成</li><li>二、本周产出（文档/图纸/模型）</li>
+<li>三、<strong>关键决策</strong>（这周定下来的事 + 理由）</li>
+<li>四、遇到的问题（需群里帮忙）</li><li>五、下周计划</li><li>六、需要谁配合</li></ul>
+<div class="note">「关键决策」是最容易被忽略、但评审最看重的一栏——它证明你在做判断，而不是在描图。</div>`},
+
+{id:"T03",cat:"team",title:"风险：26 天做完一套大符图纸",src:"整理 · 实话",tags:["风险","时间","提醒"],
+body:`<p>新人从零学 SolidWorks 到出可加工图纸，正常 6~8 周。你只有不到 4 周，所以计划里砍掉了「系统学软件」，改成「边画边学」。</p>
+<p>最大的坑不是画图，是<strong>选型</strong>：走线、驱动、材料三个决定定错，图要重画。</p>`},
+
+{id:"T04",cat:"team",title:"飞书云文档：已接入，实时可读",src:"飞书连接器 · 2026-10-26",tags:["飞书","已接入","实时"],
+body:`<p>「机械」知识空间已通过飞书连接器（你的账号身份）读取，含 8 个子页面。以后文档更新，说一句「读一下飞书那份」即可，不用再导出。</p>
+<p>详细摘录见 <code>docs/08_队伍知识库_飞书实录.md</code>。</p>
+<p>当前缺口：<code>search:docs:read</code>（全库搜索）未授权，所以还不能跨库搜关键词。</p>`},
+
+{id:"T05",cat:"team",title:"队伍知识库：8 个子页面全貌",src:"飞书「机械」空间 · 实测",tags:["知识库","目录","飞书"],
+body:`<p>根节点一句话：<strong>「对技术抱有尊重，对有技术的人抱有尊重。」</strong></p>
+<ul><li>DRAWING REVIEW MEETING（每周评审会记录，最有用）</li>
+<li>机械组常识文档（材料/螺纹/轴承/加强筋/同步带/链条/板材）</li>
+<li>海纳百川学无止境-资料汇总（7 份设计 PDF + 论文 + 教材）</li>
+<li><strong>场地道具开发维护文档</strong>（你的任务书）</li>
+<li>Taurus 雕刻机使用说明、拓竹打印机使用教程</li>
+<li>机械设计美学、佬登语录（空）</li></ul>`},
+
+{id:"T06",cat:"team",title:"关键：第 10 节「大符」是空的",src:"场地道具开发维护文档",tags:["大符","需求","空白"],
+body:`<p>《场地道具开发维护文档》共 11 节，第 10 节标题写着「大符」，<strong>正文一个字都没有</strong>。</p>
+<p>含义：你不是照着已有需求画图，而是<strong>先把需求定义出来</strong>；画完再把内容补回这一节。</p>
+<div class="note">这是唯一会留在队里的东西——明年的人打开飞书，看到的是你写的这一节。</div>`},
+
+{id:"T07",cat:"team",title:"机械组对场地道具的两条要求",src:"场地道具开发维护文档 3.1",tags:["技术要求","冗余","耐磨"],
+body:`<p><strong>高稳定性、高冗余设计；耐磨抗造。</strong></p>
+<p>配套的去年复盘：</p>
+<ul><li>抗撞击冗余不足——挡板边角、限位凸起耐冲击差，多次对抗后松动、掉漆、翘边、滑丝</li>
+<li>维护体系不完善</li></ul>
+<p>落到图纸上：边角加厚、螺栓加防松、易损件可快换。</p>`},
+
+{id:"T08",cat:"team",title:"负责人要管一整个赛季的维护",src:"场地道具开发维护文档 4 · 王奇英",tags:["维护","责任","态度"],
+body:`<p>「场地道具负责人不是说把东西设计出来装好就可以了，而是需要相关人员<strong>一整个赛季的维护</strong>，不要等到要测了，才匆匆忙忙去检查……负责人要负起相关责任，测试前提前检修，长时间测试要做到连续检修。」</p>
+<div class="note">方案文档里应该有「维护方案」一节：易损件清单、备件数量、检修周期。这一节能让你从「交作业的新人」变成「能担事的人」。</div>`},
+
+{id:"T09",cat:"team",title:"周报格式：已经学会 / 正在学习 / 疑难",src:"DRAWING REVIEW MEETING",tags:["周报","模板","汇报"],
+body:`<pre style="font-family:monospace;font-size:12px;background:#f7f8fa;padding:10px;border-radius:6px;overflow:auto">### 机械组-大符-姓名
+- 已经学会：……
+- 正在学习：……
+- 这周还干了：……
+- 预计下周需要学：……
+- 疑难：
+  1. ……
+  2. ……</pre>
+<p>这是队伍每周评审会的真实格式。<strong>「疑难」不要空着</strong>——空着等于没思考。</p>`},
+
+{id:"T10",cat:"team",title:"项目评审表：师兄只盯「验收」和「安装」",src:"DRAWING REVIEW MEETING",tags:["评审","验收","安装"],
+body:`<table><tr><th>项目</th><th>要回答什么</th></tr>
+<tr><td>整车功能点</td><td>要实现什么、给谁用</td></tr>
+<tr><td>异常</td><td>出了什么问题、怎么改的</td></tr>
+<tr><td><strong>验收</strong></td><td>做到什么程度算过（可量化）</td></tr>
+<tr><td><strong>安装</strong></td><td>哪些部位要精度（同轴度、平面度）</td></tr>
+<tr><td>已完成 / 下一周目标</td><td>进度</td></tr>
+<tr><td>阻碍 / 交付时间</td><td>卡在哪、分节点日期</td></tr></table>
+<div class="note">第一周队里明确写了：「不做硬性图纸要求，但一定要有所学习和收获。」</div>`},
+
+{id:"T11",cat:"team",title:"分组结果：能量机关 = 高荣信 + 钟自豪",src:"27机械组通知群 · 10-24",tags:["分组","搭档","任务"],
+body:`<p>六个场地道具分给 12 个新人，两人一组。你们这组负责<strong>能量机关</strong>。</p>
+<p>同一份通知里写明：每人<strong>单独出一份完整图纸</strong>，作为新人第一次考核，但"独立出图不是单打独斗"。</p>
+<p>设计流程五步：规则尺寸研讨 → 需求收集及优先级 → 方案收集及最终选型 → 结构设计及最终成型 → 跨组交流及落地装配。</p>`},
+
+{id:"T12",cat:"team",title:"周报走工作台，考勤每周 >10 小时",src:"27机械组通知群 · 10-24",tags:["周报","考勤","打卡","实践"],
+body:`<table><tr><th>制度</th><th>怎么做</th></tr>
+<tr><td>周报</td><td>飞书「更多 → 工作台 → 周报」，每周一次</td></tr>
+<tr><td>周报内容</td><td><strong>必须附实践照片</strong>（分螺丝/用雕刻机/用打印机）</td></tr>
+<tr><td>考勤</td><td>「工作台 → 考勤」，土槽楼或负二，上下班都打卡</td></tr>
+<tr><td>时长</td><td>每周 <strong>&gt; 10 小时</strong></td></tr></table>
+<div class="note">两条线并行：周报走工作台（带照片），图纸发大符群（带文件）。别只做一样。</div>`},
+
+{id:"T13",cat:"team",title:"往年大符图纸已到手（105 个文件）",src:"27炒鸡大符 · 林创武 10-25",tags:["往年图纸","SolidWorks","总装"],
+body:`<p>群里已发 <code>机械组-能量机关总装终版-林涵-20240524.7z</code>（28MB），已解压到 <code>assets/team/往年图纸_20240524/</code>。</p>
+<p>含总装 <code>a机械组-能量机关总装2-林涵-20240524.SLDASM</code>，六块结构齐全：底座机架 / 回转支撑 / 传动 / 导电 / 扇叶 / 中心。</p>
+<p>传动：M3508 + 14M 同步带，16齿→60齿，<strong>传动比 3.75</strong>。</p>
+<div class="note">这不是让你重画，是让你<strong>在这套图上修</strong>。</div>`},
+
+{id:"T14",cat:"team",title:"断头侠：头部太重，轴已经歪了",src:"王奇英 · 27炒鸡大符 10-25",tags:["减重","轴","失效","关键"],
+body:`<p>去年做大符的师兄原话：</p>
+<p>「注意头不要太重了，小心<strong>断头侠</strong>」<br>「我们现在的<strong>支撑扇叶的轴已经有点歪了</strong>」</p>
+<p>图纸佐证：2024-11-22/23 才补的 <code>扇叶加固件</code>、<code>扇叶加固管</code>、<code>骑马夹</code>——赛季中后期打的补丁。</p>
+<div class="note">你这一版第一优先级：<strong>减重 + 提高轴抗弯刚度</strong>。先量头部质量、算轴根弯矩，再定改动。</div>`},
+
+{id:"T15",cat:"team",title:"六次历史故障，四次是电气",src:"27炒鸡大符 · 8 月记录",tags:["故障","维护","电气"],
+body:`<table><tr><th>现象</th><th>原因</th></tr>
+<tr><td>大小符都不亮</td><td>环误触（螺丝松一点即可）</td></tr>
+<tr><td>灯板异常</td><td><strong>灯板弹簧掉了</strong></td></tr>
+<tr><td>上不了电</td><td><strong>电源线断了</strong>（线太短）</td></tr>
+<tr><td>靶子不亮</td><td>没插电</td></tr>
+<tr><td>亮扇叶不转</td><td>现场处理</td></tr>
+<tr><td>灯臂一直亮</td><td>未复现</td></tr></table>
+<p>维护方案里的风险表可以直接用这张——有数据支撑。</p>`},
+
+
+{id:"T16",cat:"team",title:"图纸命名规范：V1.0-Sn-姓名-日期",src:"重生之我进入Taurus机械组 · 强制",tags:["命名","版本","审核号","规范"],
+body:`<p><strong>装配体</strong>：<code>装配体名 V1.0-Sn-自己的名字-20251112</code><br>
+<strong>零件</strong>：<code>零件名（尺寸参数）-自己的名字-20251112</code></p>
+<p>例：<code>英雄 V1.0-ST-高荣信-20261118</code>　<code>深沟球轴承（5-14-5）-高荣信-20261118</code></p>
+<ul><li>初始 V1.0；<strong>大改动</strong>小数点前+1，<strong>小改动</strong>小数点后+1</li>
+<li><code>Sn</code> = 审核号，n 为审核次数，<strong>n=T 表示审图通过、可发加工</strong></li>
+<li>每个零件每个版本存盘都要改名，改动再小也要改</li></ul>`},
+
+{id:"T17",cat:"team",title:"审图走「神图群」，不是大符群",src:"重生之我进入Taurus机械组",tags:["审图","神图群","流程"],
+body:`<p>「把自己的设计图纸发到<strong>神图群（审图群）</strong>，交给经验丰富的师兄师姐帮你找漏洞……直到审图通过。」</p>
+<p>完整链路：<strong>画图 → 大符群发进度 → 神图群审图 → Sn 变 T → 发加工</strong></p>
+<div class="note">进度群和审图群是两个群、两件事。之前只知道发群审核，这一点容易漏。</div>`},
+
+{id:"T18",cat:"team",title:"设计 ≠ 画图：五类约束下找最优解",src:"重生之我进入Taurus机械组",tags:["设计方法","约束","评审"],
+body:`<table><tr><th>约束</th><th>问自己</th></tr>
+<tr><td>功能</td><td>要完成什么动作？行程、速度、负载？</td></tr>
+<tr><td>空间</td><td>空间多大？不能碰裁判系统、不能超重？</td></tr>
+<tr><td>强度</td><td>受力多大？会不会断、会不会变形？</td></tr>
+<tr><td>加工</td><td>加工得出来吗？公差达得到吗？成本？</td></tr>
+<tr><td>装配</td><td>装得进去吗？坏了方便拆吗？</td></tr></table>
+<p>好设计四标准，<strong>按此顺序</strong>：功能达标 → 可靠耐用 → 可加工 → 易装配维护。</p>`},
+
+/* ============ 学习计划 ============ */
+{id:"P01",cat:"plan",title:"第 1 周（10/26–11/1）读懂它 + 定方案",src:"学习计划 W1",tags:["第1周","方案文档","周计划"],
+body:`<p><strong>不画图，只交文档。</strong></p>
+<ul><li>读 01/02 文档，手绘结构分解图；</li><li>抄一份尺寸表（自己手打）；</li><li>装 SolidWorks 工程图模板；</li>
+<li>去实验室看实物、问师兄；</li><li>写方案文档：A/B 两套对比后选一套。</li></ul>
+<p><strong>交付</strong>：方案文档 v0.1，11/1 周日 20:00 发群。</p>
+<p><strong>必须回答</strong>：给谁用、放哪、转不转、红蓝做不做、怎么检测命中、电怎么进旋转体、什么材料、多少钱。</p>`},
+
+{id:"P02",cat:"plan",title:"第 2 周（11/2–11/8）建出来",src:"学习计划 W2",tags:["第2周","建模","周计划"],
+body:`<p><strong>一个能转、不打架、包络不超的模型。</strong></p>
+<ul><li>11/2 量 STEP 里的靶心与轴向；</li><li>11/3 建骨架草图（Ø1400 + 5×72° + 高度基准）；</li>
+<li>11/4 轮毂/主轴/轴承座，当晚截图打卡；</li><li>11/5 实验室量实物；</li>
+<li>11/6 建一条臂，阵列 5 份，镜像红蓝；</li><li>11/7 干涉检查；11/8 出 3 张预览 + BOM v1。</li></ul>
+<p><strong>交付</strong>：装配体 v1 + 关键零件 + BOM + 干涉报告。</p>`},
+
+{id:"P03",cat:"plan",title:"第 3 周（11/9–11/15）画成图",src:"学习计划 W3",tags:["第3周","工程图","周计划"],
+body:`<p><strong>8 张以上能拿去加工的图。</strong></p>
+<p>清单：总装、底架立柱、主轴、轮毂、轴承座、灯臂（展开图）、靶面板、中心 R 标、灯腔走线、电机安装板。</p>
+<p>11/11 周三先发 2 张预审，别等周日。11/14 试切一件验证图纸。</p>
+<div class="note">每张图要有标题栏、比例、材料、图号、版本；配合尺寸有公差；钣金有展开图。</div>`},
+
+{id:"P04",cat:"plan",title:"第 4 周（11/16–11/20）定稿",src:"学习计划 W4",tags:["第4周","定稿","交付"],
+body:`<p><strong>不再新增设计，只修改、核对、归档。</strong></p>
+<ul><li>11/16 收意见做闭环表（改/不改 + 理由）</li><li>11/17 改图出 v1.1</li>
+<li>11/18 组内评审</li><li>11/19 补装配说明</li><li>11/20 定稿 v1.0 + 加工文件 + 归档</li></ul>`},
+
+{id:"P05",cat:"plan",title:"时间账：平均每天 3~4 小时",src:"学习计划 · 时间预算",tags:["时间","强度","安排"],
+body:`<table><tr><th>项目</th><th>每周</th><th>4 周合计</th></tr>
+<tr><td>实验室（3 次 × 3h）</td><td>9~12h</td><td>36~48h</td></tr>
+<tr><td>线上学习 + 画图</td><td>6~8h</td><td>24~32h</td></tr>
+<tr><td>文档/出图/改图</td><td>4~6h</td><td>16~24h</td></tr>
+<tr><td><strong>合计</strong></td><td><strong>19~26h</strong></td><td><strong>76~104h</strong></td></tr></table>
+<p>建议把实验室日固定成周二/周四/周六，别临时找时间。第 3 周最累，提前空出那个周末。</p>`},
+
+{id:"P06",cat:"plan",title:"四个里程碑",src:"学习计划 · 验收",tags:["里程碑","验收","节点"],
+body:`<table><tr><th>节点</th><th>产出</th><th>及格线</th></tr>
+<tr><td>11/1</td><td>方案文档 v0.1</td><td>说清做什么、为什么、怎么装、多少钱</td></tr>
+<tr><td>11/8</td><td>3D 模型 v1 + BOM</td><td>能转、无干涉、包络 ≤Ø1400</td></tr>
+<tr><td>11/15</td><td>工程图 ≥8 张</td><td>第三方能照着加工</td></tr>
+<tr><td>11/20</td><td>全套 v1.0</td><td>可直接下单</td></tr></table>`},
+
+{id:"P07",cat:"plan",title:"七个常见坑",src:"学习计划 · 血的教训",tags:["坑","避坑","经验"],
+body:`<table><tr><th>坑</th><th>怎么躲</th></tr>
+<tr><td>第 1 周不定走线方案</td><td>第 3 周发现要滑环，结构全改</td></tr>
+<tr><td>模型画得太细（每颗螺钉）</td><td>螺钉只画孔</td></tr>
+<tr><td>图纸不标公差</td><td>配合面必标</td></tr>
+<tr><td>钣金不给展开图</td><td>整批报废</td></tr>
+<tr><td>等完美了再发群</td><td>半成品也发，注明哪里不确定</td></tr>
+<tr><td>只画图不下实验室</td><td>每周固定 3 次</td></tr>
+<tr><td>最后一周才改图</td><td>第 3 周就开始预审</td></tr></table>`},
+
+/* ============ 参考资料 ============ */
+{id:"R01",cat:"ref",title:"官方规则/资料中心（目录已抓取）",src:"bbs.robomaster.com/wiki/20204847",tags:["官方","wiki","索引"],
+body:`<p>站点正文是前端渲染，直接抓是空壳；但<strong>导航目录</strong>是服务端直出的，可以当索引查。</p>
+<p>结构：比赛规则 / 赛事产品 / 技术评审 / 品牌宣传包 / 招商指引 / 培训体系 / 语言版本说明 / 参考文献。</p>
+<p>2027 关键文件：RMUC 2027 比赛规则文件、RMUL 2027 规则、RMU 2027 通信协议、RMUC 2027 技术评审系列。</p>`},
+
+{id:"R02",cat:"ref",title:"官方开源：2027 场地图纸 STEP",src:"bbs.robomaster.com/article/1970956",tags:["STEP","开源","下载"],
+body:`<table><tr><th>文件</th><th>大小</th></tr>
+<tr><td>RMUC2027_V1.0.0.stp</td><td>653 MB</td></tr>
+<tr><td>RMUL2027_3V3_V1.0.0.stp</td><td>1.99 MB</td></tr>
+<tr><td>RMUL2027_1V1_V1.0.0.stp</td><td>1.11 MB</td></tr>
+<tr><td>能量单元.stp</td><td>3.07 MB</td></tr></table>
+<p>官方声明：仅做参考，若与规则手册或现场有出入，以手册和现场为准。</p>`},
+
+{id:"R03",cat:"ref",title:"官方出售：能量机关传感器模组 495 元",src:"robomaster.com 物资购买说明",tags:["传感器","采购","柔性压力","检测"],
+body:`<p>「能量机关传感器模组（<strong>柔性压力传感器</strong>）」，<strong>495 元/套</strong>，含税不含运费。</p>
+<p>供应商：墨现科技（东莞），联系人 刘磊星 15820434522。</p>
+<p>发货：收款后 3 个工作日。备注格式：RM+学校全称+联系人姓名。</p>
+<div class="note">方案文档里应把「买 / 自己做」列为决策点：买 = 495 元省两周；自己做 = 微动开关或键轴。</div>`},
+
+{id:"R04",cat:"ref",title:"开源方案 A：深大 RobotPilots（微动开关）",src:"bbs.robomaster.com/article/9457",tags:["开源","微动开关","深大","环数"],
+body:`<p>RM2023 可环数检测能量机关，用<strong>微动开关</strong>检测击打位置，成本低、控制简单。</p>
+<p>开源：机械图纸 + STP + F103/F407 控制板 + 代码 + 技术报告《基于微动开关的可环数检测能量机关》。</p>
+<p>网盘：<code>pan.baidu.com/s/1LJW1IKWjU96x5C280E4VeQ</code>　提取码 <code>RPNB</code>。</p>`},
+
+{id:"R05",cat:"ref",title:"开源方案 B：东大 3SE（无线键轴）",src:"github.com/ChenYuWuAi/powerrune24",tags:["开源","键轴","无线","ESP32","滑环"],
+body:`<p>RM AWARD 2024，用<strong>机械键盘键轴</strong>做击打检测 + <strong>无线（ESP32/BLE）</strong>替代滑环，带完整上位机。</p>
+<ul><li>支持大小符模式、正反方向、灯效整定</li><li>环数成绩回传、OTA 升级</li>
+<li>键轴被打坏会自动屏蔽该环</li></ul>
+<div class="note">这是「电怎么进旋转体」这个问题的现成答案：<strong>自带电池 + 无线</strong>，结构上省掉一大块。</div>`},
+
+{id:"R07",cat:"ref",title:"飞书里的 7 份设计 PDF（前三份必看）",src:"海纳百川学无止境-资料汇总",tags:["PDF","资料","设计方法"],
+body:`<table><tr><th>文件</th><th>备注</th></tr>
+<tr><td><strong>结构件设计流程经验总结.pdf</strong></td><td>7.9 MB · 第一周必看</td></tr>
+<tr><td><strong>结构设计的思维逻辑.pdf</strong></td><td>1.2 MB · 第一周必看</td></tr>
+<tr><td><strong>传动机构简述.pdf</strong></td><td>3.7 MB · 选回转方案时看</td></tr>
+<tr><td>轻量化设计指南.pdf</td><td>3.7 MB · 减重时看</td></tr>
+<tr><td>基于拓扑优化的 FSC 镂空链轮设计.pdf</td><td>2.0 MB</td></tr>
+<tr><td>悬挂方案分析.pdf</td><td>1.8 MB · 暂时不用</td></tr>
+<tr><td>机械设计（濮良贵）/ 机械原理（孙桓）</td><td>工具书</td></tr></table>
+<p>都在飞书云空间里，可直接预览下载。</p>`},
+
+{id:"R06",cat:"ref",title:"常用资源：标准件与标准",src:"整理",tags:["标准件","米思米","GB","教程"],
+body:`<table><tr><th>用途</th><th>去处</th></tr>
+<tr><td>标准件模型</td><td>米思米、怡合达</td></tr>
+<tr><td>SolidWorks 教程</td><td>B 站「国标模板」「钣金展开」</td></tr>
+<tr><td>制图标准</td><td>GB/T 14689、GB/T 1804、GB/T 1184</td></tr>
+<tr><td>规则答疑</td><td>规则手册 1.4 节问卷，备赛期 5 个工作日答复</td></tr></table>`}
+];
+
+/* ---------- state ---------- */
+let state = {cat:"all", q:"", sel:0, list:[]};
+
+const $ = s => document.querySelector(s);
+const listEl = $("#list"), countEl = $("#count"), catsEl = $("#cats"), chipsEl = $("#chips");
+
+/* ---------- init ---------- */
+document.getElementById("total").textContent = DATA.length;
+
+function countBy(cat){ return cat==="all" ? DATA.length : DATA.filter(d=>d.cat===cat).length; }
+
+function buildCats(){
+  const items = [["all","全部"]].concat(Object.keys(CATS).map(k=>[k,CATS[k].name]));
+  catsEl.innerHTML = items.map(([k,n])=>{
+    return `<li><button data-cat="${k}" class="${k===state.cat?"on":""}">
+      <span>${n}</span><span class="n">${countBy(k)}</span></button></li>`;
+  }).join("");
+}
+
+const strip = h => h.replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+
+function snipOf(d){
+  const s = d.body.replace(/<table[\s\S]*?<\/table>/g,"");
+  const p = s.match(/<p>([\s\S]*?)<\/p>/);
+  if(p){ const t = strip(p[1]); if(t.length > 6) return t.slice(0,110); }
+  const li = s.match(/<li>([\s\S]*?)<\/li>/);
+  if(li){ const t = strip(li[1]); if(t.length > 6) return t.slice(0,110); }
+  const rows = [...d.body.matchAll(/<tr>([\s\S]*?)<\/tr>/g)].slice(1,3).map(m =>
+    [...m[1].matchAll(/<t[dh]>([\s\S]*?)<\/t[dh]>/g)].map(x=>strip(x[1])).join(" · ")
+  );
+  if(rows.length) return rows.join(" ／ ").slice(0,110);
+  return strip(d.body).slice(0,110);
+}
+
+function score(item, q){
+  if(!q) return 1;
+  const t = item.title.toLowerCase();
+  const b = strip(item.body).toLowerCase();
+  const tg = item.tags.join(" ").toLowerCase();
+  let s = 0;
+  if(t.includes(q)) s += 100 + (t.startsWith(q)?40:0);
+  if(tg.includes(q)) s += 45;
+  if(b.includes(q)) s += 20;
+  // 逐字（应对 "72°" 之类）
+  const chars=[...q];
+  if(chars.length>2){
+    let hit=0; chars.forEach(c=>{ if(t.includes(c)||b.includes(c)||tg.includes(c)) hit++; });
+    if(hit===chars.length) s += 8;
+  }
+  return s;
+}
+
+function hi(text, q){
+  if(!q) return text;
+  const safe = q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  return text.replace(new RegExp(`(${safe})`,"gi"), "<mark>$1</mark>");
+}
+
+function render(){
+  const q = state.q.trim().toLowerCase();
+  let arr = DATA.filter(d => state.cat==="all" || d.cat===state.cat);
+  if(q){
+    arr = arr.map(d=>({d, s:score(d,q)})).filter(x=>x.s>0)
+             .sort((a,b)=>b.s-a.s).map(x=>x.d);
+  }
+  state.list = arr;
+  if(state.sel >= arr.length) state.sel = 0;
+
+  countEl.innerHTML = q
+    ? `找到 <b>${arr.length}</b> 条 · 关键词「${state.q.trim()}」`
+    : `共 <b>${arr.length}</b> 条`;
+
+  if(!arr.length){
+    listEl.innerHTML = `<div class="empty"><b>没有匹配的条目</b>换个说法试试，比如「折弯」「72」「增益」</div>`;
+    return;
+  }
+
+  listEl.innerHTML = arr.map((d,i)=>{
+    const c = CATS[d.cat];
+    const snippet = snipOf(d);
+    return `<article class="card ${i===state.sel?"sel":""}" data-i="${i}">
+      <div class="top">
+        <h3>${hi(d.title,q)}</h3>
+        <span class="badge ${c.cls}">${c.name}</span>
+      </div>
+      <p>${hi(snippet,q)}…</p>
+      <div class="src">${d.src}</div>
+    </article>`;
+  }).join("");
+}
+
+/* ---------- drawer ---------- */
+function open(i){
+  const d = state.list[i]; if(!d) return;
+  const c = CATS[d.cat];
+  $("#dbadge").className = "badge "+c.cls;
+  $("#dbadge").textContent = c.name;
+  $("#dtitle").textContent = d.title;
+  $("#dsrc").textContent = "来源：" + d.src;
+  $("#dbody").innerHTML = d.body +
+    `<div class="tagrow">${d.tags.map(t=>`<span># ${t}</span>`).join("")}</div>`;
+  $("#drawer").classList.add("on");
+  $("#scrim").classList.add("on");
+  document.body.style.overflow="hidden";
+}
+function close(){
+  $("#drawer").classList.remove("on");
+  $("#scrim").classList.remove("on");
+  document.body.style.overflow="";
+}
+
+/* ---------- events ---------- */
+catsEl.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  state.cat = b.dataset.cat; state.sel=0;
+  [...catsEl.querySelectorAll("button")].forEach(x=>x.classList.toggle("on", x===b));
+  render();
+});
+
+listEl.addEventListener("click", e=>{
+  const card = e.target.closest(".card"); if(!card) return;
+  open(+card.dataset.i);
+});
+
+$("#dclose").addEventListener("click", close);
+$("#scrim").addEventListener("click", close);
+
+const qEl = $("#q");
+qEl.addEventListener("input", ()=>{ state.q = qEl.value; state.sel=0; render(); });
+
+document.addEventListener("keydown", e=>{
+  if(e.key==="/" && document.activeElement!==qEl){ e.preventDefault(); qEl.focus(); qEl.select(); return; }
+  if(e.key==="Escape"){ close(); qEl.blur(); return; }
+  if(document.activeElement===qEl && e.key!=="ArrowDown" && e.key!=="ArrowUp") return;
+  if(e.key==="ArrowDown"){ e.preventDefault(); state.sel=Math.min(state.sel+1, state.list.length-1); render(); scrollSel(); }
+  if(e.key==="ArrowUp"){ e.preventDefault(); state.sel=Math.max(state.sel-1,0); render(); scrollSel(); }
+  if(e.key==="Enter"){ e.preventDefault(); open(state.sel); }
+});
+
+function scrollSel(){
+  const el = listEl.querySelector(".card.sel");
+  if(el) el.scrollIntoView({block:"nearest", behavior:"smooth"});
+}
+
+document.querySelectorAll(".quick a").forEach(a=>{
+  a.addEventListener("click", e=>{
+    e.preventDefault();
+    qEl.value = a.dataset.q; state.q = a.dataset.q; state.sel=0;
+    state.cat="all"; [...catsEl.querySelectorAll("button")].forEach(x=>x.classList.toggle("on", x.dataset.cat==="all"));
+    render(); qEl.focus();
+  });
+});
+
+/* ---------- tracker ---------- */
+const TKEY = "rm2027-tracker";
+function loadTracker(){
+  let s = {};
+  try{ s = JSON.parse(localStorage.getItem(TKEY)||"{}"); }catch(e){}
+  document.querySelectorAll("#tracker input").forEach(inp=>{
+    inp.checked = !!s[inp.dataset.w];
+    inp.closest("label").classList.toggle("done", inp.checked);
+  });
+  updateTracker();
+}
+function updateTracker(){
+  const ins = [...document.querySelectorAll("#tracker input")];
+  const n = ins.filter(i=>i.checked).length;
+  const pct = Math.round(n/ins.length*100);
+  $("#pbar").style.width = pct+"%";
+  $("#ppct").textContent = pct+"%";
+}
+$("#tracker").addEventListener("change", e=>{
+  if(e.target.tagName!=="INPUT") return;
+  e.target.closest("label").classList.toggle("done", e.target.checked);
+  const s = {};
+  document.querySelectorAll("#tracker input").forEach(i=>{ if(i.checked) s[i.dataset.w]=1; });
+  try{ localStorage.setItem(TKEY, JSON.stringify(s)); }catch(err){}
+  updateTracker();
+});
+
+/* ---------- boot ---------- */
+const HOT = ["72°","Ø1400","靶心","公差","折弯","走线","每周","增益"];
+chipsEl.innerHTML = HOT.map(k=>`<button class="chip" data-k="${k}">${k}</button>`).join("");
+chipsEl.addEventListener("click", e=>{
+  const b=e.target.closest(".chip"); if(!b) return;
+  const on = b.classList.contains("on");
+  [...chipsEl.querySelectorAll(".chip")].forEach(x=>x.classList.remove("on"));
+  if(on){ qEl.value=""; state.q=""; }
+  else { b.classList.add("on"); qEl.value=b.dataset.k; state.q=b.dataset.k; state.cat="all";
+    [...catsEl.querySelectorAll("button")].forEach(x=>x.classList.toggle("on", x.dataset.cat==="all")); }
+  state.sel=0; render();
+});
+
+buildCats();
+loadTracker();
+const usp = new URLSearchParams(location.search);
+if(usp.get("q")){ qEl.value = usp.get("q"); state.q = usp.get("q"); }
+render();
+const hid = (location.hash||"").replace("#","");
+if(hid){
+  const idx = state.list.findIndex(d=>d.id===hid);
+  if(idx>=0){ state.sel = idx; render(); open(idx); }
+}
+</script>
+</body>
+</html>
