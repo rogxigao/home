@@ -3517,7 +3517,7 @@ CH[8] = {
         {w:{id:'bst',cap:'插入 45，再点 Inorder：中序遍历（左–根–右）输出升序序列。'}},
         {p:'<b>中序遍历</b>：先递归打印左子树，再打印根，再打印右子树。对 BST 来说，这个顺序正好是从小到大。'},
         {exam:['Exam phrasing','“Define the depth of a tree.” → the number of nodes in the longest path from root to leaf.<br>“What is a leaf node?” → a terminal node with no children.<br>“Give the inorder traversal of this BST.” 左–根–右，写出升序序列。']},
-        {q:{q:'In a binary search tree, the left subtree of a node contains values that are …',opts:['greater than the node','equal to the node','less than the node','unordered'],a:2,s:'BST property: left subtree < node < right subtree.'}}
+        {q:{q:'In a binary search tree, the left subtree of a node contains values that are …',opts:['greater than the node','equal to the node','less than the node','unordered'],a:2,s:'BST property: left subtree &lt; node &lt; right subtree.'}}
       ]
     },
     {
@@ -4218,7 +4218,7 @@ hot:[
  {ch:8,items:[
   {t:"Stack vs queue",star:3,note:"LIFO push/pop at top vs FIFO enqueue at tail, dequeue at head."},
   {t:"Tree terminology and depth",star:2,note:"Root, leaf, parent, child, sibling, depth; binary tree ≤ 2 children."},
-  {t:"BST property and inorder traversal",star:3,note:"Left < node < right; inorder gives ascending order."},
+  {t:"BST property and inorder traversal",star:3,note:"Left &lt; node &lt; right; inorder gives ascending order."},
   {t:"Contiguous vs linked implementation",star:2,note:"Index access vs pointer insertion/deletion; circular queue."},
   {t:"Binary tree in an array",star:1,note:"Parent ⌊i/2⌋, children 2i and 2i+1."},
   {t:"ADT and information hiding",star:2,note:"Interface separated from implementation."},
