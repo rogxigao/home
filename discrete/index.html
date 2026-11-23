@@ -454,6 +454,45 @@ svg.wsvg{display:block;width:100%;height:auto;overflow:visible}
 .qz-act button.ghost{background:transparent;color:var(--ink2);border-color:var(--line2)}
 .qz-act button.ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
 
+/* ---------- 谬误侦探 ---------- */
+.fl{border:1px solid var(--line);border-radius:11px;background:var(--surface);padding:16px 18px;margin-bottom:12px}
+.fl.answered{border-color:var(--line2)}
+.fl-h{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.fl-no{font-family:var(--serif);font-size:12px;color:var(--accent);min-width:20px;letter-spacing:.04em}
+.fl-h b{font-family:var(--serif);font-size:16px;font-weight:600;letter-spacing:.01em}
+.fl-tag{margin-left:auto;font-size:10.5px;color:var(--muted);border:1px solid var(--line2);padding:1px 9px;border-radius:10px;white-space:nowrap}
+.fl-g,.fl-claim{font-size:13.6px;line-height:1.85;margin-bottom:4px}
+.fl-g .lb,.fl-claim .lb{color:var(--muted);font-size:10.5px;letter-spacing:.1em;margin-right:7px;font-weight:600}
+.fl-claim{color:var(--ink);margin-bottom:13px}
+.fl-claim em{font-style:normal;color:var(--accent)}
+.fl-steps{margin:0 0 4px}
+.fl-step{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border:1px solid var(--line);border-radius:8px;
+  margin-bottom:6px;cursor:pointer;font-size:13.5px;line-height:1.8;background:var(--surface);transition:.14s}
+.fl-step:hover{border-color:var(--accent-line);background:var(--surface-2)}
+.fl-step .i{width:20px;height:20px;flex:0 0 20px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line2);
+  display:grid;place-items:center;font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--serif)}
+.fl-step>div{flex:1;min-width:0}
+.fl-step.right{border-color:var(--green);background:var(--green-soft)}
+.fl-step.right .i{background:var(--green);border-color:var(--green);color:#fff}
+.fl-step.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.fl-step.wrong .i{background:var(--bad);border-color:var(--bad);color:#fff}
+.fl-step.loc{border-color:var(--amber);background:var(--amber-soft);box-shadow:0 0 0 2px var(--amber-soft)}
+.fl-step.loc .i{background:var(--amber);border-color:var(--amber);color:#fff}
+.fl-step.done{cursor:default}
+.fl-step.done:hover{border-color:var(--line);background:var(--surface)}
+.fl-act{display:flex;gap:8px;margin-top:4px}
+.fl-act button{font-family:var(--sans);font-size:11.5px;padding:5px 13px;border-radius:16px;border:1px solid var(--line2);
+  background:transparent;color:var(--ink2);cursor:pointer;transition:.14s}
+.fl-act button:hover{border-color:var(--accent);color:var(--accent)}
+.fl-fb{display:none;margin-top:11px;padding:12px 15px;border-radius:8px;font-size:13.2px;line-height:1.85;
+  border:1px solid var(--line2);background:var(--surface-2)}
+.fl-fb.show{display:block}
+.fl-fb.ok{border-color:var(--green);background:var(--green-soft)}
+.fl-fb.no{border-color:var(--bad);background:var(--bad-soft)}
+.fl-fb .verdict-lb{display:block;font-size:10.5px;letter-spacing:.12em;font-weight:600;margin-bottom:6px}
+.fl-fb.ok .verdict-lb{color:var(--green)}
+.fl-fb.no .verdict-lb{color:var(--bad)}
+
 /* ---------- 命令面板 & 阅读进度 ---------- */
 #rdbar{position:fixed;top:0;left:0;height:2px;width:0;background:var(--accent);z-index:60;transition:width .08s linear;pointer-events:none}
 #pal{position:fixed;inset:0;z-index:90;display:none;align-items:flex-start;justify-content:center;
@@ -529,6 +568,10 @@ svg.wsvg{display:block;width:100%;height:auto;overflow:visible}
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M5.2 6.2l1.3 1.3 2.4-2.4"/><path d="M5.2 10.6h5.4"/></svg>
       <div><b>自测卷</b><span>8 套章测 + 2 套模拟</span></div>
       <span class="bdg" id="qzBadge">0</span>
+    </div>
+    <div class="navbtn" id="flawBtn">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.2L1.9 13.3h12.2z"/><path d="M8 6.2v3.2"/><path d="M8 11.6v.05"/></svg>
+      <div><b>谬误侦探</b><span>点出证明错在哪一步</span></div>
     </div>
     <nav id="tree"></nav>
   </aside>
@@ -619,9 +662,10 @@ function buildTree(){
     out += '</div></div>';
   });
   box.innerHTML = out;
-  var sb = document.getElementById('sumBtn'), qb = document.getElementById('quizBtn');
+  var sb = document.getElementById('sumBtn'), qb = document.getElementById('quizBtn'), fb = document.getElementById('flawBtn');
   if(sb) sb.classList.toggle('on', ST.cur === 'sum');
   if(qb) qb.classList.toggle('on', ST.cur === 'quiz');
+  if(fb) fb.classList.toggle('on', ST.cur === 'flaw');
   updateBadge();
   updateGauge();
 }
@@ -997,6 +1041,66 @@ function goWrong(){
   window.scrollTo(0,0);
 }
 
+/* ---------- 谬误侦探 ---------- */
+function flawById(id){
+  for(var i=0;i<FLAW.length;i++) if(FLAW[i].id===id) return FLAW[i];
+  return null;
+}
+function flStat(){
+  var st = ST.flaw || {}, a = 0, r = 0;
+  Object.keys(st).forEach(function(k){ a++; if(st[k].ok) r++; });
+  return {a:a, r:r, t:FLAW.length};
+}
+function flCard(c, i){
+  var st = (ST.flaw||{})[c.id], ans = !!st;
+  var h = '<div class="fl'+(ans?' answered':'')+'" data-case="'+c.id+'" data-i="'+i+'">';
+  h += '<div class="fl-h"><span class="fl-no">'+('0'+(i+1)).slice(-2)+'</span><b>'+c.title+'</b>'+
+       '<span class="fl-tag">'+c.tag+'</span></div>';
+  h += '<div class="fl-g"><span class="lb">已知</span>'+c.given+'</div>';
+  h += '<div class="fl-claim"><span class="lb">结论</span>'+c.claim+'</div>';
+  h += '<div class="fl-steps">';
+  c.steps.forEach(function(s,k){
+    var cls = 'fl-step';
+    if(ans){
+      cls += ' done';
+      if(k === c.bad && c.bad !== -1) cls += (st.ok ? ' right' : ' loc');
+      if(k === st.p && !st.ok) cls += ' wrong';
+    }
+    h += '<div class="'+cls+'" data-s="'+k+'"><span class="i">'+(k+1)+'</span><div>'+s+'</div></div>';
+  });
+  h += '</div>';
+  if(!ans) h += '<div class="fl-act"><button data-none="'+c.id+'">这几步都没问题</button></div>';
+  h += '<div class="fl-fb'+(ans?' show '+(st.ok?'ok':'no'):'')+'">'+
+       (ans ? '<span class="verdict-lb">'+(st.ok?'判断正确':'判断有误')+'</span>'+c.why : '')+'</div>';
+  h += '</div>';
+  return h;
+}
+function updFlawStat(){
+  var s = flStat(), e = document.getElementById('flStat');
+  if(e) e.innerHTML = '已答 <b>'+s.a+'</b> / '+s.t+'　答对 <b>'+s.r+'</b>';
+}
+function goFlaw(){
+  ST.cur = 'flaw'; save();
+  var s = flStat();
+  var html = '<div class="ch-head">'+
+    '<div class="ch-kicker">谬误侦探 · Fallacy Hunt</div>'+
+    '<h1>这条证明<em>错在哪</em></h1>'+
+    '<div class="ch-desc">每段论证都有若干步，其中<b>可能有一处</b>推理不成立——也可能一步都没错。点你认为出错的那一步；如果觉得全对，点「这几步都没问题」。判断完会给出完整解释。</div></div>';
+  html += '<div class="qz-bar"><span id="flStat">已答 <b>'+s.a+'</b> / '+s.t+'　答对 <b>'+s.r+'</b></span>'+
+          '<span class="sp"></span><button class="w-btn sm" data-flreset="1">重新开始</button></div>';
+  FLAW.forEach(function(c,i){ html += flCard(c,i); });
+
+  document.getElementById('doc').innerHTML = html;
+  document.getElementById('crumb').innerHTML = '谬误侦探 <span style="opacity:.4">/</span> 证明找茬';
+  document.getElementById('pager').innerHTML =
+    '<a class="pg prev" data-quizlist="1"><span>← 相关</span><b>自测卷 · 期末复习</b></a>'+
+    '<a class="pg next" data-sumgo="1"><span>复习资料 →</span><b>速查手册</b></a>';
+  buildTree();
+  document.body.classList.remove('nav');
+  try{ history.replaceState(null,'','#flaw'); }catch(err){}
+  window.scrollTo(0,0);
+}
+
 function buildPager(sid){
   var i = ORDER.map(function(x){return x.sid;}).indexOf(sid);
   var p = ORDER[i-1], n = ORDER[i+1];
@@ -1014,6 +1118,7 @@ function palIndex(){
   a.push({g:'总览', t:'速查手册 · 全章知识点与公式', run:function(){ goSum(null); }});
   a.push({g:'总览', t:'自测卷 · 期末复习', run:function(){ goQuizList(); }});
   a.push({g:'总览', t:'我的错题本', run:function(){ goWrong(); }});
+  a.push({g:'总览', t:'谬误侦探 · 证明找茬', run:function(){ goFlaw(); }});
   ORDER.forEach(function(o){
     a.push({g:'第'+o.c+'章 '+o.ct, t:o.sid+'　'+o.t, run:function(){ go(o.sid,true); }});
   });
@@ -1073,7 +1178,38 @@ document.addEventListener('click', function(e){
   if((el = e.target.closest('.pal-item'))){ palGo(+el.getAttribute('data-i')); return; }
   if(e.target.id === 'pal'){ palClose(); return; }
   if(e.target.closest('#sumBtn')){ goSum(null); return; }
+  if(e.target.closest('[data-sumgo]')){ goSum(null); return; }
   if(e.target.closest('#quizBtn')){ goQuizList(); return; }
+  if(e.target.closest('#flawBtn')){ goFlaw(); return; }
+  if(e.target.closest('[data-flreset]')){ ST.flaw = {}; save(); goFlaw(); return; }
+  var flStep = e.target.closest('.fl-step');
+  if(flStep){
+    var flCardEl = flStep.closest('.fl');
+    if(!flCardEl.classList.contains('answered')){
+      var fcId = flCardEl.getAttribute('data-case');
+      var fc = flawById(fcId);
+      var fk = +flStep.getAttribute('data-s');
+      ST.flaw = ST.flaw || {};
+      ST.flaw[fcId] = {p:fk, ok:(fk === fc.bad)};
+      save();
+      flCardEl.outerHTML = flCard(fc, +flCardEl.getAttribute('data-i'));
+      updFlawStat();
+    }
+    return;
+  }
+  if((el = e.target.closest('[data-none]'))){
+    var ncId = el.getAttribute('data-none');
+    var ncEl = document.querySelector('.fl[data-case="'+ncId+'"]');
+    if(ncEl && !ncEl.classList.contains('answered')){
+      var nc = flawById(ncId);
+      ST.flaw = ST.flaw || {};
+      ST.flaw[ncId] = {p:-1, ok:(nc.bad === -1)};
+      save();
+      ncEl.outerHTML = flCard(nc, +ncEl.getAttribute('data-i'));
+      updFlawStat();
+    }
+    return;
+  }
   if(e.target.closest('[data-quizlist]')){ goQuizList(); return; }
   if(e.target.closest('[data-wrong]')){ goWrong(); return; }
   if(e.target.closest('[data-submit]')){ submitQuiz(); return; }
@@ -1167,7 +1303,7 @@ document.addEventListener('keydown', function(e){
   if(isPal) return;
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
   if(ST.cur==='sum'){ if(e.key==='ArrowRight'&&ORDER[0]) go(ORDER[0].sid,true); return; }
-  if(ST.cur==='quiz'){ return; }
+  if(ST.cur==='quiz' || ST.cur==='flaw'){ return; }
   var i = ORDER.map(function(x){return x.sid;}).indexOf(ST.cur);
   if(e.key==='ArrowRight'&&ORDER[i+1]) go(ORDER[i+1].sid,true);
   if(e.key==='ArrowLeft'&&ORDER[i-1])  go(ORDER[i-1].sid,true);
@@ -1195,6 +1331,7 @@ function boot(){
   if(start === 'sum'){ goSum(null); return; }
   if(start === 'quiz'){ goQuizList(); return; }
   if(start === 'wrong'){ goWrong(); return; }
+  if(start === 'flaw'){ goFlaw(); return; }
   if(start.indexOf('quiz-') === 0){ goQuiz(start.slice(5)); return; }
   if(!ORDER.filter(function(x){return x.sid===start;}).length) start = ORDER[0].sid;
   go(start, true);
@@ -5682,6 +5819,143 @@ var QUIZ = [
     s:'吸收律：<m>x·(x+y) = x</m>。从真值看也直观——x 为 0 时整个式子必为 0，x 为 1 时括号里至少 1，结果就是 x。'}
 ]}
 
+];
+
+/* ===== 谬误侦探：点出错误的那一步 ===== */
+var FLAW = [
+
+{ id:'f1', tag:'推理规则', title:'下雨与地湿',
+  given:'若下雨，则地湿。现在地湿了。',
+  claim:'所以，下雨了。',
+  steps:[
+    '把「下雨」记作 p，「地湿」记作 q。已知 <m>p → q</m>，且 q 成立。',
+    '由 <m>p → q</m> 可知：只要 p 真，q 必然真。',
+    '现在 q 已经成立，所以 p 必然成立。'
+  ],
+  bad:2,
+  why:'这是<b>肯定后件谬误</b>（<m>q, p→q ⊬ p</m>）。<m>p→q</m> 只保证「p 真则 q 真」，反方向不成立。反例：洒水车把地弄湿了，但并没有下雨。'},
+
+{ id:'f2', tag:'推理规则', title:'没下雨就不会湿？',
+  given:'若下雨，则地湿。现在没有下雨。',
+  claim:'所以，地不会湿。',
+  steps:[
+    '已知 <m>p → q</m>，其中 p 是「下雨」，q 是「地湿」。',
+    '现在 <m>¬p</m> 成立。',
+    '代入蕴含式得 <m>¬q</m>，即地不会湿。'
+  ],
+  bad:2,
+  why:'这是<b>否定前件谬误</b>（<m>¬p, p→q ⊬ ¬q</m>）。蕴含式对前件为假的情况不作任何承诺。反例同上：没下雨，但洒水车让地湿了。'},
+
+{ id:'f3', tag:'论证结构', title:'所有奇数都是素数',
+  given:'观察若干特例：3、5、7、11 都是素数，且都是奇数。',
+  claim:'所以，所有奇数都是素数。',
+  steps:[
+    '3 是奇数，且 3 是素数。',
+    '5、7、11 也都是奇数且都是素数。',
+    '已经验证了多个例子，没有出现反例。',
+    '因此可以推广：所有奇数都是素数。'
+  ],
+  bad:3,
+  why:'这是<b>不完全归纳</b>：举多少个正例都不能证明全称命题，只能证伪。反例随手就有——9 是奇数，但 <m>9 = 3 × 3</m>，不是素数。'},
+
+{ id:'f4', tag:'充分与必要', title:'能被 3 整除就能被 6 整除？',
+  given:'已知：若 n 能被 6 整除，则 n 能被 3 整除。',
+  claim:'所以，若 n 能被 3 整除，则 n 能被 6 整除。',
+  steps:[
+    '记 A：n 能被 6 整除；B：n 能被 3 整除。已知 <m>A → B</m>。',
+    '现在假设 B 成立。',
+    '由 <m>A → B</m> 和 B 成立，推出 A 成立，即 n 能被 6 整除。'
+  ],
+  bad:2,
+  why:'把单向蕴含当成了双向等价。<m>A→B</m> 不能反推出 <m>B→A</m>。反例：<m>n = 9</m> 能被 3 整除，但不能被 6 整除。'},
+
+{ id:'f5', tag:'数学归纳法', title:'1+3+…+(2n−1) = n²+1',
+  given:'命题：对所有正整数 n，前 n 个奇数之和等于 <m>n<sup>2</sup> + 1</m>。',
+  claim:'用归纳法证明。',
+  steps:[
+    '假设 <m>n = k</m> 时成立，即 <m>1+3+⋯+(2k−1) = k<sup>2</sup>+1</m>。',
+    '当 <m>n = k+1</m> 时，左边再加 <m>2k+1</m>，得 <m>(k<sup>2</sup>+1)+(2k+1) = (k+1)<sup>2</sup>+1</m>，形式一致。',
+    '归纳步成立，故命题对所有正整数成立。'
+  ],
+  bad:2,
+  why:'<b>少了奠基步</b>，而且这条命题本身就是假的：<m>n=1</m> 时左边是 1，右边是 2。归纳法必须「基础 + 递推」两步齐全，缺基础等于什么都没证。'},
+
+{ id:'f6', tag:'集合证明', title:'A∪B = A∩B',
+  given:'设 A、B 是任意两个集合。',
+  claim:'证明 A ∪ B = A ∩ B。',
+  steps:[
+    '任取 <m>x ∈ A∩B</m>，则 <m>x ∈ A</m> 且 <m>x ∈ B</m>。',
+    '既然 <m>x ∈ A</m>，当然有 <m>x ∈ A∪B</m>，所以 <m>A∩B ⊆ A∪B</m>。',
+    '两个方向都证完了，因此 <m>A∪B = A∩B</m>。'
+  ],
+  bad:2,
+  why:'只证了 <m>A∩B ⊆ A∪B</m> 这一个方向，反方向根本没碰。而且反向根本不成立：取 <m>A={1}, B={2}</m>，<m>A∪B={1,2}</m> 而 <m>A∩B=∅</m>。证明集合相等必须<b>互相包含</b>。'},
+
+{ id:'f7', tag:'计数', title:'被 2 或 3 整除',
+  given:'问：1 到 100 中，能被 2 或 3 整除的整数有多少个？',
+  claim:'答案是 83。',
+  steps:[
+    '1 到 100 中 2 的倍数有 <m>⌊100/2⌋ = 50</m> 个。',
+    '3 的倍数有 <m>⌊100/3⌋ = 33</m> 个。',
+    '「或」就是相加，所以共 <m>50 + 33 = 83</m> 个。'
+  ],
+  bad:2,
+  why:'直接相加把<b>同时被 2 和 3 整除</b>的数算了两次。6 的倍数有 <m>⌊100/6⌋ = 16</m> 个，要减掉一次，正确答案是 <m>50+33−16 = 67</m>。'},
+
+{ id:'f8', tag:'鸽巢原理', title:'40 人同月生',
+  given:'一个班 40 人，12 个月份。',
+  claim:'至少有 3 人同月出生。',
+  steps:[
+    '把 40 只「鸽子」放进 12 个「巢」。',
+    '计算 <m>40 ÷ 12 = 3.33</m>。',
+    '取整数部分，所以至少 3 人同月。'
+  ],
+  bad:2,
+  why:'广义鸽巢原理要<b>向上取整</b>：<m>⌈40/12⌉ = 4</m>。检验一下：若最多 3 人同月，12 个月最多容纳 <m>12×3 = 36</m> 人，装不下 40 人，矛盾。'},
+
+{ id:'f9', tag:'关系性质', title:'这个关系是传递的',
+  given:'A = {1,2,3}，R = {(1,2), (2,3)}。',
+  claim:'R 是传递的。',
+  steps:[
+    '传递性要求：若 <m>aRb</m> 且 <m>bRc</m>，则 <m>aRc</m>。',
+    '在 R 中确实有 <m>1R2</m> 和 <m>2R3</m>，前件成立。',
+    '而 <m>(1,3)</m> 不在 R 中，说明这个关系没有「多余的边」，因此是传递的。'
+  ],
+  bad:2,
+  why:'结论说反了。正因为有 <m>1R2</m>、<m>2R3</m> 却缺 <m>1R3</m>，传递性<b>不成立</b>。R 的传递闭包才需要补上 <m>(1,3)</m>。'},
+
+{ id:'f10', tag:'图论', title:'有欧拉回路吗',
+  given:'一个连通无向图，恰有 4 个顶点度数为奇数。',
+  claim:'所以它存在欧拉回路。',
+  steps:[
+    '图是连通的，满足欧拉定理的连通性要求。',
+    '4 个奇度顶点，是<b>偶数个</b>，符合「奇度顶点必须成对出现」。',
+    '故由欧拉定理，该图存在欧拉回路。'
+  ],
+  bad:1,
+  why:'「奇度顶点是偶数个」只是握手定理的推论，<b>不是</b>欧拉回路的判据。欧拉回路要求<b>0 个</b>奇度顶点；恰 2 个才有欧拉通路。4 个奇点则两者都不存在。'},
+
+{ id:'f11', tag:'真命题', title:'奇数平方还是奇数',
+  given:'命题：若 n 是奇数，则 <m>n<sup>2</sup></m> 也是奇数。',
+  claim:'请判断这条证明有没有问题。',
+  steps:[
+    '设 <m>n</m> 是奇数，则可写成 <m>n = 2k+1</m>，其中 k 为整数。',
+    '则 <m>n<sup>2</sup> = 4k<sup>2</sup>+4k+1 = 2(2k<sup>2</sup>+2k)+1</m>。',
+    '括号内是整数，所以 <m>n<sup>2</sup></m> 形如 <m>2m+1</m>，是奇数。'
+  ],
+  bad:-1,
+  why:'这条证明<b>没有问题</b>。直接证明的骨架完整：假设前件成立 → 代数变形 → 得到后件，且每一步都可逆推。这是标准的直接证明法。'},
+
+{ id:'f12', tag:'逆否与反证', title:'n² 是偶数推 n 是偶数',
+  given:'命题：若 <m>n<sup>2</sup></m> 是偶数，则 n 是偶数。',
+  claim:'证明如下。',
+  steps:[
+    '假设 n 是偶数，设 <m>n = 2k</m>。',
+    '则 <m>n<sup>2</sup> = 4k<sup>2</sup></m>，显然是偶数。',
+    '所以 <m>n<sup>2</sup></m> 是偶数蕴含 n 是偶数。'
+  ],
+  bad:0,
+  why:'方向反了。这里证的是「n 偶 ⟹ n² 偶」，也就是原命题的<b>逆命题</b>，而逆命题与原命题不等价。正确做法是证<b>逆否</b>：假设 n 是奇数（<m>n=2k+1</m>），推出 <m>n<sup>2</sup></m> 是奇数。'}
 ];
 
 </script>
