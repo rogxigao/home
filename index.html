@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#faf9f6">
-<title>高荣信 · 资料与项目</title>
+<title>资料与项目</title>
 
-<meta name="description" content="高荣信的个人索引页：高等数学、离散数学逐章精读，RoboMaster 资料检索，计算机视觉学习路线，美赛 MCM/ICM 备赛，以及每日英语阅读。">
+<meta name="description" content="个人索引页：高等数学、离散数学逐章精读，RoboMaster 资料检索，计算机视觉学习路线，美赛 MCM/ICM 备赛，每日英语阅读，以及 CPE 监控面板。">
 <link rel="canonical" href="https://gahaga.eu.cc/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="gahaga.eu.cc">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:title" content="高荣信 · 资料与项目">
+<meta property="og:title" content="资料与项目">
 <meta property="og:description" content="高等数学、离散数学、RoboMaster 资料检索、计算机视觉学习路线、美赛备赛、每日英语阅读。">
 <meta property="og:url" content="https://gahaga.eu.cc/">
 <meta name="twitter:card" content="summary">
@@ -46,6 +46,7 @@ body{
 .kicker{
   margin:0 0 18px;font-size:11px;letter-spacing:.24em;
   color:var(--accent);font-weight:600;
+  font-family:var(--sans);
 }
 h1{
   font-family:var(--serif);font-size:clamp(38px,6vw,56px);
@@ -128,9 +129,7 @@ footer a:hover{color:var(--accent);border-color:var(--accent);}
 <div class="wrap">
 
   <header>
-    <p class="kicker">GAHAGA · PERSONAL INDEX</p>
-    <h1>高荣信</h1>
-    <p class="lede">华南农业大学 · 数学与信息学院。这里放着我正在读、正在做的东西——数学底子、机器人、视觉、备赛，还有一些顺手做的小工具。</p>
+    <h1 class="kicker">GAHAGA · PERSONAL INDEX</h1>
     <div class="rule"></div>
   </header>
 
@@ -178,12 +177,12 @@ footer a:hover{color:var(--accent);border-color:var(--accent);}
       <div class="foot"><span>read.gahaga.eu.cc</span><span class="arrow">↗</span></div>
     </a>
 
-    <div class="card static">
-      <p class="cat">工具 <span class="badge warn">仅局域网</span></p>
+    <a class="card" href="https://router.gahaga.eu.cc/">
+      <p class="cat">工具 <span class="badge">外网可访问</span></p>
       <h2>CPE 监控面板</h2>
-      <p class="desc">夏新 CP910 的路由状态与流量面板，跑在本机 8092 端口。必须和路由器在同一个网络里才能打开，IP 变了地址也就变了。</p>
-      <div class="foot"><span>192.168.1.89:8092</span><span class="arrow" style="color:var(--ink-3)">—</span></div>
-    </div>
+      <p class="desc">夏新 CP910 的实时状态与流量曲线，经 Cloudflare Tunnel 转发到本机 8092 端口。电脑在线时才能打开，离线会报 1033。</p>
+      <div class="foot"><span>router.gahaga.eu.cc</span><span class="arrow">↗</span></div>
+    </a>
 
   </main>
 
