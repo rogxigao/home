@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>计算机科学概论 · 双语精读 | Computer Science: An Overview</title>
 <meta name="description" content="Brookshear《计算机科学概论》双语学习站：章节精读、结构图与交互演示、英文术语表、纯英文考试考点清单与自测卷。">
+<meta name="keywords" content="计算机概论,计算机科学概论,Brookshear,Computer Science An Overview,英文术语,双语,期末复习">
 <meta name="theme-color" content="#1F4E79">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231F4E79'/%3E%3Ctext x='32' y='43' font-family='Consolas,monospace' font-size='24' font-weight='700' fill='%23ffffff' text-anchor='middle'%3ECS%3C/text%3E%3C/svg%3E">
 <style>
@@ -63,7 +64,7 @@ body::before{
   background:var(--surface);border-right:1px solid var(--line);
   display:flex;flex-direction:column;z-index:40;
 }
-.brand{padding:20px 18px 15px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex:0 0 auto}
+.brand{padding:20px 18px 15px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex:0 0 auto;cursor:pointer}
 .mark{
   width:40px;height:40px;flex:0 0 40px;border-radius:8px;background:var(--accent);color:#fff;
   display:grid;place-items:center;font-family:var(--mono);font-size:14px;font-weight:700;
@@ -1253,7 +1254,11 @@ byId('theme').addEventListener('click', function(){
 
 /* nav buttons */
 byId('mapBtn').addEventListener('click', function(){ location.hash='#/map'; });
-byId('glossBtn').addEventListener('click', function(){ location.hash='#/glossary'; });
+byId('glossBtn').addEventListener('click', function(){
+  if(ST.cur==='glossary'){ GQ.q=''; GQ.ch='all'; goGloss(); }
+  else { GQ.q=''; location.hash='#/glossary'; }
+});
+document.querySelector('.brand').addEventListener('click', function(){ location.hash='#/map'; });
 byId('examBtn').addEventListener('click', function(){ location.hash='#/exam'; });
 byId('quizBtn').addEventListener('click', function(){ location.hash='#/quiz'; });
 byId('burger').addEventListener('click', function(){ document.body.classList.toggle('nav'); });
@@ -3274,6 +3279,13 @@ CH[6] = {
         {p:'下标从 0 还是 1 开始，因语言而异：C、C++、Java、C# 从 0 开始；FORTRAN 从 1 开始。二维数组在内存里通常按<b>行优先</b>（row-major）连续存放。'},
         {p:'控制语句：<b>if/else</b> 二选一；<b>while</b> 先测后循环；<b>for</b> 把初始化、测试、更新写在一起；<b>switch/case</b> 多分支选择；<b>goto</b> 无条件跳转（应尽量少用，破坏结构）。'},
         {p:'<b>Comments</b> 是给人看的解释，编译器会忽略。C 用 <code>/* ... */</code> 或 <code>//</code>，Python 用 <code>#</code>。注释不改变程序行为，但决定程序能不能被维护。'},
+        {h:'Three kinds of errors'},
+        {tb:[['Error type','When it occurs','Example'],[
+          ['Syntax error','The code violates the grammar; the compiler/interpreter cannot parse it','<code>print(5 +)</code>'],
+          ['Semantic error','The code is legal but means the wrong thing','<code>total = 40 + hours * rate</code> instead of <code>(40 + hours) * rate</code>'],
+          ['Runtime error','The program is legal but fails while running','division by zero, index out of range']
+        ]]},
+        {p:'Syntax errors are the easiest to find: the translator points at a line. Semantic errors are the most dangerous: the program runs and produces a plausible but wrong answer. Runtime errors may only appear for certain inputs, so testing must cover edge cases.'},
         {exam:['Exam phrasing','“What is the difference between an array and an aggregate?” → array elements have the same type; aggregate fields may have different types.<br>“What is a Boolean value?” → true or false.<br>“Why are comments ignored by the compiler?” → they are explanatory text for humans, not executable statements.']},
         {q:{q:'Which structure can hold fields of different types?',opts:['Array','Aggregate (struct)','Integer','Boolean'],a:1,s:'An aggregate groups heterogeneous data items, each accessed by field name.'}}
       ]
@@ -3569,6 +3581,7 @@ CH[9] = {
         {p:'<b>Schema</b> 是整个数据库结构的描述；<b>subschema</b> 只描述某个用户需要的那一部分，用来防止未授权访问（例如人事能看到员工信息，但看不到工资）。'},
         {p:'<b>Data independence</b>：改变数据库的组织方式（如换存储、加索引、拆分表），不需要改动使用它的应用软件。这是 DBMS 最重要的价值之一。'},
         {p:'<b>Distributed database</b> 存在多台机器上，但 DBMS 对用户隐藏这个细节；用户感觉像在操作一个本地数据库。'},
+        {p:'<b>Object-oriented database</b> 把每个实体存成<b>持久对象</b>（persistent object），对象之间用链接表示关系，由 DBMS 维护。它适合多媒体、CAD 这类复杂数据，也能直接复用面向对象程序里的类；代价是查询优化和标准化不如关系模型成熟。'},
         {exam:['Exam phrasing','“What is a database?” → a multidimensional collection of data with internal links.<br>“Difference between schema and subschema?” → schema describes the whole structure; subschema describes only the portion a user needs.<br>“What is data independence?” → changing the database organization without changing application software.']},
         {q:{q:'Which describes only the part of the database a particular user needs?',opts:['Schema','Subschema','Tuple','Attribute'],a:1,s:'A subschema restricts the view for a user or application, hiding sensitive data.'}}
       ]
